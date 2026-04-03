@@ -677,6 +677,7 @@
 
       // Add name labels for US Senate halves
       if (chamber === 'us_senate') {
+        usSenateLabels = [];
         for (const feature of geojson.features) {
           const name = feature.properties.NAME;
           if (!name) continue;
@@ -840,9 +841,11 @@
       // Show sidebar immediately (data already loaded)
       renderList();
 
-      // Set map view
+      // Only zoom in (e.g. to NYC for city council), never zoom out
       const view = which === 'city_council' ? NYC_VIEW : NY_STATE_VIEW;
-      map.setView(view.center, view.zoom);
+      if (view.zoom > map.getZoom()) {
+        map.setView(view.center, view.zoom);
+      }
 
       // Lazy-load GeoJSON if needed, then show
       await ensureGeoLayer(which);
