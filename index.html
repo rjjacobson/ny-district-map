@@ -1,0 +1,408 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>New York State Legislative Districts</title>
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; }
+    #map { width: 100%; height: 100vh; }
+
+    .controls {
+      position: absolute;
+      top: 16px;
+      left: 60px;
+      z-index: 1000;
+      background: white;
+      border-radius: 10px;
+      box-shadow: 0 2px 12px rgba(0,0,0,0.15);
+      padding: 12px 16px;
+      display: flex;
+      gap: 8px;
+      align-items: center;
+    }
+
+    .controls h1 {
+      font-size: 15px;
+      font-weight: 600;
+      color: #1a1a1a;
+      margin-right: 8px;
+      white-space: nowrap;
+    }
+
+    .toggle-btn {
+      padding: 8px 18px;
+      border: 2px solid #e0e0e0;
+      background: white;
+      border-radius: 8px;
+      font-size: 14px;
+      font-weight: 500;
+      cursor: pointer;
+      transition: all 0.2s;
+      color: #555;
+    }
+
+    .toggle-btn:hover {
+      border-color: #999;
+      color: #333;
+    }
+
+    .toggle-btn.active {
+      background: #2563eb;
+      border-color: #2563eb;
+      color: white;
+    }
+
+    .legend {
+      position: absolute;
+      bottom: 30px;
+      right: 16px;
+      z-index: 1000;
+      background: white;
+      border-radius: 10px;
+      box-shadow: 0 2px 12px rgba(0,0,0,0.15);
+      padding: 14px 18px;
+      font-size: 13px;
+      line-height: 1.6;
+    }
+
+    .legend-title {
+      font-weight: 600;
+      margin-bottom: 6px;
+      font-size: 14px;
+    }
+
+    .legend-item {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .legend-swatch {
+      width: 18px;
+      height: 14px;
+      border-radius: 3px;
+      border: 1px solid rgba(0,0,0,0.15);
+    }
+
+    .info-panel {
+      position: absolute;
+      top: 16px;
+      right: 16px;
+      z-index: 1000;
+      background: white;
+      border-radius: 10px;
+      box-shadow: 0 2px 12px rgba(0,0,0,0.15);
+      padding: 16px 20px;
+      min-width: 280px;
+      max-width: 340px;
+      transition: opacity 0.2s;
+    }
+
+    .info-panel.empty {
+      opacity: 0.7;
+    }
+
+    .info-panel h2 {
+      font-size: 18px;
+      font-weight: 700;
+      margin-bottom: 2px;
+      color: #1a1a1a;
+    }
+
+    .info-panel .district-label {
+      font-size: 13px;
+      color: #888;
+      margin-bottom: 10px;
+      font-weight: 500;
+    }
+
+    .info-panel .party-badge {
+      display: inline-block;
+      padding: 2px 10px;
+      border-radius: 12px;
+      font-size: 12px;
+      font-weight: 600;
+      color: white;
+      margin-bottom: 10px;
+    }
+
+    .info-panel .detail {
+      font-size: 13px;
+      color: #444;
+      margin-bottom: 4px;
+    }
+
+    .info-panel .detail strong {
+      color: #222;
+    }
+
+    .info-panel .hint {
+      font-size: 13px;
+      color: #999;
+      font-style: italic;
+    }
+
+    .loading-overlay {
+      position: absolute;
+      top: 0; left: 0; right: 0; bottom: 0;
+      z-index: 2000;
+      background: rgba(255,255,255,0.9);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-direction: column;
+      gap: 12px;
+      font-size: 16px;
+      color: #555;
+    }
+
+    .spinner {
+      width: 36px;
+      height: 36px;
+      border: 3px solid #e0e0e0;
+      border-top-color: #2563eb;
+      border-radius: 50%;
+      animation: spin 0.8s linear infinite;
+    }
+
+    @keyframes spin { to { transform: rotate(360deg); } }
+  </style>
+</head>
+<body>
+  <div id="map"></div>
+
+  <div class="controls">
+    <h1>NY Legislature</h1>
+    <button class="toggle-btn active" id="btn-senate" onclick="showLayer('senate')">Senate (63)</button>
+    <button class="toggle-btn" id="btn-assembly" onclick="showLayer('assembly')">Assembly (150)</button>
+  </div>
+
+  <div class="info-panel empty" id="info-panel">
+    <p class="hint">Hover over a district to see its representative</p>
+  </div>
+
+  <div class="legend">
+    <div class="legend-title">Party</div>
+    <div class="legend-item"><span class="legend-swatch" style="background:#3b82f6"></span> Democrat</div>
+    <div class="legend-item"><span class="legend-swatch" style="background:#ef4444"></span> Republican</div>
+    <div class="legend-item"><span class="legend-swatch" style="background:#a855f7"></span> Working Families</div>
+    <div class="legend-item"><span class="legend-swatch" style="background:#9ca3af"></span> Other / Vacant</div>
+  </div>
+
+  <div class="loading-overlay" id="loading">
+    <div class="spinner"></div>
+    <span>Loading district boundaries...</span>
+  </div>
+
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+  <script>
+    const map = L.map('map', {
+      center: [42.85, -75.5],
+      zoom: 7,
+      zoomControl: true,
+    });
+
+    L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png', {
+      attribution: '&copy; OpenStreetMap &copy; CARTO',
+      maxZoom: 18,
+    }).addTo(map);
+
+    const PARTY_COLORS = {
+      'Democrat':         '#3b82f6',
+      'Democratic':       '#3b82f6',
+      'Republican':       '#ef4444',
+      'Working Families': '#a855f7',
+      'Conservative':     '#b91c1c',
+      'Independence':     '#f59e0b',
+    };
+
+    function partyColor(party) {
+      if (!party) return '#9ca3af';
+      for (const [key, color] of Object.entries(PARTY_COLORS)) {
+        if (party.toLowerCase().includes(key.toLowerCase())) return color;
+      }
+      return '#9ca3af';
+    }
+
+    function partyBadgeColor(party) {
+      return partyColor(party);
+    }
+
+    let senateLayer = null;
+    let assemblyLayer = null;
+    let activeLayer = 'senate';
+    let highlightedFeature = null;
+
+    const infoPanel = document.getElementById('info-panel');
+
+    function updateInfo(props) {
+      if (!props) {
+        infoPanel.className = 'info-panel empty';
+        infoPanel.innerHTML = '<p class="hint">Hover over a district to see its representative</p>';
+        return;
+      }
+      infoPanel.className = 'info-panel';
+      const chamber = activeLayer === 'senate' ? 'Senate' : 'Assembly';
+      const name = props.NAME || 'Vacant';
+      const district = props.DISTRICT || '?';
+      const party = props.PARTY || 'Unknown';
+      const phone = props.PHONE || '';
+      const email = props.EMAIL || '';
+      const distPhone = props.DIST_PHONE || '';
+
+      let html = `
+        <h2>${name}</h2>
+        <div class="district-label">${chamber} District ${district}</div>
+        <span class="party-badge" style="background:${partyBadgeColor(party)}">${party}</span>
+      `;
+      if (phone) html += `<div class="detail"><strong>Albany:</strong> ${phone}</div>`;
+      if (distPhone) html += `<div class="detail"><strong>District:</strong> ${distPhone}</div>`;
+      if (email) html += `<div class="detail"><strong>Email:</strong> ${email}</div>`;
+
+      infoPanel.innerHTML = html;
+    }
+
+    function styleFeature(feature) {
+      const party = feature.properties.PARTY;
+      return {
+        fillColor: partyColor(party),
+        weight: 1.2,
+        color: '#fff',
+        fillOpacity: 0.55,
+      };
+    }
+
+    function highlightFeature(e) {
+      const layer = e.target;
+      layer.setStyle({
+        weight: 3,
+        color: '#1e293b',
+        fillOpacity: 0.8,
+      });
+      layer.bringToFront();
+      highlightedFeature = layer;
+      updateInfo(layer.feature.properties);
+    }
+
+    function resetHighlight(e) {
+      const currentGeoLayer = activeLayer === 'senate' ? senateLayer : assemblyLayer;
+      if (currentGeoLayer) currentGeoLayer.resetStyle(e.target);
+      highlightedFeature = null;
+      updateInfo(null);
+    }
+
+    function zoomToFeature(e) {
+      map.fitBounds(e.target.getBounds(), { padding: [40, 40] });
+    }
+
+    function onEachFeature(feature, layer) {
+      layer.on({
+        mouseover: highlightFeature,
+        mouseout: resetHighlight,
+        click: zoomToFeature,
+      });
+    }
+
+    function buildLayer(geojson) {
+      return L.geoJSON(geojson, {
+        style: styleFeature,
+        onEachFeature: onEachFeature,
+      });
+    }
+
+    function showLayer(which) {
+      activeLayer = which;
+      document.getElementById('btn-senate').className = which === 'senate' ? 'toggle-btn active' : 'toggle-btn';
+      document.getElementById('btn-assembly').className = which === 'assembly' ? 'toggle-btn active' : 'toggle-btn';
+
+      if (senateLayer) map.removeLayer(senateLayer);
+      if (assemblyLayer) map.removeLayer(assemblyLayer);
+
+      if (which === 'senate' && senateLayer) {
+        senateLayer.addTo(map);
+      } else if (which === 'assembly' && assemblyLayer) {
+        assemblyLayer.addTo(map);
+      }
+      updateInfo(null);
+    }
+
+    // Supabase config
+    const SUPABASE_URL = 'https://xeknqkxhfxvveeyddokl.supabase.co';
+    const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inhla25xa3hoZnh2dmVleWRkb2tsIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzUyMjc1MzksImV4cCI6MjA5MDgwMzUzOX0.-CO0RkDBljPTRBO5x5JIAIZ23WfhR0A8bLJV3iE_xS0';
+
+    const ARCGIS_BASE = 'https://gisservices.its.ny.gov/arcgis/rest/services';
+
+    async function fetchGeoJSON(serviceName) {
+      const url = `${ARCGIS_BASE}/${serviceName}/MapServer/0/query`
+        + `?where=1%3D1&outFields=DISTRICT`
+        + `&outSR=4326&f=geojson&resultRecordCount=200`;
+      const resp = await fetch(url);
+      if (!resp.ok) throw new Error(`Failed to fetch ${serviceName}: ${resp.status}`);
+      return resp.json();
+    }
+
+    async function fetchLegislators(chamber) {
+      const resp = await fetch(
+        `${SUPABASE_URL}/rest/v1/legislators?chamber=eq.${chamber}&select=district,name,party,phone_albany,phone_district,email&order=district`,
+        { headers: { 'apikey': SUPABASE_ANON_KEY } }
+      );
+      if (!resp.ok) throw new Error(`Failed to fetch ${chamber} legislators`);
+      return resp.json();
+    }
+
+    function mergeData(geojson, legislators) {
+      const lookup = {};
+      for (const leg of legislators) {
+        lookup[leg.district] = leg;
+      }
+      for (const feature of geojson.features) {
+        const dist = feature.properties.DISTRICT;
+        const leg = lookup[dist];
+        if (leg) {
+          feature.properties.NAME = leg.name;
+          feature.properties.PARTY = leg.party;
+          feature.properties.PHONE = leg.phone_albany;
+          feature.properties.DIST_PHONE = leg.phone_district;
+          feature.properties.EMAIL = leg.email;
+        }
+      }
+      return geojson;
+    }
+
+    async function init() {
+      try {
+        const [senateGeo, assemblyGeo, senateLegislators, assemblyLegislators] = await Promise.all([
+          fetchGeoJSON('NYS_Senate_Districts'),
+          fetchGeoJSON('NYS_Assembly_Districts'),
+          fetchLegislators('senate'),
+          fetchLegislators('assembly'),
+        ]);
+
+        const senateData = mergeData(senateGeo, senateLegislators);
+        const assemblyData = mergeData(assemblyGeo, assemblyLegislators);
+
+        senateLayer = buildLayer(senateData);
+        assemblyLayer = buildLayer(assemblyData);
+
+        // Show senate by default
+        senateLayer.addTo(map);
+        document.getElementById('loading').style.display = 'none';
+      } catch (err) {
+        console.error(err);
+        document.getElementById('loading').innerHTML = `
+          <p style="color:#ef4444;font-weight:600;">Failed to load district data</p>
+          <p style="font-size:14px;color:#888;">${err.message}</p>
+          <p style="font-size:13px;color:#aaa;margin-top:8px;">
+            Try refreshing the page.
+          </p>
+        `;
+      }
+    }
+
+    init();
+  </script>
+</body>
+</html>
