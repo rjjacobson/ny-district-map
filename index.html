@@ -253,7 +253,6 @@
       <div class="control-group">
         <div class="control-group-label">Legislative Body</div>
         <div class="control-group-buttons">
-          <button class="toggle-btn" id="btn-all" onclick="showLayer('all')">All (264)</button>
           <button class="toggle-btn active" id="btn-senate" onclick="showLayer('senate')">Senate (63)</button>
           <button class="toggle-btn" id="btn-assembly" onclick="showLayer('assembly')">Assembly (150)</button>
           <button class="toggle-btn" id="btn-city_council" onclick="showLayer('city_council')">City Council (51)</button>
@@ -618,20 +617,9 @@
 
         document.getElementById('result-count').textContent = `${totalResults} results across all chambers`;
       } else {
-        // No search — show active chamber or all
-        let legs;
-        let label;
-        if (activeLayer === 'all') {
-          legs = [
-            ...senateLegislators.map(l => ({ ...l, _chamber: 'senate' })),
-            ...assemblyLegislators.map(l => ({ ...l, _chamber: 'assembly' })),
-            ...cityCouncilLegislators.map(l => ({ ...l, _chamber: 'city_council' })),
-          ];
-          label = 'legislators';
-        } else {
-          legs = [...getLegislators(activeLayer)].map(l => ({ ...l, _chamber: activeLayer }));
-          label = CHAMBER_MEMBER_LABELS[activeLayer];
-        }
+        // No search — show active chamber
+        let legs = [...getLegislators(activeLayer)].map(l => ({ ...l, _chamber: activeLayer }));
+        let label = CHAMBER_MEMBER_LABELS[activeLayer];
 
         if (colorMode !== 'party') {
           // Sort by stance: strongly_support first → unknown last
@@ -668,24 +656,8 @@
             container.appendChild(createRow(leg, leg._chamber || activeLayer));
           }
         } else {
-          if (activeLayer === 'all') {
-            // Group by chamber
-            const chamberOrder = ['senate', 'assembly', 'city_council'];
-            for (const ch of chamberOrder) {
-              const chamberLegs = legs.filter(l => l._chamber === ch);
-              if (chamberLegs.length === 0) continue;
-              const header = document.createElement('div');
-              header.style.cssText = 'padding:6px 16px;font-size:11px;font-weight:600;color:#888;background:#f0f0f0;text-transform:uppercase;letter-spacing:0.5px;';
-              header.textContent = `${CHAMBER_LABELS[ch]} (${chamberLegs.length})`;
-              container.appendChild(header);
-              for (const leg of chamberLegs) {
-                container.appendChild(createRow(leg, ch));
-              }
-            }
-          } else {
-            for (const leg of legs) {
-              container.appendChild(createRow(leg, activeLayer));
-            }
+          for (const leg of legs) {
+            container.appendChild(createRow(leg, activeLayer));
           }
         }
 
@@ -708,13 +680,13 @@
         <span class="leg-party">${tagText}</span>
       `;
       row.addEventListener('mouseenter', () => {
-        if (chamber === activeLayer || activeLayer === 'all') highlightOnMap(leg.district, chamber);
+        if (chamber === activeLayer) highlightOnMap(leg.district, chamber);
       });
       row.addEventListener('mouseleave', () => {
-        if (chamber === activeLayer || activeLayer === 'all') unhighlightOnMap(chamber);
+        if (chamber === activeLayer) unhighlightOnMap(chamber);
       });
       row.addEventListener('click', () => {
-        if (activeLayer !== 'all' && chamber !== activeLayer) {
+        if (chamber !== activeLayer) {
           showLayer(chamber, true);
         }
         selectDistrict(leg.district, false, chamber);
@@ -729,7 +701,7 @@
     function showLayer(which, keepSearch) {
       clearSelection();
       activeLayer = which;
-      ['all', 'senate', 'assembly', 'city_council'].forEach(k => {
+      ['senate', 'assembly', 'city_council'].forEach(k => {
         document.getElementById('btn-' + k).className = k === which ? 'toggle-btn active' : 'toggle-btn';
       });
       if (!keepSearch) document.getElementById('search-input').value = '';
@@ -738,12 +710,7 @@
       if (assemblyLayer) map.removeLayer(assemblyLayer);
       if (cityCouncilLayer) map.removeLayer(cityCouncilLayer);
 
-      if (which === 'all') {
-        if (senateLayer) senateLayer.addTo(map);
-        if (assemblyLayer) assemblyLayer.addTo(map);
-        if (cityCouncilLayer) cityCouncilLayer.addTo(map);
-        map.setView(NY_STATE_VIEW.center, NY_STATE_VIEW.zoom);
-      } else if (which === 'senate' && senateLayer) {
+      if (which === 'senate' && senateLayer) {
         senateLayer.addTo(map);
         map.setView(NY_STATE_VIEW.center, NY_STATE_VIEW.zoom);
       } else if (which === 'assembly' && assemblyLayer) {
