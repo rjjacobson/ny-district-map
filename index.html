@@ -153,7 +153,11 @@
       padding: 16px 20px 8px; border-bottom: 1px solid #eee;
     }
     .detail-header h2 { font-size: 20px; font-weight: 700; color: #1a1a1a; margin-bottom: 2px; }
-    .detail-header .district-label { font-size: 13px; color: #888; font-weight: 500; }
+    .detail-header .district-label { font-size: 13px; color: #888; font-weight: 500; display: flex; align-items: center; gap: 8px; }
+    .party-pill {
+      display: inline-block; padding: 2px 10px; border-radius: 12px;
+      font-size: 11px; font-weight: 600; color: white;
+    }
     .detail-header .close-btn {
       float: right; background: none; border: none; font-size: 20px;
       color: #aaa; cursor: pointer; padding: 0 4px; line-height: 1;
@@ -264,11 +268,11 @@
       <div class="control-group">
         <div class="control-group-label">Legislative Body</div>
         <div class="control-group-buttons">
-          <button class="toggle-btn" id="btn-us_senate" onclick="showLayer('us_senate')">US Senate (2)</button>
-          <button class="toggle-btn" id="btn-us_house" onclick="showLayer('us_house')">US House (26)</button>
-          <button class="toggle-btn active" id="btn-senate" onclick="showLayer('senate')">State Senate (63)</button>
-          <button class="toggle-btn" id="btn-assembly" onclick="showLayer('assembly')">Assembly (150)</button>
-          <button class="toggle-btn" id="btn-city_council" onclick="showLayer('city_council')">City Council (51)</button>
+          <button class="toggle-btn" id="btn-us_senate" onclick="showLayer('us_senate')">US Senate</button>
+          <button class="toggle-btn" id="btn-us_house" onclick="showLayer('us_house')">US House</button>
+          <button class="toggle-btn active" id="btn-senate" onclick="showLayer('senate')">State Senate</button>
+          <button class="toggle-btn" id="btn-assembly" onclick="showLayer('assembly')">Assembly</button>
+          <button class="toggle-btn" id="btn-city_council" onclick="showLayer('city_council')">City Council</button>
         </div>
       </div>
       <div class="control-group">
@@ -369,10 +373,18 @@
       return STANCE_COLORS[pos.stance] || '#d1d5db';
     }
 
+    const STANCE_LABEL_MAP = {
+      'strongly_support': 'Strongly Pro-Israel',
+      'support': 'Pro-Israel',
+      'neutral': 'Neutral',
+      'oppose': 'Anti-Israel',
+      'strongly_oppose': 'Strongly Anti-Israel',
+    };
+
     function stanceLabel(personId) {
       const pos = positionsMap[personId];
       if (!pos || pos.confidence === 'unknown') return 'Unknown';
-      return pos.stance.replace('_', ' ').replace(/\b\w/g, c => c.toUpperCase());
+      return STANCE_LABEL_MAP[pos.stance] || 'Unknown';
     }
 
     // Style
@@ -420,7 +432,7 @@
       const pos = positionsMap[leg.person_id];
       const hasStance = pos && pos.confidence !== 'unknown';
       const sColor = hasStance ? (STANCE_COLORS[pos.stance] || '#9ca3af') : '#d1d5db';
-      const sLabel = hasStance ? pos.stance.replace('_', ' ').replace(/\b\w/g, c => c.toUpperCase()) : 'Unknown';
+      const sLabel = hasStance ? (STANCE_LABEL_MAP[pos.stance] || 'Unknown') : 'Unknown';
 
       // Count evidence (criteria matches)
       const evidenceCount = personCriteriaMap[leg.person_id] ? personCriteriaMap[leg.person_id].length : 0;
@@ -473,10 +485,9 @@
         <div class="detail-header">
           <button class="close-btn" onclick="clearSelection()">&times;</button>
           <h2>${leg.name}</h2>
-          <div class="district-label">${CHAMBER_LABELS[ch]} District ${leg.district}</div>
+          <div class="district-label">${CHAMBER_LABELS[ch]} District ${leg.district} <span class="party-pill" style="background:${partyColor(leg.party)}">${leg.party || 'Unknown'}</span></div>
         </div>
         <div class="detail-body">
-          <span class="party-badge" style="background:${partyColor(leg.party)}">${leg.party || 'Unknown'}</span>
           ${contactHTML ? `
             <div class="contact-toggle" onclick="this.nextElementSibling.style.display=this.nextElementSibling.style.display==='none'?'block':'none'; this.querySelector('span').textContent=this.nextElementSibling.style.display==='none'?'\\u25B8':'\\u25BE'">
               <span>&#x25B8;</span> Contact Details
@@ -485,7 +496,6 @@
           ` : ''}
           <div class="stance-row">
             <span class="stance-badge" style="background:${sColor}">${sLabel}</span>
-            <span class="stance-meta">${evidenceCount > 0 ? `Based on ${evidenceCount} recorded action${evidenceCount > 1 ? 's' : ''}` : 'No recorded actions'}</span>
           </div>
           ${rationaleHTML}
           ${timelineHTML}
@@ -648,7 +658,9 @@
       if (query) {
         // Search across ALL chambers
         const allChambers = [
-          { key: 'senate', label: 'Senate', legs: senateLegislators },
+          { key: 'us_senate', label: 'US Senate', legs: usSenateLegislators },
+          { key: 'us_house', label: 'US House', legs: usHouseLegislators },
+          { key: 'senate', label: 'State Senate', legs: senateLegislators },
           { key: 'assembly', label: 'Assembly', legs: assemblyLegislators },
           { key: 'city_council', label: 'City Council', legs: cityCouncilLegislators },
         ];
@@ -733,14 +745,11 @@
       row.dataset.district = leg.district;
       row.dataset.chamber = chamber;
       const dotColor = colorMode === 'israel' ? stanceColor(leg.person_id) : partyColor(leg.party);
-      const evidenceCount = personCriteriaMap[leg.person_id] ? personCriteriaMap[leg.person_id].length : 0;
-      const countBadge = evidenceCount > 0 ? `<span class="evidence-count">${evidenceCount}</span>` : '';
       const tagText = colorMode === 'israel' ? stanceLabel(leg.person_id) : (leg.party || '');
       row.innerHTML = `
         <span class="district-num">${leg.district}</span>
         <span class="party-dot" style="background:${dotColor}"></span>
         <span class="leg-name">${leg.name}</span>
-        ${countBadge}
         <span class="leg-tag">${tagText}</span>
       `;
       row.addEventListener('mouseenter', () => {
