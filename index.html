@@ -253,7 +253,9 @@
       <div class="control-group">
         <div class="control-group-label">Legislative Body</div>
         <div class="control-group-buttons">
-          <button class="toggle-btn active" id="btn-senate" onclick="showLayer('senate')">Senate (63)</button>
+          <button class="toggle-btn" id="btn-us_senate" onclick="showLayer('us_senate')">US Senate (2)</button>
+          <button class="toggle-btn" id="btn-us_house" onclick="showLayer('us_house')">US House (26)</button>
+          <button class="toggle-btn active" id="btn-senate" onclick="showLayer('senate')">State Senate (63)</button>
           <button class="toggle-btn" id="btn-assembly" onclick="showLayer('assembly')">Assembly (150)</button>
           <button class="toggle-btn" id="btn-city_council" onclick="showLayer('city_council')">City Council (51)</button>
         </div>
@@ -306,16 +308,18 @@
     const ARCGIS_BASE = 'https://gisservices.its.ny.gov/arcgis/rest/services';
 
     // State
-    let senateLayer = null, assemblyLayer = null, cityCouncilLayer = null;
-    let senateData = null, assemblyData = null, cityCouncilData = null;
+    let senateLayer = null, assemblyLayer = null, cityCouncilLayer = null, usHouseLayer = null;
+    let senateData = null, assemblyData = null, cityCouncilData = null, usHouseData = null;
     let senateLegislators = [], assemblyLegislators = [], cityCouncilLegislators = [];
+    let usHouseLegislators = [], usSenateLegislators = [];
     let activeLayer = 'senate';
     let selectedDistrict = null;
     let highlightedDistrict = null;
-    let mapLayersByDistrict = { senate: {}, assembly: {}, city_council: {} };
+    let mapLayersByDistrict = { senate: {}, assembly: {}, city_council: {}, us_house: {}, us_senate: {} };
 
-    const CHAMBER_LABELS = { senate: 'Senate', assembly: 'Assembly', city_council: 'City Council' };
-    const CHAMBER_MEMBER_LABELS = { senate: 'senators', assembly: 'assembly members', city_council: 'council members' };
+    const CHAMBER_LABELS = { senate: 'State Senate', assembly: 'Assembly', city_council: 'City Council', us_house: 'US House', us_senate: 'US Senate' };
+    const CHAMBER_MEMBER_LABELS = { senate: 'state senators', assembly: 'assembly members', city_council: 'council members', us_house: 'representatives', us_senate: 'senators' };
+    const ALL_CHAMBERS = ['us_senate', 'us_house', 'senate', 'assembly', 'city_council'];
     const NY_STATE_VIEW = { center: [42.85, -75.5], zoom: 7 };
     const NYC_VIEW = { center: [40.7128, -73.95], zoom: 11 };
 
@@ -388,6 +392,7 @@
     function getGeoLayerForChamber(chamber) {
       if (chamber === 'senate') return senateLayer;
       if (chamber === 'assembly') return assemblyLayer;
+      if (chamber === 'us_house') return usHouseLayer;
       return cityCouncilLayer;
     }
 
@@ -398,6 +403,8 @@
     function getLegislators(chamber) {
       if (chamber === 'senate') return senateLegislators;
       if (chamber === 'assembly') return assemblyLegislators;
+      if (chamber === 'us_house') return usHouseLegislators;
+      if (chamber === 'us_senate') return usSenateLegislators;
       return cityCouncilLegislators;
     }
 
@@ -701,7 +708,7 @@
     function showLayer(which, keepSearch) {
       clearSelection();
       activeLayer = which;
-      ['senate', 'assembly', 'city_council'].forEach(k => {
+      ALL_CHAMBERS.forEach(k => {
         document.getElementById('btn-' + k).className = k === which ? 'toggle-btn active' : 'toggle-btn';
       });
       if (!keepSearch) document.getElementById('search-input').value = '';
@@ -709,8 +716,15 @@
       if (senateLayer) map.removeLayer(senateLayer);
       if (assemblyLayer) map.removeLayer(assemblyLayer);
       if (cityCouncilLayer) map.removeLayer(cityCouncilLayer);
+      if (usHouseLayer) map.removeLayer(usHouseLayer);
 
-      if (which === 'senate' && senateLayer) {
+      if (which === 'us_senate') {
+        // No map layer for US Senate — statewide, just show sidebar
+        map.setView(NY_STATE_VIEW.center, NY_STATE_VIEW.zoom);
+      } else if (which === 'us_house' && usHouseLayer) {
+        usHouseLayer.addTo(map);
+        map.setView(NY_STATE_VIEW.center, NY_STATE_VIEW.zoom);
+      } else if (which === 'senate' && senateLayer) {
         senateLayer.addTo(map);
         map.setView(NY_STATE_VIEW.center, NY_STATE_VIEW.zoom);
       } else if (which === 'assembly' && assemblyLayer) {
@@ -755,6 +769,7 @@
       if (senateLayer) senateLayer.setStyle(defaultStyle);
       if (assemblyLayer) assemblyLayer.setStyle(defaultStyle);
       if (cityCouncilLayer) cityCouncilLayer.setStyle(defaultStyle);
+      if (usHouseLayer) usHouseLayer.setStyle(defaultStyle);
 
       // Re-apply selection if any
       if (selectedDistrict !== null) {
@@ -814,6 +829,18 @@
       return geojson;
     }
 
+    async function fetchUSHouseGeo() {
+      const url = "https://tigerweb.geo.census.gov/arcgis/rest/services/TIGERweb/Legislative/MapServer/0/query?"
+        + "where=STATE='36'&outFields=CD119,BASENAME&returnGeometry=true&f=geojson&outSR=4326&maxAllowableOffset=0.001";
+      const resp = await fetch(url);
+      if (!resp.ok) throw new Error('Failed to fetch US House districts');
+      const data = await resp.json();
+      for (const f of data.features) {
+        f.properties.DISTRICT = parseInt(f.properties.BASENAME);
+      }
+      return data;
+    }
+
     async function fetchPositions() {
       const resp = await fetch(
         `${SUPABASE_URL}/rest/v1/positions?select=person_id,stance,confidence,rationale&assessment_type=eq.ai&topic_id=eq.1`,
@@ -828,13 +855,16 @@
 
     async function init() {
       try {
-        const [senateGeo, assemblyGeo, councilGeo, sLeg, aLeg, ccLeg, positions] = await Promise.all([
+        const [senateGeo, assemblyGeo, councilGeo, usHouseGeo, sLeg, aLeg, ccLeg, uhLeg, usLeg, positions] = await Promise.all([
           fetchArcGIS('NYS_Senate_Districts'),
           fetchArcGIS('NYS_Assembly_Districts'),
           fetchNYCCouncilGeo(),
+          fetchUSHouseGeo(),
           fetchLegislators('senate'),
           fetchLegislators('assembly'),
           fetchLegislators('city_council'),
+          fetchLegislators('us_house'),
+          fetchLegislators('us_senate'),
           fetchPositions(),
         ]);
 
@@ -843,14 +873,18 @@
         senateLegislators = sLeg;
         assemblyLegislators = aLeg;
         cityCouncilLegislators = ccLeg;
+        usHouseLegislators = uhLeg;
+        usSenateLegislators = usLeg;
 
         senateData = mergeData(senateGeo, senateLegislators);
         assemblyData = mergeData(assemblyGeo, assemblyLegislators);
         cityCouncilData = mergeData(councilGeo, cityCouncilLegislators);
+        usHouseData = mergeData(usHouseGeo, usHouseLegislators);
 
         senateLayer = buildLayer(senateData, 'senate');
         assemblyLayer = buildLayer(assemblyData, 'assembly');
         cityCouncilLayer = buildLayer(cityCouncilData, 'city_council');
+        usHouseLayer = buildLayer(usHouseData, 'us_house');
 
         senateLayer.addTo(map);
         renderList();
