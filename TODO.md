@@ -3,24 +3,16 @@
 ## High Priority
 
 ### Federal Level
-- [ ] Add US House of Representatives (26 NY congressional districts)
-  - Source boundaries from Census Bureau TIGER/Line shapefiles
-  - Populate all 26 current NY House members into people/seats/terms
-  - Add as `us_house` chamber with new map tab
-- [ ] Add US Senate (2 NY senators: Schumer + Gillibrand)
-  - Statewide overlay approach: entire state lights up as one region
-  - Show both senators in sidebar panel
-  - Add as `us_senate` chamber
-- [ ] Update CHECK constraint on seats.chamber to include `us_house` and `us_senate`
+- [x] Add US House of Representatives (26 NY congressional districts) — DONE
+- [x] Add US Senate (2 NY senators: Schumer + Gillibrand) — DONE
+- [x] Update CHECK constraint on seats.chamber — DONE
 
 ### Israel Positions Analysis
-- [ ] Research and populate `positions` table for Israel topic across all legislators
-  - Bill sponsorship/cosponsorship data (S1255, S606, A4434, A6101, S531, S7034A)
-  - Public statements, press releases, social media
-  - Voting records on relevant resolutions
+- [x] Research and populate `positions` table for Israel topic — DONE (196 classified, 67 unknown after 2 passes)
+- [x] Add frontend UI to color districts by position stance (heatmap mode) — DONE
+- [x] Add topic selector dropdown (View By: Party / Israel) — DONE
 - [ ] Fetch full cosponsor lists for all 6 seeded Israel-related bills
-- [ ] Add frontend UI to color districts by position stance (heatmap mode)
-- [ ] Add topic selector dropdown to switch between party coloring and position coloring
+- [ ] Research positions for other seeded topics (finance, housing, education, climate)
 
 ### Data Enrichment
 - [ ] Backfill phone numbers for City Council members (scrape individual district pages)
@@ -36,9 +28,7 @@
 - [ ] Add historical bill voting records
 
 ### UI Improvements
-- [ ] Add "color by topic" dropdown next to chamber toggle (party vs. stance heatmap)
-- [ ] Show position stance badges in sidebar list when a topic is selected
-- [ ] Add position detail to the detail card (stance, confidence, summary, source link)
+- [ ] Compact left panel when detail is open: show only stance dot + first 3 letters of name (or initials) so the list takes minimal width and the detail panel gets more space
 - [ ] Mobile responsive layout (collapse sidebar into bottom sheet)
 - [ ] Add address lookup ("find my representatives") using Google Civic API or similar
 
