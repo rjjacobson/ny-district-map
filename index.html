@@ -399,8 +399,8 @@
       const leg = legs.find(l => l.district === district);
       if (leg) showDetail(leg);
 
-      // Mark row
-      const row = document.querySelector(`.leg-row[data-district="${district}"]`);
+      // Mark row — use both chamber and district to avoid cross-chamber collisions
+      const row = document.querySelector(`.leg-row[data-chamber="${activeLayer}"][data-district="${district}"]`);
       if (row) {
         row.classList.add('selected');
         row.scrollIntoView({ block: 'nearest', behavior: 'smooth' });
@@ -451,8 +451,10 @@
       // Clear previous hover first (mouseout can miss due to bringToFront z-order changes)
       if (hoveredMapLayer && hoveredMapDistrict !== district && hoveredMapDistrict !== selectedDistrict) {
         getActiveGeoLayer().resetStyle(hoveredMapLayer);
-        const prevRow = document.querySelector(`.leg-row[data-district="${hoveredMapDistrict}"]`);
-        if (prevRow) prevRow.classList.remove('highlighted');
+      }
+      // Always clear any lingering highlighted rows
+      if (hoveredMapDistrict !== null && hoveredMapDistrict !== district) {
+        document.querySelectorAll('.leg-row.highlighted').forEach(el => el.classList.remove('highlighted'));
       }
 
       hoveredMapLayer = e.target;
