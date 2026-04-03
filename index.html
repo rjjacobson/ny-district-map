@@ -76,10 +76,10 @@
     .legend-item { display: flex; align-items: center; gap: 6px; }
     .legend-swatch { width: 16px; height: 12px; border-radius: 3px; border: 1px solid rgba(0,0,0,0.15); }
 
-    /* Sidebar */
+    /* Sidebar — two-panel layout */
     #sidebar {
-      width: 380px;
-      min-width: 380px;
+      width: 620px;
+      min-width: 620px;
       height: 100vh;
       background: #fafafa;
       border-left: 1px solid #e5e5e5;
@@ -89,7 +89,7 @@
     }
 
     #sidebar-header {
-      padding: 16px 16px 12px;
+      padding: 12px 16px 10px;
       background: white;
       border-bottom: 1px solid #e5e5e5;
       flex-shrink: 0;
@@ -107,119 +107,110 @@
     #search-input:focus { border-color: #2563eb; }
     #search-input::placeholder { color: #aaa; }
 
-    #result-count {
-      font-size: 12px;
-      color: #888;
-      margin-top: 8px;
+    #result-count { font-size: 12px; color: #888; margin-top: 6px; }
+
+    #sidebar-panels {
+      flex: 1;
+      display: flex;
+      overflow: hidden;
     }
 
-    /* Selected legislator detail card */
-    #detail-card {
-      padding: 14px 16px;
+    /* Left: name list */
+    #list-panel {
+      width: 280px;
+      min-width: 280px;
+      overflow-y: auto;
+      border-right: 1px solid #e5e5e5;
       background: white;
-      border-bottom: 1px solid #e5e5e5;
-      flex-shrink: 0;
-      display: none;
     }
 
-    #detail-card.visible { display: block; }
-
-    #detail-card h2 {
-      font-size: 17px;
-      font-weight: 700;
-      color: #1a1a1a;
-      margin-bottom: 2px;
-    }
-
-    #detail-card .district-label {
-      font-size: 12px;
-      color: #888;
-      font-weight: 500;
-      margin-bottom: 8px;
-    }
-
-    #detail-card .party-badge {
-      display: inline-block;
-      padding: 2px 10px;
-      border-radius: 12px;
-      font-size: 11px;
-      font-weight: 600;
-      color: white;
-      margin-bottom: 8px;
-    }
-
-    #detail-card .detail {
-      font-size: 12px;
-      color: #444;
-      margin-bottom: 3px;
-    }
-
-    #detail-card .detail strong { color: #222; }
-
-    #detail-card .close-btn {
-      float: right;
-      background: none;
-      border: none;
-      font-size: 18px;
-      color: #aaa;
-      cursor: pointer;
-      padding: 0 4px;
-      line-height: 1;
-    }
-    #detail-card .close-btn:hover { color: #333; }
-
-    /* Table */
-    #legislator-list {
+    /* Right: detail panel */
+    #detail-panel {
       flex: 1;
       overflow-y: auto;
-      overflow-x: hidden;
+      background: #fafafa;
+      padding: 0;
     }
 
-    .leg-row {
+    #detail-panel.empty {
       display: flex;
       align-items: center;
-      padding: 8px 16px;
-      border-bottom: 1px solid #f0f0f0;
-      cursor: pointer;
-      transition: background 0.15s;
-      gap: 10px;
+      justify-content: center;
+      color: #aaa;
+      font-size: 13px;
+      font-style: italic;
     }
 
+    /* Detail card inside right panel */
+    .detail-content { padding: 20px; }
+    .detail-content h2 { font-size: 20px; font-weight: 700; color: #1a1a1a; margin-bottom: 2px; }
+    .detail-content .district-label { font-size: 13px; color: #888; font-weight: 500; margin-bottom: 10px; }
+    .detail-content .party-badge {
+      display: inline-block; padding: 3px 12px; border-radius: 14px;
+      font-size: 12px; font-weight: 600; color: white; margin-bottom: 12px;
+    }
+    .detail-content .close-btn {
+      float: right; background: none; border: none; font-size: 20px;
+      color: #aaa; cursor: pointer; padding: 0 4px; line-height: 1;
+    }
+    .detail-content .close-btn:hover { color: #333; }
+
+    /* Collapsible contact */
+    .contact-toggle {
+      font-size: 13px; color: #555; cursor: pointer; margin-bottom: 8px;
+      display: flex; align-items: center; gap: 6px; font-weight: 500;
+    }
+    .contact-toggle:hover { color: #333; }
+    .contact-details { font-size: 12px; color: #555; margin-bottom: 12px; padding-left: 4px; line-height: 1.8; }
+    .contact-details a { color: #2563eb; text-decoration: none; }
+    .contact-details a:hover { text-decoration: underline; }
+
+    /* Stance badge */
+    .stance-row { display: flex; align-items: center; gap: 12px; margin-bottom: 16px; }
+    .stance-badge {
+      display: inline-block; padding: 6px 16px; border-radius: 8px;
+      font-size: 13px; font-weight: 700; color: white;
+    }
+    .stance-meta { font-size: 12px; color: #888; }
+
+    /* Evidence timeline */
+    .evidence-title { font-size: 11px; font-weight: 600; color: #888; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 12px; }
+    .timeline { position: relative; padding-left: 24px; }
+    .timeline::before { content: ''; position: absolute; left: 7px; top: 0; bottom: 0; width: 2px; background: #e5e5e5; }
+    .timeline-item { position: relative; margin-bottom: 16px; }
+    .timeline-dot {
+      position: absolute; left: -20px; top: 8px; width: 12px; height: 12px;
+      border-radius: 50%; border: 2px solid white;
+    }
+    .timeline-card {
+      background: white; border-radius: 8px; padding: 12px 14px;
+      border-left: 3px solid #e5e5e5; box-shadow: 0 1px 4px rgba(0,0,0,0.06);
+    }
+    .timeline-card.pro { border-left-color: #3b82f6; }
+    .timeline-card.anti { border-left-color: #ef4444; }
+    .timeline-card .tc-header { font-size: 10px; color: #888; text-transform: uppercase; letter-spacing: 0.3px; margin-bottom: 4px; }
+    .timeline-card .tc-title { font-size: 14px; font-weight: 600; color: #1a1a1a; margin-bottom: 4px; }
+    .timeline-card .tc-desc { font-size: 12px; color: #666; line-height: 1.5; }
+    .timeline-card .tc-source { font-size: 11px; color: #2563eb; margin-top: 6px; display: inline-block; }
+
+    /* List rows */
+    .leg-row {
+      display: flex; align-items: center; padding: 7px 12px;
+      border-bottom: 1px solid #f0f0f0; cursor: pointer;
+      transition: background 0.15s; gap: 8px;
+    }
     .leg-row:hover { background: #eef2ff; }
     .leg-row.highlighted { background: #dbeafe; }
-    .leg-row.selected { background: #c7d2fe; }
+    .leg-row.selected { background: #dbeafe; border-left: 3px solid #2563eb; }
 
-    .leg-row .party-dot {
-      width: 10px;
-      height: 10px;
-      border-radius: 50%;
-      flex-shrink: 0;
+    .leg-row .party-dot { width: 9px; height: 9px; border-radius: 50%; flex-shrink: 0; }
+    .leg-row .district-num { font-size: 11px; color: #aaa; width: 24px; flex-shrink: 0; text-align: right; font-weight: 500; }
+    .leg-row .leg-name { font-size: 12px; font-weight: 500; color: #1a1a1a; flex: 1; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .leg-row .evidence-count {
+      font-size: 10px; color: #888; background: #f0f0f0; border-radius: 10px;
+      padding: 1px 7px; flex-shrink: 0; font-weight: 600;
     }
-
-    .leg-row .district-num {
-      font-size: 12px;
-      color: #888;
-      width: 28px;
-      flex-shrink: 0;
-      text-align: right;
-      font-weight: 500;
-    }
-
-    .leg-row .leg-name {
-      font-size: 13px;
-      font-weight: 500;
-      color: #1a1a1a;
-      flex: 1;
-      white-space: nowrap;
-      overflow: hidden;
-      text-overflow: ellipsis;
-    }
-
-    .leg-row .leg-party {
-      font-size: 11px;
-      color: #888;
-      flex-shrink: 0;
-    }
+    .leg-row .leg-party { font-size: 10px; color: #888; flex-shrink: 0; }
 
     /* Loading */
     .loading-overlay {
@@ -285,19 +276,10 @@
       <input type="text" id="search-input" placeholder="Search by name, district, or party..." />
       <div id="result-count"></div>
     </div>
-    <div id="detail-card">
-      <button class="close-btn" onclick="clearSelection()">&times;</button>
-      <h2 id="dc-name"></h2>
-      <div class="district-label" id="dc-district"></div>
-      <span class="party-badge" id="dc-party"></span>
-      <div class="detail" id="dc-albany"></div>
-      <div class="detail" id="dc-dist-phone"></div>
-      <div class="detail" id="dc-email"></div>
-      <div class="detail" id="dc-website"></div>
-      <div class="detail" id="dc-term"></div>
-      <div class="detail" id="dc-stance" style="margin-top:6px;padding-top:6px;border-top:1px solid #eee"></div>
+    <div id="sidebar-panels">
+      <div id="list-panel"></div>
+      <div id="detail-panel" class="empty">Select a legislator</div>
     </div>
-    <div id="legislator-list"></div>
   </div>
 
   <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
@@ -327,6 +309,8 @@
     let colorMode = 'party';
     // Positions data: person_id -> { stance, confidence, rationale }
     let positionsMap = {};
+    // Person criteria: person_id -> [{ criterion_label, direction, category, evidence }]
+    let personCriteriaMap = {};
 
     // Map
     const map = L.map('map', { center: [42.85, -75.5], zoom: 7, zoomControl: true });
@@ -409,40 +393,80 @@
     }
 
     // Detail card
-    function showDetail(leg) {
-      const card = document.getElementById('detail-card');
-      const chamber = CHAMBER_LABELS[activeLayer];
-      document.getElementById('dc-name').textContent = leg.name;
-      document.getElementById('dc-district').textContent = `${CHAMBER_LABELS[activeLayer]} District ${leg.district}`;
-      const badge = document.getElementById('dc-party');
-      badge.textContent = leg.party;
-      badge.style.background = partyColor(leg.party);
-      document.getElementById('dc-albany').innerHTML = leg.phone_albany ? `<strong>Albany:</strong> ${leg.phone_albany}` : '';
-      document.getElementById('dc-dist-phone').innerHTML = leg.phone_district ? `<strong>District:</strong> ${leg.phone_district}` : '';
-      document.getElementById('dc-email').innerHTML = leg.email ? `<strong>Email:</strong> ${leg.email}` : '';
-      document.getElementById('dc-website').innerHTML = leg.website ? `<strong>Website:</strong> <a href="${leg.website}" target="_blank" style="color:#2563eb">${leg.website.replace(/^https?:\/\//, '')}</a>` : '';
-      document.getElementById('dc-term').innerHTML = leg.start_date || leg.end_date
-        ? `<strong>Term:</strong> ${leg.start_date || '?'} — ${leg.end_date || 'present'}`
-        : '';
-      // Israel stance
+    function showDetail(leg, chamber) {
+      const ch = chamber || selectedChamber || activeLayer;
+      const panel = document.getElementById('detail-panel');
+      panel.className = '';
       const pos = positionsMap[leg.person_id];
-      const stanceEl = document.getElementById('dc-stance');
-      if (pos && pos.confidence !== 'unknown') {
-        const sColor = STANCE_COLORS[pos.stance] || '#9ca3af';
-        const sLabel = pos.stance.replace('_', ' ').replace(/\b\w/g, c => c.toUpperCase());
-        stanceEl.innerHTML = `<span class="party-badge" style="background:${sColor};margin-right:4px">${sLabel}</span>` +
-          (pos.rationale ? `<span style="color:#666;font-size:11px">${pos.rationale}</span>` : '');
-      } else {
-        stanceEl.innerHTML = '<span style="color:#aaa;font-size:11px">No public Israel stance found</span>';
+      const hasStance = pos && pos.confidence !== 'unknown';
+      const sColor = hasStance ? (STANCE_COLORS[pos.stance] || '#9ca3af') : '#d1d5db';
+      const sLabel = hasStance ? pos.stance.replace('_', ' ').replace(/\b\w/g, c => c.toUpperCase()) : 'Unknown';
+
+      // Count evidence (criteria matches)
+      const evidenceCount = personCriteriaMap[leg.person_id] ? personCriteriaMap[leg.person_id].length : 0;
+
+      // Contact info
+      let contactHTML = '';
+      if (leg.phone_albany) contactHTML += `<div>Albany: ${leg.phone_albany}</div>`;
+      if (leg.phone_district) contactHTML += `<div>District: ${leg.phone_district}</div>`;
+      if (leg.email) contactHTML += `<div><a href="mailto:${leg.email}">${leg.email}</a></div>`;
+      if (leg.website) contactHTML += `<div><a href="${leg.website}" target="_blank">${leg.website.replace(/^https?:\/\//, '')}</a></div>`;
+      if (leg.start_date) contactHTML += `<div>Term: ${leg.start_date} — ${leg.end_date || 'present'}</div>`;
+
+      // Evidence timeline
+      let timelineHTML = '';
+      const criteria = personCriteriaMap[leg.person_id] || [];
+      if (criteria.length > 0) {
+        timelineHTML = '<div class="evidence-title">Evidence Timeline</div><div class="timeline">';
+        for (const c of criteria) {
+          const isAnti = c.direction === 'anti';
+          const dotColor = isAnti ? '#ef4444' : '#3b82f6';
+          const cardClass = isAnti ? 'anti' : 'pro';
+          const catLabel = (c.category || 'action').replace('_', ' ').toUpperCase();
+          timelineHTML += `
+            <div class="timeline-item">
+              <div class="timeline-dot" style="background:${dotColor}"></div>
+              <div class="timeline-card ${cardClass}">
+                <div class="tc-header">${catLabel}</div>
+                <div class="tc-title">${c.criterion_label}</div>
+                <div class="tc-desc">${c.evidence || ''}</div>
+              </div>
+            </div>`;
+        }
+        timelineHTML += '</div>';
       }
-      card.className = 'visible';
-      card.id = 'detail-card';
+
+      // AI rationale
+      let rationaleHTML = '';
+      if (pos && pos.rationale) {
+        rationaleHTML = `<div style="margin-bottom:16px;font-size:12px;color:#666;line-height:1.5;padding:10px;background:white;border-radius:6px;border:1px solid #eee"><strong style="color:#444">AI Assessment:</strong> ${pos.rationale}</div>`;
+      }
+
+      panel.innerHTML = `
+        <div class="detail-content">
+          <button class="close-btn" onclick="clearSelection()">&times;</button>
+          <h2>${leg.name}</h2>
+          <div class="district-label">${CHAMBER_LABELS[ch]} District ${leg.district}</div>
+          <span class="party-badge" style="background:${partyColor(leg.party)}">${leg.party || 'Unknown'}</span>
+          ${contactHTML ? `
+            <div class="contact-toggle" onclick="this.nextElementSibling.style.display=this.nextElementSibling.style.display==='none'?'block':'none'; this.querySelector('span').textContent=this.nextElementSibling.style.display==='none'?'\\u25B8':'\\u25BE'">
+              <span>&#x25B8;</span> Contact Details
+            </div>
+            <div class="contact-details" style="display:none">${contactHTML}</div>
+          ` : ''}
+          <div class="stance-row">
+            <span class="stance-badge" style="background:${sColor}">${sLabel}</span>
+            <span class="stance-meta">${evidenceCount > 0 ? `Based on ${evidenceCount} recorded action${evidenceCount > 1 ? 's' : ''}` : 'No recorded actions'}</span>
+          </div>
+          ${rationaleHTML}
+          ${timelineHTML}
+        </div>`;
     }
 
     function hideDetail() {
-      const card = document.getElementById('detail-card');
-      card.className = '';
-      card.id = 'detail-card';
+      const panel = document.getElementById('detail-panel');
+      panel.className = 'empty';
+      panel.innerHTML = 'Select a legislator';
     }
 
     // Selection
@@ -480,7 +504,7 @@
 
       const legs = getLegislators(ch);
       const leg = legs.find(l => l.district === district);
-      if (leg) showDetail(leg);
+      if (leg) showDetail(leg, ch);
 
       const row = document.querySelector(`.leg-row[data-chamber="${ch}"][data-district="${district}"]`);
       if (row) {
@@ -588,7 +612,7 @@
     // Sidebar table
     function renderList() {
       const query = document.getElementById('search-input').value.toLowerCase().trim();
-      const container = document.getElementById('legislator-list');
+      const container = document.getElementById('list-panel');
       container.innerHTML = '';
 
       if (query) {
@@ -675,16 +699,17 @@
     function createRow(leg, chamber) {
       const row = document.createElement('div');
       row.className = 'leg-row';
-      if (chamber === activeLayer && leg.district === selectedDistrict) row.classList.add('selected');
+      if (chamber === (selectedChamber || activeLayer) && leg.district === selectedDistrict) row.classList.add('selected');
       row.dataset.district = leg.district;
       row.dataset.chamber = chamber;
       const dotColor = colorMode === 'israel' ? stanceColor(leg.person_id) : partyColor(leg.party);
-      const tagText = colorMode === 'israel' ? stanceLabel(leg.person_id) : (leg.party || '');
+      const evidenceCount = personCriteriaMap[leg.person_id] ? personCriteriaMap[leg.person_id].length : 0;
+      const countBadge = evidenceCount > 0 ? `<span class="evidence-count">${evidenceCount}</span>` : '';
       row.innerHTML = `
         <span class="district-num">${leg.district}</span>
         <span class="party-dot" style="background:${dotColor}"></span>
         <span class="leg-name">${leg.name}</span>
-        <span class="leg-party">${tagText}</span>
+        ${countBadge}
       `;
       row.addEventListener('mouseenter', () => {
         if (chamber === activeLayer) highlightOnMap(leg.district, chamber);
@@ -849,6 +874,26 @@
       return m;
     }
 
+    async function fetchPersonCriteria() {
+      const resp = await fetch(
+        `${SUPABASE_URL}/rest/v1/person_criteria?select=person_id,evidence,criteria(label,direction,category)&order=person_id`,
+        { headers: { 'apikey': SUPABASE_ANON_KEY } }
+      );
+      if (!resp.ok) return {};
+      const data = await resp.json();
+      const m = {};
+      for (const d of data) {
+        if (!m[d.person_id]) m[d.person_id] = [];
+        m[d.person_id].push({
+          criterion_label: d.criteria.label,
+          direction: d.criteria.direction,
+          category: d.criteria.category,
+          evidence: d.evidence,
+        });
+      }
+      return m;
+    }
+
     // Lazy-load GeoJSON for each chamber
     const geoLoaders = {
       senate: () => fetchArcGIS('NYS_Senate_Districts'),
@@ -880,16 +925,18 @@
     async function init() {
       try {
         // Step 1: Fetch lightweight Supabase data first (fast)
-        const [sLeg, aLeg, ccLeg, uhLeg, usLeg, positions] = await Promise.all([
+        const [sLeg, aLeg, ccLeg, uhLeg, usLeg, positions, pCriteria] = await Promise.all([
           fetchLegislators('senate'),
           fetchLegislators('assembly'),
           fetchLegislators('city_council'),
           fetchLegislators('us_house'),
           fetchLegislators('us_senate'),
           fetchPositions(),
+          fetchPersonCriteria(),
         ]);
 
         positionsMap = positions;
+        personCriteriaMap = pCriteria;
         senateLegislators = sLeg;
         assemblyLegislators = aLeg;
         cityCouncilLegislators = ccLeg;
