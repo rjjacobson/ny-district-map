@@ -16,22 +16,32 @@
       position: absolute;
       top: 16px;
       left: 60px;
+      right: 396px;
       z-index: 1000;
+      display: flex;
+      gap: 12px;
+      align-items: flex-start;
+    }
+
+    .control-group {
       background: white;
       border-radius: 10px;
       box-shadow: 0 2px 12px rgba(0,0,0,0.15);
-      padding: 10px 14px;
-      display: flex;
-      gap: 8px;
-      align-items: center;
+      padding: 8px 14px 10px;
     }
 
-    .controls h1 {
-      font-size: 15px;
+    .control-group-label {
+      font-size: 10px;
       font-weight: 600;
-      color: #1a1a1a;
-      margin-right: 4px;
-      white-space: nowrap;
+      color: #888;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      margin-bottom: 6px;
+    }
+
+    .control-group-buttons {
+      display: flex;
+      gap: 6px;
     }
 
     .toggle-btn {
@@ -240,13 +250,22 @@
   <div id="map-container">
     <div id="map"></div>
     <div class="controls">
-      <h1>NY Legislature</h1>
-      <button class="toggle-btn active" id="btn-senate" onclick="showLayer('senate')">Senate (63)</button>
-      <button class="toggle-btn" id="btn-assembly" onclick="showLayer('assembly')">Assembly (150)</button>
-      <button class="toggle-btn" id="btn-city_council" onclick="showLayer('city_council')">City Council (51)</button>
-      <span style="width:1px;height:24px;background:#e0e0e0;margin:0 4px"></span>
-      <button class="toggle-btn active" id="btn-color-party" onclick="setColorMode('party')">Party</button>
-      <button class="toggle-btn" id="btn-color-israel" onclick="setColorMode('israel')">Israel</button>
+      <div class="control-group">
+        <div class="control-group-label">Legislative Body</div>
+        <div class="control-group-buttons">
+          <button class="toggle-btn" id="btn-all" onclick="showLayer('all')">All (264)</button>
+          <button class="toggle-btn active" id="btn-senate" onclick="showLayer('senate')">Senate (63)</button>
+          <button class="toggle-btn" id="btn-assembly" onclick="showLayer('assembly')">Assembly (150)</button>
+          <button class="toggle-btn" id="btn-city_council" onclick="showLayer('city_council')">City Council (51)</button>
+        </div>
+      </div>
+      <div class="control-group">
+        <div class="control-group-label">View By</div>
+        <div class="control-group-buttons">
+          <button class="toggle-btn active" id="btn-color-party" onclick="setColorMode('party')">Party</button>
+          <button class="toggle-btn" id="btn-color-israel" onclick="setColorMode('israel')">Israel</button>
+        </div>
+      </div>
     </div>
     <div class="legend" id="legend">
       <div class="legend-title">Party</div>
@@ -367,10 +386,14 @@
       return { weight: 3, color: '#facc15', fillOpacity: 0.85 };
     }
 
-    function getActiveGeoLayer() {
-      if (activeLayer === 'senate') return senateLayer;
-      if (activeLayer === 'assembly') return assemblyLayer;
+    function getGeoLayerForChamber(chamber) {
+      if (chamber === 'senate') return senateLayer;
+      if (chamber === 'assembly') return assemblyLayer;
       return cityCouncilLayer;
+    }
+
+    function getActiveGeoLayer() {
+      return getGeoLayerForChamber(activeLayer);
     }
 
     function getLegislators(chamber) {
@@ -417,21 +440,30 @@
     }
 
     // Selection
+    let selectedChamber = null;
+
     function clearSelection() {
-      if (selectedDistrict !== null) {
-        const layer = mapLayersByDistrict[activeLayer][selectedDistrict];
-        if (layer) getActiveGeoLayer().resetStyle(layer);
+      if (selectedDistrict !== null && selectedChamber) {
+        const layer = mapLayersByDistrict[selectedChamber][selectedDistrict];
+        if (layer) getGeoLayerForChamber(selectedChamber).resetStyle(layer);
       }
       selectedDistrict = null;
+      selectedChamber = null;
       hideDetail();
       document.querySelectorAll('.leg-row.selected').forEach(el => el.classList.remove('selected'));
     }
 
-    function selectDistrict(district, fromMap) {
+    function selectDistrict(district, fromMap, chamber) {
+      const ch = chamber || activeLayer;
+      if (district === selectedDistrict && ch === selectedChamber) {
+        clearSelection();
+        return;
+      }
       clearSelection();
       selectedDistrict = district;
+      selectedChamber = ch;
 
-      const layer = mapLayersByDistrict[activeLayer][district];
+      const layer = mapLayersByDistrict[ch][district];
       if (layer) {
         layer.setStyle(selectedStyle());
         layer.bringToFront();
@@ -440,12 +472,11 @@
         }
       }
 
-      const legs = getLegislators(activeLayer);
+      const legs = getLegislators(ch);
       const leg = legs.find(l => l.district === district);
       if (leg) showDetail(leg);
 
-      // Mark row — use both chamber and district to avoid cross-chamber collisions
-      const row = document.querySelector(`.leg-row[data-chamber="${activeLayer}"][data-district="${district}"]`);
+      const row = document.querySelector(`.leg-row[data-chamber="${ch}"][data-district="${district}"]`);
       if (row) {
         row.classList.add('selected');
         row.scrollIntoView({ block: 'nearest', behavior: 'smooth' });
@@ -453,28 +484,30 @@
     }
 
     // Map hover (from sidebar)
-    function highlightOnMap(district) {
-      if (district === selectedDistrict) return;
+    let highlightedChamber = null;
+
+    function highlightOnMap(district, chamber) {
+      const ch = chamber || activeLayer;
       unhighlightOnMap();
       highlightedDistrict = district;
-      const layer = mapLayersByDistrict[activeLayer][district];
+      highlightedChamber = ch;
+      const layer = mapLayersByDistrict[ch][district];
       if (layer) {
         layer.setStyle(highlightStyle());
         layer.bringToFront();
       }
-      // Keep selected on top
-      if (selectedDistrict !== null) {
-        const selLayer = mapLayersByDistrict[activeLayer][selectedDistrict];
-        if (selLayer) selLayer.bringToFront();
-      }
     }
 
-    function unhighlightOnMap() {
-      if (highlightedDistrict !== null && highlightedDistrict !== selectedDistrict) {
-        const layer = mapLayersByDistrict[activeLayer][highlightedDistrict];
-        if (layer) getActiveGeoLayer().resetStyle(layer);
+    function unhighlightOnMap(chamber) {
+      if (highlightedDistrict !== null) {
+        const ch = highlightedChamber || chamber || activeLayer;
+        if (!(highlightedDistrict === selectedDistrict && ch === selectedChamber)) {
+          const layer = mapLayersByDistrict[ch][highlightedDistrict];
+          if (layer) getGeoLayerForChamber(ch).resetStyle(layer);
+        }
       }
       highlightedDistrict = null;
+      highlightedChamber = null;
     }
 
     // Map events
@@ -483,21 +516,19 @@
 
     function onFeatureClick(e) {
       const district = e.target.feature.properties.DISTRICT;
-      if (district === selectedDistrict) {
-        clearSelection();
-      } else {
-        selectDistrict(district, true);
-      }
+      const chamber = e.target.feature.properties._CHAMBER;
+      selectDistrict(district, true, chamber);
     }
 
     function onFeatureMouseover(e) {
       const district = e.target.feature.properties.DISTRICT;
+      const chamber = e.target.feature.properties._CHAMBER;
 
       // Clear previous hover first (mouseout can miss due to bringToFront z-order changes)
-      if (hoveredMapLayer && hoveredMapDistrict !== district && hoveredMapDistrict !== selectedDistrict) {
-        getActiveGeoLayer().resetStyle(hoveredMapLayer);
+      if (hoveredMapLayer && hoveredMapDistrict !== district) {
+        const prevChamber = hoveredMapLayer.feature.properties._CHAMBER;
+        getGeoLayerForChamber(prevChamber).resetStyle(hoveredMapLayer);
       }
-      // Always clear any lingering highlighted rows
       if (hoveredMapDistrict !== null && hoveredMapDistrict !== district) {
         document.querySelectorAll('.leg-row.highlighted').forEach(el => el.classList.remove('highlighted'));
       }
@@ -505,26 +536,20 @@
       hoveredMapLayer = e.target;
       hoveredMapDistrict = district;
 
-      if (district === selectedDistrict) return;
+      if (district === selectedDistrict && chamber === (selectedChamber || activeLayer)) return;
       e.target.setStyle(highlightStyle());
 
-      // Keep selected on top
-      if (selectedDistrict !== null) {
-        const selLayer = mapLayersByDistrict[activeLayer][selectedDistrict];
-        if (selLayer) selLayer.bringToFront();
-      }
-
       // Highlight sidebar row
-      const row = document.querySelector(`.leg-row[data-district="${district}"]`);
+      const row = document.querySelector(`.leg-row[data-chamber="${chamber}"][data-district="${district}"]`);
       if (row) row.classList.add('highlighted');
     }
 
     function onFeatureMouseout(e) {
       const district = e.target.feature.properties.DISTRICT;
-      if (district === selectedDistrict) return;
-      getActiveGeoLayer().resetStyle(e.target);
-      // Un-highlight sidebar row
-      const row = document.querySelector(`.leg-row[data-district="${district}"]`);
+      const chamber = e.target.feature.properties._CHAMBER;
+      if (district === selectedDistrict && chamber === (selectedChamber || activeLayer)) return;
+      getGeoLayerForChamber(chamber).resetStyle(e.target);
+      const row = document.querySelector(`.leg-row[data-chamber="${chamber}"][data-district="${district}"]`);
       if (row) row.classList.remove('highlighted');
 
       if (hoveredMapDistrict === district) {
@@ -546,6 +571,7 @@
       const geoLayer = L.geoJSON(geojson, {
         style: defaultStyle,
         onEachFeature: (feature, layer) => {
+          feature.properties._CHAMBER = chamber;
           mapLayersByDistrict[chamber][feature.properties.DISTRICT] = layer;
           onEachFeature(feature, layer);
         },
@@ -592,12 +618,77 @@
 
         document.getElementById('result-count').textContent = `${totalResults} results across all chambers`;
       } else {
-        // No search — show active chamber only
-        const legs = getLegislators(activeLayer);
-        const label = CHAMBER_MEMBER_LABELS[activeLayer];
-        for (const leg of legs) {
-          container.appendChild(createRow(leg, activeLayer));
+        // No search — show active chamber or all
+        let legs;
+        let label;
+        if (activeLayer === 'all') {
+          legs = [
+            ...senateLegislators.map(l => ({ ...l, _chamber: 'senate' })),
+            ...assemblyLegislators.map(l => ({ ...l, _chamber: 'assembly' })),
+            ...cityCouncilLegislators.map(l => ({ ...l, _chamber: 'city_council' })),
+          ];
+          label = 'legislators';
+        } else {
+          legs = [...getLegislators(activeLayer)].map(l => ({ ...l, _chamber: activeLayer }));
+          label = CHAMBER_MEMBER_LABELS[activeLayer];
         }
+
+        if (colorMode !== 'party') {
+          // Sort by stance: strongly_support first → unknown last
+          const STANCE_ORDER = { strongly_support: 0, support: 1, neutral: 2, oppose: 3, strongly_oppose: 4 };
+          legs.sort((a, b) => {
+            const pa = positionsMap[a.person_id];
+            const pb = positionsMap[b.person_id];
+            const oa = (pa && pa.confidence !== 'unknown') ? (STANCE_ORDER[pa.stance] ?? 5) : 5;
+            const ob = (pb && pb.confidence !== 'unknown') ? (STANCE_ORDER[pb.stance] ?? 5) : 5;
+            return oa - ob || a.district - b.district;
+          });
+
+          // Group by stance with section headers
+          let lastStance = null;
+          const STANCE_LABELS = {
+            0: 'Strongly Pro-Israel', 1: 'Pro-Israel', 2: 'Neutral',
+            3: 'Anti-Israel', 4: 'Strongly Anti-Israel', 5: 'Unknown'
+          };
+          for (const leg of legs) {
+            const pa = positionsMap[leg.person_id];
+            const order = (pa && pa.confidence !== 'unknown') ? (STANCE_ORDER[pa.stance] ?? 5) : 5;
+            if (order !== lastStance) {
+              lastStance = order;
+              const count = legs.filter(l => {
+                const p = positionsMap[l.person_id];
+                const o = (p && p.confidence !== 'unknown') ? (STANCE_ORDER[p.stance] ?? 5) : 5;
+                return o === order;
+              }).length;
+              const header = document.createElement('div');
+              header.style.cssText = 'padding:6px 16px;font-size:11px;font-weight:600;color:#888;background:#f0f0f0;text-transform:uppercase;letter-spacing:0.5px;';
+              header.textContent = `${STANCE_LABELS[order]} (${count})`;
+              container.appendChild(header);
+            }
+            container.appendChild(createRow(leg, leg._chamber || activeLayer));
+          }
+        } else {
+          if (activeLayer === 'all') {
+            // Group by chamber
+            const chamberOrder = ['senate', 'assembly', 'city_council'];
+            for (const ch of chamberOrder) {
+              const chamberLegs = legs.filter(l => l._chamber === ch);
+              if (chamberLegs.length === 0) continue;
+              const header = document.createElement('div');
+              header.style.cssText = 'padding:6px 16px;font-size:11px;font-weight:600;color:#888;background:#f0f0f0;text-transform:uppercase;letter-spacing:0.5px;';
+              header.textContent = `${CHAMBER_LABELS[ch]} (${chamberLegs.length})`;
+              container.appendChild(header);
+              for (const leg of chamberLegs) {
+                container.appendChild(createRow(leg, ch));
+              }
+            }
+          } else {
+            for (const leg of legs) {
+              container.appendChild(createRow(leg, activeLayer));
+            }
+          }
+        }
+
         document.getElementById('result-count').textContent = `${legs.length} ${label}`;
       }
     }
@@ -617,17 +708,16 @@
         <span class="leg-party">${tagText}</span>
       `;
       row.addEventListener('mouseenter', () => {
-        if (chamber === activeLayer) highlightOnMap(leg.district);
+        if (chamber === activeLayer || activeLayer === 'all') highlightOnMap(leg.district, chamber);
       });
       row.addEventListener('mouseleave', () => {
-        if (chamber === activeLayer) unhighlightOnMap();
+        if (chamber === activeLayer || activeLayer === 'all') unhighlightOnMap(chamber);
       });
       row.addEventListener('click', () => {
-        if (chamber !== activeLayer) {
+        if (activeLayer !== 'all' && chamber !== activeLayer) {
           showLayer(chamber, true);
         }
-        if (leg.district === selectedDistrict && chamber === activeLayer) clearSelection();
-        else selectDistrict(leg.district, false);
+        selectDistrict(leg.district, false, chamber);
       });
       return row;
     }
@@ -639,7 +729,7 @@
     function showLayer(which, keepSearch) {
       clearSelection();
       activeLayer = which;
-      ['senate', 'assembly', 'city_council'].forEach(k => {
+      ['all', 'senate', 'assembly', 'city_council'].forEach(k => {
         document.getElementById('btn-' + k).className = k === which ? 'toggle-btn active' : 'toggle-btn';
       });
       if (!keepSearch) document.getElementById('search-input').value = '';
@@ -648,7 +738,12 @@
       if (assemblyLayer) map.removeLayer(assemblyLayer);
       if (cityCouncilLayer) map.removeLayer(cityCouncilLayer);
 
-      if (which === 'senate' && senateLayer) {
+      if (which === 'all') {
+        if (senateLayer) senateLayer.addTo(map);
+        if (assemblyLayer) assemblyLayer.addTo(map);
+        if (cityCouncilLayer) cityCouncilLayer.addTo(map);
+        map.setView(NY_STATE_VIEW.center, NY_STATE_VIEW.zoom);
+      } else if (which === 'senate' && senateLayer) {
         senateLayer.addTo(map);
         map.setView(NY_STATE_VIEW.center, NY_STATE_VIEW.zoom);
       } else if (which === 'assembly' && assemblyLayer) {
