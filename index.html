@@ -7,6 +7,14 @@
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
   <style>
     * { margin: 0; padding: 0; box-sizing: border-box; }
+    .us-senate-label div {
+      font-size: 13px;
+      font-weight: 600;
+      color: #1e293b;
+      text-align: center;
+      text-shadow: 0 0 4px #fff, 0 0 4px #fff, 0 0 4px #fff;
+      white-space: nowrap;
+    }
     body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; display: flex; height: 100vh; overflow: hidden; }
 
     #map-container { flex: 1; position: relative; }
@@ -316,8 +324,8 @@
     const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inhla25xa3hoZnh2dmVleWRkb2tsIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzUyMjc1MzksImV4cCI6MjA5MDgwMzUzOX0.-CO0RkDBljPTRBO5x5JIAIZ23WfhR0A8bLJV3iE_xS0';
 
     // State
-    let senateLayer = null, assemblyLayer = null, cityCouncilLayer = null, usHouseLayer = null;
-    let senateData = null, assemblyData = null, cityCouncilData = null, usHouseData = null;
+    let senateLayer = null, assemblyLayer = null, cityCouncilLayer = null, usHouseLayer = null, usSenateLayer = null;
+    let senateData = null, assemblyData = null, cityCouncilData = null, usHouseData = null, usSenateData = null;
     let senateLegislators = [], assemblyLegislators = [], cityCouncilLegislators = [];
     let usHouseLegislators = [], usSenateLegislators = [];
     let activeLayer = 'senate';
@@ -392,11 +400,24 @@
 
     // Style
     function defaultStyle(feature) {
+      const isSenateUS = feature.properties._CHAMBER === 'us_senate';
       if (colorMode === 'israel') {
         const personId = feature.properties.PERSON_ID;
-        return { fillColor: stanceColor(personId), weight: 1.2, color: '#fff', fillOpacity: 0.6 };
+        return {
+          fillColor: stanceColor(personId),
+          weight: isSenateUS ? 3 : 1.2,
+          color: isSenateUS ? '#94a3b8' : '#fff',
+          fillOpacity: isSenateUS ? 0.45 : 0.6,
+          dashArray: isSenateUS ? '8 6' : null,
+        };
       }
-      return { fillColor: partyColor(feature.properties.PARTY), weight: 1.2, color: '#fff', fillOpacity: 0.5 };
+      return {
+        fillColor: partyColor(feature.properties.PARTY),
+        weight: isSenateUS ? 3 : 1.2,
+        color: isSenateUS ? '#94a3b8' : '#fff',
+        fillOpacity: isSenateUS ? 0.45 : 0.5,
+        dashArray: isSenateUS ? '8 6' : null,
+      };
     }
 
     function highlightStyle() {
@@ -411,6 +432,7 @@
       if (chamber === 'senate') return senateLayer;
       if (chamber === 'assembly') return assemblyLayer;
       if (chamber === 'us_house') return usHouseLayer;
+      if (chamber === 'us_senate') return usSenateLayer;
       return cityCouncilLayer;
     }
 
@@ -639,6 +661,9 @@
       });
     }
 
+    // US Senate name labels (markers)
+    let usSenateLabels = [];
+
     function buildLayer(geojson, chamber) {
       mapLayersByDistrict[chamber] = {};
       const geoLayer = L.geoJSON(geojson, {
@@ -649,6 +674,29 @@
           onEachFeature(feature, layer);
         },
       });
+
+      // Add name labels for US Senate halves
+      if (chamber === 'us_senate') {
+        for (const feature of geojson.features) {
+          const name = feature.properties.NAME;
+          if (!name) continue;
+          const dist = feature.properties.DISTRICT;
+          // Place label at a nice spot in each half
+          const labelPos = dist === 1 ? [43.0, -77.5] : [41.5, -73.8];
+          const marker = L.marker(labelPos, {
+            icon: L.divIcon({
+              className: 'us-senate-label',
+              html: `<div>${name}</div>`,
+              iconSize: [140, 30],
+              iconAnchor: [70, 15],
+            }),
+            interactive: false,
+          });
+          usSenateLabels.push(marker);
+          geoLayer.addLayer(marker);
+        }
+      }
+
       return geoLayer;
     }
 
@@ -787,6 +835,7 @@
       if (assemblyLayer) map.removeLayer(assemblyLayer);
       if (cityCouncilLayer) map.removeLayer(cityCouncilLayer);
       if (usHouseLayer) map.removeLayer(usHouseLayer);
+      if (usSenateLayer) map.removeLayer(usSenateLayer);
 
       // Show sidebar immediately (data already loaded)
       renderList();
@@ -794,8 +843,6 @@
       // Set map view
       const view = which === 'city_council' ? NYC_VIEW : NY_STATE_VIEW;
       map.setView(view.center, view.zoom);
-
-      if (which === 'us_senate') return; // no geo layer
 
       // Lazy-load GeoJSON if needed, then show
       await ensureGeoLayer(which);
@@ -946,21 +993,30 @@
       return m;
     }
 
+    async function fetchUSSenateGeo() {
+      const data = await fetchLocalGeo('us_senate.geojson');
+      for (const f of data.features) {
+        f.properties.DISTRICT = parseInt(f.properties.DISTRICT || f.properties.BASENAME);
+      }
+      return data;
+    }
+
     // Lazy-load GeoJSON for each chamber
     const geoLoaders = {
       senate: () => fetchSenateGeo(),
       assembly: () => fetchAssemblyGeo(),
       city_council: () => fetchNYCCouncilGeo(),
       us_house: () => fetchUSHouseGeo(),
+      us_senate: () => fetchUSSenateGeo(),
     };
     const geoCache = {};
 
     async function ensureGeoLayer(chamber) {
-      if (chamber === 'us_senate') return; // no geo for US Senate
       if (chamber === 'senate' && senateLayer) return;
       if (chamber === 'assembly' && assemblyLayer) return;
       if (chamber === 'city_council' && cityCouncilLayer) return;
       if (chamber === 'us_house' && usHouseLayer) return;
+      if (chamber === 'us_senate' && usSenateLayer) return;
 
       const geo = geoCache[chamber] || await geoLoaders[chamber]();
       geoCache[chamber] = geo;
@@ -972,6 +1028,7 @@
       else if (chamber === 'assembly') { assemblyData = merged; assemblyLayer = layer; }
       else if (chamber === 'city_council') { cityCouncilData = merged; cityCouncilLayer = layer; }
       else if (chamber === 'us_house') { usHouseData = merged; usHouseLayer = layer; }
+      else if (chamber === 'us_senate') { usSenateData = merged; usSenateLayer = layer; }
     }
 
     async function init() {
