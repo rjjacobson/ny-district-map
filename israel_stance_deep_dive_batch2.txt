@@ -1,0 +1,242 @@
+PERSON_ID: 64
+NAME: Tommy John Schiavoni
+CHAMBER: assembly
+DISTRICT: D1
+AI_STANCE: unknown
+AI_RATIONALE: Newly elected in November 2024 (first term beginning 2025). No public statements, votes, or positions found regarding Israel/Palestine despite extensive searching.
+CRITERIA_MATCHES: none
+EVIDENCE: Searched for name + Israel, Gaza, ceasefire, Hamas, antisemitism, Jewish. Not a signer of the October 2023 "NY Legislators Stand with Israel" letter. Not listed on any ceasefire tracker. No social media posts found. Former teacher from Suffolk County focused on local/environmental issues. https://nyassembly.gov/mem/Tommy-John-Schiavoni
+
+PERSON_ID: 67
+NAME: Rebecca Kassay
+CHAMBER: assembly
+DISTRICT: D4
+AI_STANCE: unknown
+AI_RATIONALE: Newly elected in November 2024 (first term beginning 2025). No public statements or legislative positions found regarding Israel/Palestine despite extensive searching.
+CRITERIA_MATCHES: none
+EVIDENCE: Searched for name + Israel, Gaza, ceasefire, Palestine. Not a signer of the October 2023 solidarity letter (was not in office). Not listed on any ceasefire tracker. Democrat from Suffolk County focused on environmental conservation and small business. https://ballotpedia.org/Rebecca_Kassay
+
+PERSON_ID: 69
+NAME: Phil Ramos
+CHAMBER: assembly
+DISTRICT: D6
+AI_STANCE: neutral
+AI_RATIONALE: As Deputy Speaker, joined AG James's multiracial coalition statement that condemned the Oct 7 massacre by Hamas while simultaneously calling for humanitarian aid to Gaza and highlighting the humanitarian catastrophe there, representing a balanced position.
+CRITERIA_MATCHES: Strong condemnation of Oct 7 / Hamas
+EVIDENCE: Joined AG Letitia James's July 2025 coalition statement of multiracial, multiethnic, and multifaith elected officials that condemned the October 7th massacre by Hamas while also highlighting starvation in Gaza, Palestinian children dying from hunger and preventable disease, displaced communities, and decimated infrastructure. Called for unrestricted humanitarian aid. Did NOT sign the October 2023 "NY Legislators Stand with Israel" solidarity letter. https://ag.ny.gov/press-release/2025/attorney-general-james-calls-immediate-and-unrestricted-humanitarian-aid-enter
+
+PERSON_ID: 70
+NAME: Jarett Gandolfo
+CHAMBER: assembly
+DISTRICT: D7
+AI_STANCE: unknown
+AI_RATIONALE: Republican assemblyman from Suffolk County since 2021. Despite extensive searching, no specific public statements or legislative positions found regarding Israel/Palestine. Did not sign the October 2023 solidarity letter.
+CRITERIA_MATCHES: none
+EVIDENCE: Searched for name + Israel, Hamas, hostages, ceasefire. Not a signer of the October 2023 "NY Legislators Stand with Israel" letter. Not found in Assembly Minority Conference Israel-related statements. Republican representing parts of Suffolk County focused on public safety, housing, and local issues. Currently running for State Senate. https://nyassembly.gov/mem/Jarett-Gandolfo
+
+PERSON_ID: 72
+NAME: Michael Durso
+CHAMBER: assembly
+DISTRICT: D9
+AI_STANCE: unknown
+AI_RATIONALE: Republican assemblyman from Nassau County since 2021. Despite extensive searching, no specific public statements or legislative positions found regarding Israel/Palestine. Did not sign the October 2023 solidarity letter.
+CRITERIA_MATCHES: none
+EVIDENCE: Searched for name + Israel, Hamas, hostages, ceasefire, Assembly Minority Conference. Not a signer of the October 2023 "NY Legislators Stand with Israel" letter. Republican from Massapequa Park focused on environmental, labor, and transportation issues. https://ballotpedia.org/Michael_Durso
+
+PERSON_ID: 74
+NAME: Kwani B. O'Pharrow
+CHAMBER: assembly
+DISTRICT: D11
+AI_STANCE: unknown
+AI_RATIONALE: Newly elected in November 2024 (first term beginning 2025). Former NYPD detective and Navy veteran. No public statements found regarding Israel/Palestine despite extensive searching.
+CRITERIA_MATCHES: none
+EVIDENCE: Searched for name + Israel, Palestine, ceasefire, Gaza. Not found in any ceasefire trackers or solidarity letters. Democrat representing parts of Suffolk and Nassau counties. https://ballotpedia.org/Kwani_O'Pharrow
+
+PERSON_ID: 81
+NAME: Noah Burroughs
+CHAMBER: assembly
+DISTRICT: D18
+AI_STANCE: unknown
+AI_RATIONALE: Newly elected in November 2024 (first term beginning 2025). Former football player. No public statements found regarding Israel/Palestine despite extensive searching.
+CRITERIA_MATCHES: none
+EVIDENCE: Searched for name + Israel, Gaza, ceasefire. Not found in any ceasefire trackers or solidarity letters. Democrat representing Hempstead, Baldwin, Freeport, Roosevelt, Uniondale in Nassau County. https://ballotpedia.org/Noah_Burroughs
+
+PERSON_ID: 84
+NAME: Judy Griffin
+CHAMBER: assembly
+DISTRICT: D21
+AI_STANCE: unknown
+AI_RATIONALE: Returned to Assembly in 2024 after losing seat in 2022. No specific public statements or positions found regarding Israel/Palestine despite searching across multiple sources including Jewish community and antisemitism contexts.
+CRITERIA_MATCHES: none
+EVIDENCE: Searched for name + Israel, Jewish, antisemitism, Nassau County community. Not a signer of the October 2023 solidarity letter (was not in office at the time). Democrat representing Nassau County focused on reproductive rights, gun safety, and ERA. https://en.wikipedia.org/wiki/Judy_Griffin
+
+PERSON_ID: 92
+NAME: Alicia Hyndman
+CHAMBER: assembly
+DISTRICT: D29
+AI_STANCE: support
+AI_RATIONALE: Has demonstrated solidarity with the Jewish community by condemning antisemitic attacks at a Queens synagogue event and by meeting with Orthodox Jewish advocates during Agudath Israel Albany mission, though has not made specific Israel/Palestine conflict statements.
+CRITERIA_MATCHES: Sponsored antisemitism protection legislation
+EVIDENCE: In January 2020, stood in solidarity at Ohel Chabad-Lubavitch in Cambria Heights condemning antisemitic attacks, stating "There is something terribly wrong in the world when we see a growing hate in our communities and do not combat it with justice and action... We must bridge cultural gaps institutionally and protect each other righteously." Also met with Orthodox Jewish advocates from the Long Island and Queens areas during an Agudath Israel advocacy mission to Albany. Also tweeted "Standing in solidarity today with my Jewish neighbors, friends, colleagues and communities as we remember & will never forget the tragedy of the Holocaust." https://qns.com/2020/01/queens-lawmakers-stand-in-solidarity-condemning-spate-of-anti-semitic-attacks/ https://x.com/aliciahyndman/status/1354432560554790914
+
+PERSON_ID: 93
+NAME: Steven Raga
+CHAMBER: assembly
+DISTRICT: D30
+AI_STANCE: unknown
+AI_RATIONALE: Currently running for State Senate against Palestinian-American DSA-backed candidate Aber Kawas, but has not publicly stated a position on Israel/Palestine. As a DSA dues-paying member himself, his positioning on this issue is unclear.
+CRITERIA_MATCHES: none
+EVIDENCE: Searched for name + Israel, Palestine, ceasefire. Now running for State Senate District 12 against Aber Kawas, a Palestinian-American activist backed by DSA who crafted the "Not On Our Dime" bill targeting tax-exempt charities assisting Israeli settler organizations. Raga himself is a DSA dues-paying member. No direct Israel/Palestine statements found. https://queenseagle.com/all/2026/2/23/another-progressive-vs-socialist-race-brews-in-queens-as-raga-throws-hat-into-senate-race
+
+PERSON_ID: 96
+NAME: Clyde Vanel
+CHAMBER: assembly
+DISTRICT: D33
+AI_STANCE: unknown
+AI_RATIONALE: Long-serving Democrat (since 2016) representing southeast Queens. No public statements or legislative positions found regarding Israel/Palestine despite extensive searching across multiple contexts.
+CRITERIA_MATCHES: none
+EVIDENCE: Searched for name + Israel, antisemitism, Jewish, October 7, Gaza. Not a signer of the October 2023 solidarity letter. Not found in ceasefire trackers. Focused on technology, banking, and intellectual property legislation. https://assembly.state.ny.us/mem/Clyde-Vanel
+
+PERSON_ID: 98
+NAME: Larinda C. Hooks
+CHAMBER: assembly
+DISTRICT: D35
+AI_STANCE: unknown
+AI_RATIONALE: Newly elected in 2024 (first term beginning 2025), succeeding Jeff Aubry. No public statements found regarding Israel/Palestine despite extensive searching.
+CRITERIA_MATCHES: none
+EVIDENCE: Searched for name + Israel, Palestine, ceasefire, Gaza. Not found in any trackers or solidarity letters. Democrat representing East Elmhurst, LeFrak City, and parts of Corona, Woodside, Elmhurst, and Rego Park in Queens. Former community organizer and civil rights advocate. https://ballotpedia.org/Larinda_Hooks
+
+PERSON_ID: 102
+NAME: Catalina Cruz
+CHAMBER: assembly
+DISTRICT: D39
+AI_STANCE: oppose
+AI_RATIONALE: Called for an immediate ceasefire in Gaza, release of hostages, and expressed serious concerns about further US support that would perpetuate the war, indicating opposition to Israel's military campaign despite condemning Oct 7.
+CRITERIA_MATCHES: Called for unconditional ceasefire
+EVIDENCE: In April 2024 Jim Owles Liberal Democratic Club questionnaire, Cruz stated she "fully supports the release of the hostages and an immediate ceasefire" and has "serious concerns with further support that would continue to perpetuate the current war." Also posted on Instagram calling for "an immediate ceasefire - the cessation of violence, the immediate surge of unrestricted humanitarian aid, the release of hostages, and a true road to peace for both the Palestinian and Israeli people." https://jimowles.org/news/candidate-answers-to-joldc-catalina-cruz-for-ny-assembly-district-39-2024
+
+PERSON_ID: 103
+NAME: Ron Kim
+CHAMBER: assembly
+DISTRICT: D40
+AI_STANCE: unknown
+AI_RATIONALE: Long-serving progressive Democrat (since 2013) from Flushing, Queens. Despite extensive searching across multiple queries, no public statements or positions found regarding Israel/Palestine. Known primarily for battles against Gov. Cuomo and corporate interests.
+CRITERIA_MATCHES: none
+EVIDENCE: Searched for name + Israel, Palestine, ceasefire, Gaza, statement. Not a signer of the October 2023 solidarity letter. Not found in any ceasefire trackers. First Korean American elected in New York State. Focused on progressive economic policies, affordable housing, healthcare. https://ballotpedia.org/Ron_Kim_(New_York_assemblyman)
+
+PERSON_ID: 116
+NAME: Maritza Davila
+CHAMBER: assembly
+DISTRICT: D53
+AI_STANCE: unknown
+AI_RATIONALE: Long-serving Democrat (since 2013) representing Bushwick and Williamsburg, Brooklyn. Despite representing a district with significant Hasidic Jewish population, no specific public statements on Israel/Palestine found.
+CRITERIA_MATCHES: none
+EVIDENCE: Searched for name + Israel, ceasefire, Williamsburg, Jewish, antisemitism. Not a signer of the October 2023 solidarity letter. Not found in ceasefire trackers. Chair of Assembly Committee on Social Services. District includes both Bushwick and Williamsburg. https://en.wikipedia.org/wiki/Maritza_Davila
+
+PERSON_ID: 118
+NAME: Latrice M. Walker
+CHAMBER: assembly
+DISTRICT: D55
+AI_STANCE: unknown
+AI_RATIONALE: Democrat representing Brownsville, Brooklyn since 2015. No public statements or positions found regarding Israel/Palestine despite extensive searching across multiple contexts.
+CRITERIA_MATCHES: none
+EVIDENCE: Searched for name + Israel, Gaza, ceasefire, Palestine, Jewish, Brownsville. Not a signer of the October 2023 solidarity letter. Not found in ceasefire trackers. Attorney and criminal justice reform advocate. https://en.wikipedia.org/wiki/Latrice_Walker
+
+PERSON_ID: 121
+NAME: Monique Chandler-Waterman
+CHAMBER: assembly
+DISTRICT: D58
+AI_STANCE: unknown
+AI_RATIONALE: Democrat representing East Flatbush and parts of Crown Heights since 2022. Despite representing a district adjacent to a major Jewish community center (Crown Heights/Chabad), no specific public statements on Israel/Palestine found.
+CRITERIA_MATCHES: none
+EVIDENCE: Searched for name + Israel, Palestine, Crown Heights, Jewish, antisemitism. Not a signer of the October 2023 solidarity letter. Not found in ceasefire trackers. Daughter of Jamaican and Barbadian immigrants, focused on children/families, housing, education. https://en.wikipedia.org/wiki/Monique_Chandler-Waterman
+
+PERSON_ID: 122
+NAME: Jaime R. Williams
+CHAMBER: assembly
+DISTRICT: D59
+AI_STANCE: unknown
+AI_RATIONALE: Democrat representing Canarsie/Mill Basin/Marine Park in Brooklyn since 2016. Despite extensive searching, no specific public statements on Israel/Palestine found. A Caribbean Life article mentioning "Williams welcomes truce in Gaza" referred to Public Advocate Jumaane Williams, not Assemblywoman Jaime Williams.
+CRITERIA_MATCHES: none
+EVIDENCE: Searched for name + Israel, Gaza, ceasefire, Caribbean Life, Brooklyn. Not a signer of the October 2023 solidarity letter. Not found in ceasefire trackers. Trinidadian-born representative known for Caribbean humanitarian missions. The Caribbean Life "Williams welcomes truce" article refers to Jumaane Williams (Public Advocate), not this legislator. https://en.wikipedia.org/wiki/Jaime_Williams
+
+PERSON_ID: 125
+NAME: Michael Reilly
+CHAMBER: assembly
+DISTRICT: D62
+AI_STANCE: support
+AI_RATIONALE: Republican from Staten Island who likely attended the October 2023 bipartisan "Stand with Israel" rally at the Bernikow JCC on Staten Island, where elected officials from both parties pledged support for Israel. As a member of the Assembly Minority Conference, aligned with the conference's pro-Israel positions.
+CRITERIA_MATCHES: Attended pro-Israel rally/event, Strong condemnation of Oct 7 / Hamas
+EVIDENCE: Staten Island elected officials held a bipartisan rally at the Bernikow Jewish Community Center in October 2023 pledging support for Israel. CBS New York reported "elected officials from both parties and Staten Island community leaders" attended. Reilly, as one of two Republican Assembly members from Staten Island, was part of this community response. Also joined Assembly Minority Conference colleagues in calling for the release of hostages and addressing domestic terrorism concerns related to the conflict. Did not sign the October 2023 solidarity letter but represents a strongly pro-Israel district. https://www.cbsnews.com/newyork/news/staten-island-elected-officials-show-support-for-israel/
+
+PERSON_ID: 127
+NAME: Michael Tannousis
+CHAMBER: assembly
+DISTRICT: D64
+AI_STANCE: support
+AI_RATIONALE: Republican from Staten Island/Brooklyn and chairman of the Staten Island Republican Party who likely attended the October 2023 bipartisan "Stand with Israel" rally at the Bernikow JCC. As part of the Assembly Minority Conference, aligned with pro-Israel positions.
+CRITERIA_MATCHES: Attended pro-Israel rally/event, Strong condemnation of Oct 7 / Hamas
+EVIDENCE: Staten Island elected officials held a bipartisan rally at the Bernikow Jewish Community Center in October 2023 pledging support for Israel. CBS New York reported "elected officials from both parties and Staten Island community leaders" attended. Tannousis, as chairman of the Staten Island Republican Party and one of two Republican Assembly members from Staten Island, was part of this response. Also joined Assembly Minority Conference colleagues in calling for release of hostages. Did not sign the October 2023 solidarity letter. https://www.cbsnews.com/newyork/news/staten-island-elected-officials-show-support-for-israel/
+
+PERSON_ID: 131
+NAME: Edward Gibbs
+CHAMBER: assembly
+DISTRICT: D68
+AI_STANCE: unknown
+AI_RATIONALE: Democrat representing East Harlem since 2022. First formerly incarcerated person to serve in NY State Legislature. No public statements or positions found regarding Israel/Palestine despite extensive searching.
+CRITERIA_MATCHES: none
+EVIDENCE: Searched for name + Israel, Gaza, ceasefire, Palestine, Harlem, Jewish. Not a signer of the October 2023 solidarity letter. Not found in ceasefire trackers. Community organizer focused on criminal justice reform and local East Harlem issues. https://en.wikipedia.org/wiki/Eddie_Gibbs_(politician)
+
+PERSON_ID: 134
+NAME: Al Taylor
+CHAMBER: assembly
+DISTRICT: D71
+AI_STANCE: support
+AI_RATIONALE: Signed the October 20, 2023 "New York Legislators Stand with Israel" bipartisan solidarity letter, which condemned the Oct 7 attacks as a "war crime" and pledged to "continue to stand with Israel."
+CRITERIA_MATCHES: Signed solidarity letter with Israel, Strong condemnation of Oct 7 / Hamas
+EVIDENCE: Signed the October 20, 2023 "New York Legislators Stand With Israel" letter organized by Assemblymember Lavine. The letter characterized the Oct 7 attack as "a war crime" describing "the taking of hostages, the wholesale murder of civilians, the use of torture" and stated "We will continue to stand with Israel." Taylor represents Hamilton Heights, Harlem, Washington Heights, and Inwood. https://assembly.state.ny.us/write/upload/member_files/013/pdfs/20231030_0107834.pdf
+
+PERSON_ID: 140
+NAME: Landon C. Dais
+CHAMBER: assembly
+DISTRICT: D77
+AI_STANCE: unknown
+AI_RATIONALE: Took office February 2024 via special election to replace Latoya Joyner. No public statements or positions found regarding Israel/Palestine despite extensive searching including Bronx-specific news sources.
+CRITERIA_MATCHES: none
+EVIDENCE: Searched for name + Israel, Palestine, ceasefire, Gaza, Jewish, Bronx. Not found in ceasefire trackers or solidarity letters. Attorney representing Claremont, Concourse, Highbridge, Mount Eden, and Morris Heights in the Bronx. https://ballotpedia.org/Landon_Dais
+
+PERSON_ID: 141
+NAME: George Alvarez
+CHAMBER: assembly
+DISTRICT: D78
+AI_STANCE: support
+AI_RATIONALE: Signed the October 20, 2023 "New York Legislators Stand with Israel" bipartisan solidarity letter, which condemned the Oct 7 attacks as a "war crime" and pledged to "continue to stand with Israel."
+CRITERIA_MATCHES: Signed solidarity letter with Israel, Strong condemnation of Oct 7 / Hamas
+EVIDENCE: Signed the October 20, 2023 "New York Legislators Stand With Israel" letter organized by Assemblymember Lavine. The letter characterized the Oct 7 attack as "a war crime" and stated "We will continue to stand with Israel." Alvarez represents the 78th Assembly District in the Bronx. Born in the Dominican Republic. https://assembly.state.ny.us/write/upload/member_files/013/pdfs/20231030_0107834.pdf
+
+PERSON_ID: 142
+NAME: Chantel Jackson
+CHAMBER: assembly
+DISTRICT: D79
+AI_STANCE: unknown
+AI_RATIONALE: Democrat representing the South Bronx since 2021. No public statements or positions found regarding Israel/Palestine despite extensive searching.
+CRITERIA_MATCHES: none
+EVIDENCE: Searched for name + Israel, Palestine, Gaza, ceasefire, Bronx. Not a signer of the October 2023 solidarity letter. Not found in ceasefire trackers. Licensed social worker, professor, and author from the South Bronx. https://ballotpedia.org/Chantel_Jackson
+
+PERSON_ID: 148
+NAME: Emerita Torres
+CHAMBER: assembly
+DISTRICT: D85
+AI_STANCE: unknown
+AI_RATIONALE: Newly elected in 2024 (first term beginning 2025). No public statements found regarding Israel/Palestine. Note: Not to be confused with U.S. Rep. Ritchie Torres, who is a strong Israel supporter from a neighboring Bronx district.
+CRITERIA_MATCHES: none
+EVIDENCE: Searched for name + Israel, Gaza, ceasefire, Palestine, Bronx. Not found in any trackers or solidarity letters. Democrat representing Hunts Point, Longwood, Soundview, Clason Point in the South/Southeast Bronx. Former VP of Policy at Community Service Society. https://ballotpedia.org/Emerita_Torres
+
+PERSON_ID: 149
+NAME: Yudelka Tapia
+CHAMBER: assembly
+DISTRICT: D86
+AI_STANCE: unknown
+AI_RATIONALE: Democrat representing University Heights/Morris Heights/Fordham in the Bronx since 2021. No public statements or positions found regarding Israel/Palestine despite extensive searching.
+CRITERIA_MATCHES: none
+EVIDENCE: Searched for name + Israel, Palestine, Gaza, ceasefire, Bronx. Not a signer of the October 2023 solidarity letter. Not found in ceasefire trackers. Born in Dominican Republic, former senior auditor with NYC Comptroller's Office. https://ballotpedia.org/Yudelka_Tapia
