@@ -705,7 +705,7 @@
     document.getElementById('search-input').addEventListener('input', renderList);
 
     // Layer toggle
-    function showLayer(which, keepSearch) {
+    async function showLayer(which, keepSearch) {
       clearSelection();
       activeLayer = which;
       ALL_CHAMBERS.forEach(k => {
@@ -713,29 +713,25 @@
       });
       if (!keepSearch) document.getElementById('search-input').value = '';
 
+      // Remove all map layers
       if (senateLayer) map.removeLayer(senateLayer);
       if (assemblyLayer) map.removeLayer(assemblyLayer);
       if (cityCouncilLayer) map.removeLayer(cityCouncilLayer);
       if (usHouseLayer) map.removeLayer(usHouseLayer);
 
-      if (which === 'us_senate') {
-        // No map layer for US Senate — statewide, just show sidebar
-        map.setView(NY_STATE_VIEW.center, NY_STATE_VIEW.zoom);
-      } else if (which === 'us_house' && usHouseLayer) {
-        usHouseLayer.addTo(map);
-        map.setView(NY_STATE_VIEW.center, NY_STATE_VIEW.zoom);
-      } else if (which === 'senate' && senateLayer) {
-        senateLayer.addTo(map);
-        map.setView(NY_STATE_VIEW.center, NY_STATE_VIEW.zoom);
-      } else if (which === 'assembly' && assemblyLayer) {
-        assemblyLayer.addTo(map);
-        map.setView(NY_STATE_VIEW.center, NY_STATE_VIEW.zoom);
-      } else if (which === 'city_council' && cityCouncilLayer) {
-        cityCouncilLayer.addTo(map);
-        map.setView(NYC_VIEW.center, NYC_VIEW.zoom);
-      }
-
+      // Show sidebar immediately (data already loaded)
       renderList();
+
+      // Set map view
+      const view = which === 'city_council' ? NYC_VIEW : NY_STATE_VIEW;
+      map.setView(view.center, view.zoom);
+
+      if (which === 'us_senate') return; // no geo layer
+
+      // Lazy-load GeoJSON if needed, then show
+      await ensureGeoLayer(which);
+      const layer = getGeoLayerForChamber(which);
+      if (layer && activeLayer === which) layer.addTo(map);
     }
 
     // Color mode toggle
@@ -853,13 +849,38 @@
       return m;
     }
 
+    // Lazy-load GeoJSON for each chamber
+    const geoLoaders = {
+      senate: () => fetchArcGIS('NYS_Senate_Districts'),
+      assembly: () => fetchArcGIS('NYS_Assembly_Districts'),
+      city_council: () => fetchNYCCouncilGeo(),
+      us_house: () => fetchUSHouseGeo(),
+    };
+    const geoCache = {};
+
+    async function ensureGeoLayer(chamber) {
+      if (chamber === 'us_senate') return; // no geo for US Senate
+      if (chamber === 'senate' && senateLayer) return;
+      if (chamber === 'assembly' && assemblyLayer) return;
+      if (chamber === 'city_council' && cityCouncilLayer) return;
+      if (chamber === 'us_house' && usHouseLayer) return;
+
+      const geo = geoCache[chamber] || await geoLoaders[chamber]();
+      geoCache[chamber] = geo;
+      const legs = getLegislators(chamber);
+      const merged = mergeData(geo, legs);
+      const layer = buildLayer(merged, chamber);
+
+      if (chamber === 'senate') { senateData = merged; senateLayer = layer; }
+      else if (chamber === 'assembly') { assemblyData = merged; assemblyLayer = layer; }
+      else if (chamber === 'city_council') { cityCouncilData = merged; cityCouncilLayer = layer; }
+      else if (chamber === 'us_house') { usHouseData = merged; usHouseLayer = layer; }
+    }
+
     async function init() {
       try {
-        const [senateGeo, assemblyGeo, councilGeo, usHouseGeo, sLeg, aLeg, ccLeg, uhLeg, usLeg, positions] = await Promise.all([
-          fetchArcGIS('NYS_Senate_Districts'),
-          fetchArcGIS('NYS_Assembly_Districts'),
-          fetchNYCCouncilGeo(),
-          fetchUSHouseGeo(),
+        // Step 1: Fetch lightweight Supabase data first (fast)
+        const [sLeg, aLeg, ccLeg, uhLeg, usLeg, positions] = await Promise.all([
           fetchLegislators('senate'),
           fetchLegislators('assembly'),
           fetchLegislators('city_council'),
@@ -869,25 +890,19 @@
         ]);
 
         positionsMap = positions;
-
         senateLegislators = sLeg;
         assemblyLegislators = aLeg;
         cityCouncilLegislators = ccLeg;
         usHouseLegislators = uhLeg;
         usSenateLegislators = usLeg;
 
-        senateData = mergeData(senateGeo, senateLegislators);
-        assemblyData = mergeData(assemblyGeo, assemblyLegislators);
-        cityCouncilData = mergeData(councilGeo, cityCouncilLegislators);
-        usHouseData = mergeData(usHouseGeo, usHouseLegislators);
-
-        senateLayer = buildLayer(senateData, 'senate');
-        assemblyLayer = buildLayer(assemblyData, 'assembly');
-        cityCouncilLayer = buildLayer(cityCouncilData, 'city_council');
-        usHouseLayer = buildLayer(usHouseData, 'us_house');
-
-        senateLayer.addTo(map);
+        // Step 2: Show sidebar immediately
         renderList();
+
+        // Step 3: Fetch only the default tab's GeoJSON
+        await ensureGeoLayer('senate');
+        senateLayer.addTo(map);
+
         document.getElementById('loading').style.display = 'none';
       } catch (err) {
         console.error(err);
