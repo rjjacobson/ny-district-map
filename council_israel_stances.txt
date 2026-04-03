@@ -1,0 +1,296 @@
+PERSON_ID: 230
+NAME: Justin Sanchez
+CHAMBER: city_council
+DISTRICT: D17
+AI_STANCE: unknown
+AI_RATIONALE: Justin Sanchez was newly elected in 2025 and took office in January 2026. No public statements or positions on Israel/Palestine were found in available sources.
+CRITERIA_MATCHES: none
+EVIDENCE: Sanchez is a new member representing the South Bronx. No Israel/Palestine-related statements found in web searches.
+
+PERSON_ID: 231
+NAME: Amanda Farias
+CHAMBER: city_council
+DISTRICT: D18
+AI_STANCE: unknown
+AI_RATIONALE: Amanda Farias served as Council Majority Leader but no specific public statements on Israel/Palestine were found. She was not listed among ceasefire supporters or pro-Israel advocates.
+CRITERIA_MATCHES: none
+EVIDENCE: Farias represents Soundview/Parkchester in the Bronx and served as Majority Leader (2024-2026). She was not on the list of 17+ council members who called for a ceasefire, nor found at pro-Israel events. No specific Israel-related statements located.
+
+PERSON_ID: 232
+NAME: Vickie Paladino
+CHAMBER: city_council
+DISTRICT: D19
+AI_STANCE: strongly_support
+AI_RATIONALE: Paladino is a staunch pro-Israel Republican who has opposed ceasefire proposals, supported Israel's military campaign, and strongly condemned Hamas. She stated a ceasefire should only come when "Hamas surrenders."
+CRITERIA_MATCHES: Strong condemnation of Oct 7 / Hamas
+EVIDENCE: Paladino stated "We can have a ceasefire the minute Hamas surrenders" (Dec 2023). She opposed pro-Palestinian protests, defended Israel's right to self-defense, and was endorsed by The Jewish Voice. She made controversial Islamophobic posts after the 2025 Bondi Beach shooting. Sources: https://qns.com/2023/12/brooklyn-council-member-taunts-vickie-paladino-in-dispute-over-possible-gaza-ceasefire/ ; https://tjvnews.com/news/politics/taking-a-bold-stand-against-the-socialist-surge-why-vickie-paladino-must-be-re-elected-to-the-ny-city-council/
+
+PERSON_ID: 233
+NAME: Sandra Ung
+CHAMBER: city_council
+DISTRICT: D20
+AI_STANCE: unknown
+AI_RATIONALE: No public statements or positions regarding Israel/Palestine were found for Sandra Ung despite web searches.
+CRITERIA_MATCHES: none
+EVIDENCE: Ung represents Flushing, Queens and chairs the Committee on Standards and Ethics. No Israel-related statements or positions found in searches.
+
+PERSON_ID: 234
+NAME: Shanel Thomas-Henry
+CHAMBER: city_council
+DISTRICT: D21
+AI_STANCE: unknown
+AI_RATIONALE: Shanel Thomas-Henry was newly elected in 2025 and took office January 2026. No public statements on Israel/Palestine were found.
+CRITERIA_MATCHES: none
+EVIDENCE: Thomas-Henry represents Corona/East Elmhurst in Queens. Newly elected, no Israel/Palestine positions found in available sources.
+
+PERSON_ID: 235
+NAME: Tiffany Caban
+CHAMBER: city_council
+DISTRICT: D22
+AI_STANCE: strongly_oppose
+AI_RATIONALE: Caban was the first NYC Council member to call for a ceasefire (Oct 11, 2023), used the word "genocide," participated in JVP Grand Central protest, and has been one of the most vocal pro-Palestine voices on the Council as a DSA member.
+CRITERIA_MATCHES: Used "genocide" re: Israel, Called for unconditional ceasefire, Attended anti-Israel protest/rally
+EVIDENCE: On Oct 11, 2023, Caban tweeted: "Even as I continue to grieve the Israeli civilians murdered by Hamas, I feel mounting fear that the conditions for genocide in Gaza are developing." She participated in the JVP Grand Central Station protest and spoke at the 24-hour City Hall vigil. She was one of 17 council members supporting the ceasefire resolution. She is a DSA member. Sources: https://x.com/tiffany_caban/status/1712146243181277252 ; https://jacobin.com/2023/11/socialist-city-councillors-new-york-city-israel-stance-palestine-vote ; https://www.cityandstateny.com/politics/2024/03/new-york-elected-officials-calling-ceasefire-gaza/394535/
+
+PERSON_ID: 236
+NAME: Linda Lee
+CHAMBER: city_council
+DISTRICT: D23
+AI_STANCE: unknown
+AI_RATIONALE: No public statements on Israel/Palestine were found for Linda Lee. She represents eastern Queens and focuses on community services.
+CRITERIA_MATCHES: none
+EVIDENCE: Lee represents eastern Queens (District 23) and is the first Korean-American elected to the Council. No Israel-related statements or positions found.
+
+PERSON_ID: 237
+NAME: James F. Gennaro
+CHAMBER: city_council
+DISTRICT: D24
+AI_STANCE: strongly_support
+AI_RATIONALE: Gennaro has been described as a "passionate fighter for Israel" with strong Orthodox Jewish community support, attended pro-Israel vigils, and has stood with the pro-Israel community his entire career.
+CRITERIA_MATCHES: Strong condemnation of Oct 7 / Hamas, Attended pro-Israel rally/event
+EVIDENCE: Gennaro was described as a "passionate fighter for Israel" who "has proudly stood with the pro-Israel community his entire career." He spoke at a vigil at Kew Gardens Library with the Queens Jewish Community Council after Oct 7. He defeated a progressive anti-Israel candidate in a 2021 special election. His district includes a sizable Orthodox Jewish community. Sources: https://hamodia.com/2021/02/02/james-f-gennaro-set-win-special-election-city-council-24th-district/ ; https://www.qchron.com/editions/queenswide/queens-shows-it-stands-with-israel/article_41257666-66e3-11ee-a71a-a3b00395347c.html
+
+PERSON_ID: 238
+NAME: Shekar Krishnan
+CHAMBER: city_council
+DISTRICT: D25
+AI_STANCE: oppose
+AI_RATIONALE: Krishnan called for an immediate, permanent ceasefire and release of hostages in an April 2024 op-ed, and signed the Local Progress ceasefire letter, but did not use terms like "genocide" or "apartheid."
+CRITERIA_MATCHES: Called for unconditional ceasefire
+EVIDENCE: In an April 2024 op-ed in the Jackson Heights Post, Krishnan wrote: "There must be an immediate, permanent ceasefire and a release of all hostages." He referenced Israel's killing of World Central Kitchen aid workers. He signed the Local Progress ceasefire letter. Source: https://qns.com/2024/04/op-ed-a-global-tragedy-hits-home/
+
+PERSON_ID: 239
+NAME: Julie Won
+CHAMBER: city_council
+DISTRICT: D26
+AI_STANCE: oppose
+AI_RATIONALE: Won has expressed support for Palestinian rights, calling the "murder and displacement of Palestinian children" wrong, and stated she believes the war in Gaza must end and ceasefire must continue.
+CRITERIA_MATCHES: Called for unconditional ceasefire
+EVIDENCE: In 2021, Won tweeted "the murder and displacement of Palestinian children is tragic and unequivocally wrong." In 2026, announcing her congressional candidacy, she stated there needs to be an end to the war in Gaza and the ceasefire must continue. Source: https://en.wikipedia.org/wiki/Julie_Won
+
+PERSON_ID: 240
+NAME: Nantasha Williams
+CHAMBER: city_council
+DISTRICT: D27
+AI_STANCE: oppose
+AI_RATIONALE: Williams wore a "Ceasefire Now" button at the Dec 2023 Council meeting, signed the Local Progress ceasefire letter, and was one of 17 Council members supporting the ceasefire resolution.
+CRITERIA_MATCHES: Called for unconditional ceasefire
+EVIDENCE: Williams wore a "Ceasefire Now" button on Dec 6, 2023. She signed the Local Progress ceasefire letter on Jan 9, 2024. She welcomed the Jan 2025 ceasefire, saying "the halting of violence and return of hostages are what people from across the city and the world have prayed and protested for." She was listed among 17 ceasefire supporters. Sources: https://www.cityandstateny.com/politics/2024/03/new-york-elected-officials-calling-ceasefire-gaza/394535/ ; https://advocate.nyc.gov/press/williams-response-to-the-ceasefire-agreement
+
+PERSON_ID: 241
+NAME: Ty Hankerson
+CHAMBER: city_council
+DISTRICT: D28
+AI_STANCE: unknown
+AI_RATIONALE: Ty Hankerson was newly elected in 2025 and took office January 2026. No public statements on Israel/Palestine were found.
+CRITERIA_MATCHES: none
+EVIDENCE: Hankerson represents South Jamaica/South Ozone Park in Queens. Previously served as District Chief of Staff to Speaker Adrienne Adams. No Israel/Palestine positions found in available sources.
+
+PERSON_ID: 242
+NAME: Lynn Schulman
+CHAMBER: city_council
+DISTRICT: D29
+AI_STANCE: support
+AI_RATIONALE: Schulman is Vice Chair of the NYC Council Jewish Caucus (whose mission includes supporting Israel), received backing from the pro-Israel Solidarity PAC, and has advocated for antisemitism protections including threatening to override mayoral vetoes.
+CRITERIA_MATCHES: Sponsored antisemitism protection legislation, Attended pro-Israel rally/event
+EVIDENCE: Schulman is Vice Chair of the Council's Jewish Caucus, which is "dedicated to...supporting Israel." She received backing from Solidarity PAC, a pro-Israel PAC. She stated she was "prepared to whip the votes needed to override a veto on antisemitism-related legislation" in response to Mayor Mamdani's revocation of pro-Israel executive orders. Sources: https://council.nyc.gov/caucuses/jewish-caucus/ ; https://nysfocus.com/2025/03/20/new-york-city-council-mayor-election-israel-palestine ; https://www.jns.org/u.s.-news/first-time-in-a-long-time-nyc-council-jewish-caucus-talks-needs-challenges-with-jewish-groups
+
+PERSON_ID: 243
+NAME: Phil Wong
+CHAMBER: city_council
+DISTRICT: D30
+AI_STANCE: unknown
+AI_RATIONALE: Phil Wong was newly elected in 2025 and took office January 2026. No public statements on Israel/Palestine were found.
+CRITERIA_MATCHES: none
+EVIDENCE: Wong represents Elmhurst/Maspeth/Middle Village/Rego Park in Queens. Newly elected, no Israel/Palestine positions found.
+
+PERSON_ID: 244
+NAME: Selvena N. Brooks-Powers
+CHAMBER: city_council
+DISTRICT: D31
+AI_STANCE: unknown
+AI_RATIONALE: No specific public statements on Israel/Palestine were found for Brooks-Powers. She was not listed among ceasefire resolution supporters or pro-Israel advocates.
+CRITERIA_MATCHES: none
+EVIDENCE: Brooks-Powers represents southeast Queens (Arverne, Rosedale, Far Rockaway). She was not among the 17 council members listed as ceasefire supporters, nor found at pro-Israel events. No specific Israel-related statements located.
+
+PERSON_ID: 245
+NAME: Joann Ariola
+CHAMBER: city_council
+DISTRICT: D32
+AI_STANCE: strongly_support
+AI_RATIONALE: Ariola is the Republican minority leader who condemned pro-Palestinian rallies, issued a joint statement against DSA's pro-Hamas rally, attended pro-Israel prayer events, and sought information about mayoral executive orders revoking anti-BDS protections.
+CRITERIA_MATCHES: Strong condemnation of Oct 7 / Hamas, Attended pro-Israel rally/event
+EVIDENCE: On Oct 10, 2023, Ariola released a joint statement with the Common-Sense Caucus condemning DSA for promoting a "pro-Hamas rally." She prayed at Howard Beach Judea Center for Israel. As minority leader, she filed FOIL requests about Mayor Mamdani's revocation of anti-BDS executive orders. Sources: http://theforumnewsgroup.com/2023/10/13/pols-rally-around-israel/ ; https://qns.com/2026/01/ariola-republicans-foil-request-executive-orders/
+
+PERSON_ID: 246
+NAME: Lincoln Restler
+CHAMBER: city_council
+DISTRICT: D33
+AI_STANCE: oppose
+AI_RATIONALE: Restler signed both the Local Progress ceasefire letter and the Jewish elected officials' open letter criticizing Israel's military campaign in Gaza, while also condemning Hamas and calling for hostage release.
+CRITERIA_MATCHES: Called for unconditional ceasefire, Signed solidarity letter with Israel
+EVIDENCE: Restler signed the Local Progress ceasefire letter (Jan 9, 2024) and was listed among 17 council members supporting a ceasefire resolution. He also signed an "Open Letter From Jewish Elected Officials Regarding The War In Gaza" (Feb 2024), which condemned Oct 7 as "monstrous and indefensible" while stating Israel "cannot continue the mass destruction of Gaza." The letter called for a two-state solution. He was one of the Jewish council members who took a nuanced position criticizing both Hamas and Israel's military campaign. Sources: https://www.nysenate.gov/newsroom/articles/2024/liz-krueger/open-letter-jewish-elected-officials-regarding-war-gaza ; https://www.cityandstateny.com/politics/2024/03/new-york-elected-officials-calling-ceasefire-gaza/394535/
+
+PERSON_ID: 247
+NAME: Jennifer Gutierrez
+CHAMBER: city_council
+DISTRICT: D34
+AI_STANCE: strongly_oppose
+AI_RATIONALE: Gutierrez wore a "Ceasefire Now" shirt at the Dec 2023 Council meeting, signed the JVP open letter to Biden calling for ceasefire, abstained from the "End Jew Hatred" resolution, and was a prominent ceasefire advocate.
+CRITERIA_MATCHES: Called for unconditional ceasefire, Attended anti-Israel protest/rally
+EVIDENCE: On Dec 6, 2023, Gutierrez wore a "Ceasefire Now" shirt at a Stated Meeting, posting: "Proud to stand in solidarity with some of my @nyccouncil colleagues today...calling for an immediate and permanent #ceasefire." She signed the JVP Action open letter to Biden calling for ceasefire. She abstained from the "End Jew Hatred Day" resolution (April 2023). She was one of 17 council members supporting the ceasefire resolution. Sources: https://worldisraelnews.com/anti-israel-nyc-council-members-ripped-for-ceasefire-now-shirts/ ; https://www.jvpaction.org/state-and-local-elected-officials-open-letter-to-president-biden-calling-for-a-ceasefire/ ; https://forward.com/fast-forward/544960/new-york-city-council-end-jew-hatred-day-antisemitism/
+
+PERSON_ID: 248
+NAME: Crystal Hudson
+CHAMBER: city_council
+DISTRICT: D35
+AI_STANCE: oppose
+AI_RATIONALE: Hudson signed the Local Progress ceasefire letter and was listed among the 17 council members supporting the ceasefire resolution, though she has been less vocal than some colleagues.
+CRITERIA_MATCHES: Called for unconditional ceasefire
+EVIDENCE: Hudson signed the Local Progress letter on Jan 9, 2024, calling for "a durable ceasefire." She was one of 17 council members listed as supporting the ceasefire resolution. Source: https://www.cityandstateny.com/politics/2024/03/new-york-elected-officials-calling-ceasefire-gaza/394535/
+
+PERSON_ID: 249
+NAME: Chi Osse
+CHAMBER: city_council
+DISTRICT: D36
+AI_STANCE: strongly_oppose
+AI_RATIONALE: Osse is a DSA member who called for a ceasefire, participated in the JVP Grand Central protest, wore a "Ceasefire Now" shirt at Council, and issued a statement calling occupation the "primary root of violence" while affirming Palestinian liberation as legitimate.
+CRITERIA_MATCHES: Called for unconditional ceasefire, Equivocated on Oct 7, Attended anti-Israel protest/rally
+EVIDENCE: Osse participated in the JVP Grand Central Station ceasefire protest (Oct 2023). He wore a "Ceasefire Now" shirt at the Dec 6, 2023 Council meeting. His Oct 2023 statement declared Israel's "occupation" was the "primary root of the violence" and, while criticizing terrorism, said "the Palestinian movement for national liberation is legitimate." He was one of 17 council members supporting the ceasefire resolution. He is a DSA member. Sources: https://www.cityandstateny.com/politics/2024/03/new-york-elected-officials-calling-ceasefire-gaza/394535/ ; https://worldisraelnews.com/anti-israel-nyc-council-members-ripped-for-ceasefire-now-shirts/
+
+PERSON_ID: 250
+NAME: Sandy Nurse
+CHAMBER: city_council
+DISTRICT: D37
+AI_STANCE: strongly_oppose
+AI_RATIONALE: Nurse was co-chair of the Council Progressive Caucus, called for ceasefire on Oct 12, 2023, voted against the "End Jew Hatred" resolution, and participated in the JVP Grand Central protest.
+CRITERIA_MATCHES: Called for unconditional ceasefire, Attended anti-Israel protest/rally
+EVIDENCE: Nurse called for a ceasefire on Oct 12, 2023, criticizing Governor Hochul for not supporting Palestinian New Yorkers. She participated in the JVP Grand Central Station protest. She was one of only two council members to vote "no" on the "End Jew Hatred Day" resolution (with Shahana Hanif). She was one of 17 council members supporting the ceasefire resolution. Sources: https://www.cityandstateny.com/politics/2024/03/new-york-elected-officials-calling-ceasefire-gaza/394535/ ; https://forward.com/fast-forward/544960/new-york-city-council-end-jew-hatred-day-antisemitism/
+
+PERSON_ID: 251
+NAME: Alexa Aviles
+CHAMBER: city_council
+DISTRICT: D38
+AI_STANCE: strongly_oppose
+AI_RATIONALE: Aviles is a DSA member who supports BDS, signed the JVP ceasefire letter, abstained from the "End Jew Hatred" resolution, and has been one of the most vocal pro-Palestine council members.
+CRITERIA_MATCHES: Called for unconditional ceasefire, Attended anti-Israel protest/rally, Supports conditioning US aid to Israel
+EVIDENCE: Aviles signed a JVP Action letter calling for immediate and permanent ceasefire. She supports the BDS movement targeting Israel. She abstained from the "End Jew Hatred Day" resolution. She is a DSA member. She wrote an op-ed in City & State titled "From Puerto Rico to Palestine" criticizing US military funding for Israel. Pro-Israel activists backed challenger Ling Ye to unseat her. Sources: https://jewishinsider.com/2025/06/ling-ye-alexa-aviles-dan-goldman-south-brooklyn-council-primary/ ; https://www.cityandstateny.com/politics/2024/03/new-york-elected-officials-calling-ceasefire-gaza/394535/ ; https://x.com/alexaforcouncil/status/1995521733064085536
+
+PERSON_ID: 252
+NAME: Shahana Hanif
+CHAMBER: city_council
+DISTRICT: D39
+AI_STANCE: strongly_oppose
+AI_RATIONALE: Hanif is among the most vocal anti-Israel members of the Council, having used the terms "genocide" and "apartheid," been arrested at a pro-Palestinian rally, voted against "End Jew Hatred Day," and endorsed the "Leave It Blank" campaign against Biden over Gaza policy.
+CRITERIA_MATCHES: Used "genocide" re: Israel, Used "apartheid" re: Israel, Called for unconditional ceasefire, Equivocated on Oct 7, Attended anti-Israel protest/rally
+EVIDENCE: Hanif was arrested at an Oct 2023 rally organized by Within Our Lifetime and DSA calling for ceasefire. She tweeted demanding "an end to the apartheid and genocide" (Oct 23, 2023). She called Israel's actions a "genocide." She voted against the "End Jew Hatred Day" resolution. She endorsed the "Leave It Blank" campaign against Biden over Gaza. Her initial Oct 13, 2023 statement called occupation the "root cause" without immediately condemning Hamas (though she later issued a condemnation). Pro-Israel donors funded her opponent Maya Kornberg. She was listed on Canary Mission. Sources: https://jewishinsider.com/2024/12/new-york-city-primary-shahana-hanif-maya-kornberg/ ; https://council.nyc.gov/shahana-hanif/2024/10/07/council-member-shahana-hanifs-statement-on-one-year-since-the-october-7th-attacks/ ; https://www.timesofisrael.com/liveblog_entry/anti-israel-nyc-council-member-hanif-wins-race-animated-by-israeli-palestinian-conflict/
+
+PERSON_ID: 253
+NAME: Rita Joseph
+CHAMBER: city_council
+DISTRICT: D40
+AI_STANCE: oppose
+AI_RATIONALE: Joseph was listed among the 17 council members supporting the ceasefire resolution and spoke at the 24-hour City Hall vigil in support of a ceasefire, though she abstained from the "End Jew Hatred" vote claiming she didn't have time to review it.
+CRITERIA_MATCHES: Called for unconditional ceasefire
+EVIDENCE: Joseph spoke at a 24-hour vigil at City Hall on Feb 28, 2024, in support of a ceasefire. She was one of 17 council members listed as supporting the ceasefire resolution. She abstained from the "End Jew Hatred Day" resolution, tweeting she "regretfully abstained" because she "didn't have a chance to review it." Sources: https://www.cityandstateny.com/politics/2024/03/new-york-elected-officials-calling-ceasefire-gaza/394535/ ; https://forward.com/fast-forward/544960/new-york-city-council-end-jew-hatred-day-antisemitism/
+
+PERSON_ID: 254
+NAME: Darlene Mealy
+CHAMBER: city_council
+DISTRICT: D41
+AI_STANCE: unknown
+AI_RATIONALE: No specific public statements or positions regarding Israel/Palestine were found for Darlene Mealy. She was not listed among ceasefire resolution supporters or pro-Israel advocates.
+CRITERIA_MATCHES: none
+EVIDENCE: Mealy represents Brownsville/Crown Heights/East Flatbush in Brooklyn. She was not among the 17 council members listed as ceasefire supporters. No specific Israel-related statements found.
+
+PERSON_ID: 255
+NAME: Chris Banks
+CHAMBER: city_council
+DISTRICT: D42
+AI_STANCE: unknown
+AI_RATIONALE: Chris Banks defeated the virulently anti-Israel Charles Barron in 2023 with support from the East New York Jewish community, suggesting a more moderate stance, but no specific Israel/Palestine statements were found.
+CRITERIA_MATCHES: none
+EVIDENCE: Banks defeated anti-Israel incumbent Charles Barron in the 2023 primary with support from the East New York Jewish community. Jewish Insider headlined his victory as "Anti-Israel candidate toppled." However, no direct statements from Banks on Israel/Palestine were found. Sources: https://jewishinsider.com/2023/06/charles-barron-susan-zhuang-chris-banks-wai-yee-chan-new-york-city-council/ ; https://jewishinsider.com/2023/07/york-city-council-primary-charles-barron-chris-banks/
+
+PERSON_ID: 256
+NAME: Susan Zhuang
+CHAMBER: city_council
+DISTRICT: D43
+AI_STANCE: support
+AI_RATIONALE: Zhuang received backing from Solidarity PAC, a pro-Israel political action committee, and is described as a conservative Democrat. She was not among ceasefire advocates.
+CRITERIA_MATCHES: none
+EVIDENCE: Solidarity PAC, a pro-Israel PAC described as a local version of AIPAC/DMFI, backed Zhuang's candidacy. She is described as a conservative Democrat. She was not among the council members who called for a ceasefire. Source: https://nysfocus.com/2025/03/20/new-york-city-council-mayor-election-israel-palestine
+
+PERSON_ID: 257
+NAME: Simcha Felder
+CHAMBER: city_council
+DISTRICT: D44
+AI_STANCE: strongly_support
+AI_RATIONALE: Felder is a conservative Democrat from Borough Park representing a large Orthodox Jewish constituency, has a long history of supporting Israel, and previously blocked UN renovation plans calling the UN "anti-Israel."
+CRITERIA_MATCHES: Strong condemnation of Oct 7 / Hamas, Attended pro-Israel rally/event
+EVIDENCE: Felder represents Borough Park, home to a large Orthodox Jewish community. During his prior Council service (2002-2010), he blocked UN headquarters renovation plans calling the UN "anti-American and anti-Israel." He returned to the Council in a 2025 special election winning 81% of the vote. He is a member of the Council's Jewish Caucus. Sources: https://en.wikipedia.org/wiki/Simcha_Felder ; https://council.nyc.gov/caucuses/jewish-caucus/
+
+PERSON_ID: 258
+NAME: Farah N. Louis
+CHAMBER: city_council
+DISTRICT: D45
+AI_STANCE: support
+AI_RATIONALE: Louis has stated she supports Israel and opposes BDS, has strong Jewish community backing including the Flatbush Jewish Community Coalition endorsement, and has consistently denounced antisemitism.
+CRITERIA_MATCHES: Strong condemnation of Oct 7 / Hamas
+EVIDENCE: Louis assured Jewish leaders she supports the State of Israel and opposes BDS. She received endorsements from eight Jewish politicians and the Flatbush Jewish Community Coalition. She has issued multiple statements condemning antisemitic attacks in her district. Her district includes large Jewish populations in Flatbush and Midwood. Sources: https://www.theyeshivaworld.com/news/general/1747016/hate-loses-in-flatbush-jewish-community-backed-farah-louis-wins-council-race.html ; https://www.jewishpress.com/news/us-news/ny/meet-the-real-flatbush-girl-as-farah-louis-runs-for-reelection/2019/06/21/
+
+PERSON_ID: 259
+NAME: Mercedes Narcisse
+CHAMBER: city_council
+DISTRICT: D46
+AI_STANCE: neutral
+AI_RATIONALE: Narcisse expressed sympathy for both sides, noting the "devastating loss of life" on both sides while emphasizing "shared humanity." She did not take a strong pro-Israel or pro-Palestine position.
+CRITERIA_MATCHES: none
+EVIDENCE: Narcisse stated she was "deeply saddened by devastating loss of life on both sides" and said "it's more important than ever to remember our shared humanity and the bonds that unite us." She noted Brooklyn is home to the largest Jewish population outside Israel and extended compassion to affected communities. Source: https://www.caribbeanlife.com/narcisse-deeply-saddened-by-devastating-loss-of-life-on-both-sides-in-israeli-hamas-war/
+
+PERSON_ID: 260
+NAME: Kayla Santosuosso
+CHAMBER: city_council
+DISTRICT: D47
+AI_STANCE: oppose
+AI_RATIONALE: Santosuosso has deep ties to the Arab American community in Bay Ridge, previously worked for the Arab American Association under Linda Sarsour, worked in Palestine, and expressed empathy for Bay Ridge's Palestinian community's anger over Gaza. Her predecessor Justin Brannan supported the ceasefire resolution.
+CRITERIA_MATCHES: none
+EVIDENCE: Santosuosso worked at the Arab American Association of New York under Linda Sarsour and for the Palestine Wildlife Society in Beit Sahour, Palestine. She worked on Palestinian pastor Khader El-Yateem's City Council campaign. She stated the Bay Ridge Palestinian and Arab American communities are "horrified and angry" about Israel's war in Gaza and said she would protect their right to protest. She worked at the Arava Institute in Israel (a peace/environment organization). She speaks Arabic. Her predecessor Justin Brannan was one of 17 ceasefire supporters. Sources: https://www.cityandstateny.com/politics/2024/11/justin-brannan-backing-his-chief-counsel-his-city-council-seat/401268/ ; https://en.wikipedia.org/wiki/Kayla_Santosuosso
+
+PERSON_ID: 261
+NAME: Inna Vernikov
+CHAMBER: city_council
+DISTRICT: D48
+AI_STANCE: strongly_support
+AI_RATIONALE: Vernikov is the most vocal pro-Israel member of the NYC Council, having worn an Israeli flag dress, attended pro-Israel counter-protests (bringing a gun to one), quit the women's caucus over hostage rhetoric, and been a leading voice against antisemitism.
+CRITERIA_MATCHES: Strong condemnation of Oct 7 / Hamas, Attended pro-Israel rally/event, Signed solidarity letter with Israel
+EVIDENCE: Vernikov attended a pro-Israel counter-protest at Brooklyn College (Oct 2023), where she was controversially arrested for carrying a firearm (charges later dropped). She wore an Israeli flag dress to the NY Young Republican Club Gala. She quit the Council's women's caucus citing rhetoric on Israeli hostages. She has been described as "a leading voice against Antisemitism" on the Council. She is Republican minority whip. Sources: https://forward.com/fast-forward/564702/jewish-nyc-councilwoman-inna-vernikov-gun-israel-palestinian-nyc-gaza/ ; https://ijr.com/nyc-councilwoman-inna-vernikov-sends-message-support-israel-wearing-israeli-flag-dress/ ; https://www.timesofisrael.com/liveblog_entry/jewish-lawmaker-quits-nyc-councils-womens-caucus-citing-rhetoric-on-israeli-hostages/
+
+PERSON_ID: 262
+NAME: Kamillah Hanks
+CHAMBER: city_council
+DISTRICT: D49
+AI_STANCE: support
+AI_RATIONALE: Hanks traveled to Israel on a solidarity trip in February 2024, visiting Kibbutz Kfar Aza, and participated in Staten Island solidarity events for Israel. This was her second trip to Israel in three years.
+CRITERIA_MATCHES: Strong condemnation of Oct 7 / Hamas, Attended pro-Israel rally/event
+EVIDENCE: Hanks traveled to Israel on a three-day solidarity trip in February 2024, visiting communities devastated on Oct 7 including Kibbutz Kfar Aza, where she said "I come from a rough neighborhood in Staten Island so I know a little about living in fear, but nothing like this." This was her second Israel trip in three years. Local pro-Palestine groups organized a protest at her district office in response. Sources: https://www.pleaforthefifth.com/constituents_speak_out_on_councilperson_kamillah_hanks_travel_to_israel/ ; https://unitedwithisrael.org/new-york-officials-witness-gaza-border-devastation/

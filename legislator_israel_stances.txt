@@ -1,0 +1,296 @@
+PERSON_ID: 196
+NAME: Andrea K. Bailey
+CHAMBER: assembly
+DISTRICT: D133
+AI_STANCE: unknown
+AI_RATIONALE: Bailey is a Republican who took office January 2025. No public statements or positions on Israel/Palestine were found in available sources.
+CRITERIA_MATCHES: none
+EVIDENCE: No evidence found. Bailey was not in office during the October 2023 "Stand with Israel" letter. No public statements located on Israel/Palestine issues.
+
+PERSON_ID: 197
+NAME: Josh Jensen
+CHAMBER: assembly
+DISTRICT: D134
+AI_STANCE: unknown
+AI_RATIONALE: No public statements or positions on Israel/Palestine were found for this Republican assemblymember from the Rochester area.
+CRITERIA_MATCHES: none
+EVIDENCE: No evidence found. Jensen did not sign the October 2023 "NY Legislators Stand with Israel" letter. No public statements on Israel/Palestine located.
+
+PERSON_ID: 198
+NAME: Jen Lunsford
+CHAMBER: assembly
+DISTRICT: D135
+AI_STANCE: unknown
+AI_RATIONALE: No public statements or positions on Israel/Palestine were found for this Democratic assemblymember from Monroe County.
+CRITERIA_MATCHES: none
+EVIDENCE: No evidence found. Lunsford did not sign the October 2023 "NY Legislators Stand with Israel" letter. No public statements on Israel/Palestine located.
+
+PERSON_ID: 199
+NAME: Sarah Clark
+CHAMBER: assembly
+DISTRICT: D136
+AI_STANCE: unknown
+AI_RATIONALE: No public statements or positions on Israel/Palestine were found for this Democratic assemblymember from the Rochester area.
+CRITERIA_MATCHES: none
+EVIDENCE: No evidence found. Clark did not sign the October 2023 "NY Legislators Stand with Israel" letter. No public statements on Israel/Palestine located.
+
+PERSON_ID: 200
+NAME: Demond Meeks
+CHAMBER: assembly
+DISTRICT: D137
+AI_STANCE: unknown
+AI_RATIONALE: No public statements or positions on Israel/Palestine were found for this Democratic assemblymember from Rochester.
+CRITERIA_MATCHES: none
+EVIDENCE: No evidence found. Meeks did not sign the October 2023 "NY Legislators Stand with Israel" letter. No public statements on Israel/Palestine located.
+
+PERSON_ID: 201
+NAME: Harry B. Bronson
+CHAMBER: assembly
+DISTRICT: D138
+AI_STANCE: unknown
+AI_RATIONALE: No public statements or positions on Israel/Palestine were found for this Democratic assemblymember from Rochester.
+CRITERIA_MATCHES: none
+EVIDENCE: No evidence found. Bronson did not sign the October 2023 "NY Legislators Stand with Israel" letter. No public statements on Israel/Palestine located.
+
+PERSON_ID: 202
+NAME: Stephen Hawley
+CHAMBER: assembly
+DISTRICT: D139
+AI_STANCE: unknown
+AI_RATIONALE: Republican assemblymember representing Genesee, Monroe, and Orleans counties. No specific Israel/Palestine positions found, and he did not sign the October 2023 "NY Legislators Stand with Israel" letter.
+CRITERIA_MATCHES: none
+EVIDENCE: No evidence found. Hawley did not sign the October 2023 "NY Legislators Stand with Israel" letter. No public statements on Israel/Palestine located.
+
+PERSON_ID: 203
+NAME: William Conrad
+CHAMBER: assembly
+DISTRICT: D140
+AI_STANCE: unknown
+AI_RATIONALE: No public statements or positions on Israel/Palestine were found for this Democratic assemblymember from Town of Tonawanda.
+CRITERIA_MATCHES: none
+EVIDENCE: No evidence found. Conrad did not sign the October 2023 "NY Legislators Stand with Israel" letter. No public statements on Israel/Palestine located.
+
+PERSON_ID: 204
+NAME: Crystal D. Peoples-Stokes
+CHAMBER: assembly
+DISTRICT: D141
+AI_STANCE: unknown
+AI_RATIONALE: Despite being the Assembly Majority Leader and a long-serving member, no public statements or positions on Israel/Palestine were found in available sources.
+CRITERIA_MATCHES: none
+EVIDENCE: No evidence found. Peoples-Stokes did not sign the October 2023 "NY Legislators Stand with Israel" letter. No public statements on Israel/Palestine located.
+
+PERSON_ID: 205
+NAME: Patrick Burke
+CHAMBER: assembly
+DISTRICT: D142
+AI_STANCE: unknown
+AI_RATIONALE: No public statements or positions on Israel/Palestine were found for this Democratic assemblymember from South Buffalo.
+CRITERIA_MATCHES: none
+EVIDENCE: No evidence found. Burke did not sign the October 2023 "NY Legislators Stand with Israel" letter. No public statements on Israel/Palestine located.
+
+PERSON_ID: 206
+NAME: Patrick J. Chludzinski
+CHAMBER: assembly
+DISTRICT: D143
+AI_STANCE: unknown
+AI_RATIONALE: Republican assemblymember who took office January 2025. No public statements or positions on Israel/Palestine were found.
+CRITERIA_MATCHES: none
+EVIDENCE: No evidence found. Chludzinski was not in office during the October 2023 "Stand with Israel" letter. No public statements on Israel/Palestine located.
+
+PERSON_ID: 207
+NAME: Paul A. Bologna
+CHAMBER: assembly
+DISTRICT: D144
+AI_STANCE: unknown
+AI_RATIONALE: Republican assemblymember who took office January 2025. His predecessor Michael Norris signed the "NY Legislators Stand with Israel" letter, but no personal statements from Bologna were found.
+CRITERIA_MATCHES: none
+EVIDENCE: No evidence found. Bologna was not in office during the October 2023 "Stand with Israel" letter. His predecessor Michael Norris did sign it. No public statements from Bologna on Israel/Palestine located.
+
+PERSON_ID: 208
+NAME: Angelo J. Morinello
+CHAMBER: assembly
+DISTRICT: D145
+AI_STANCE: strongly_support
+AI_RATIONALE: Morinello signed the bipartisan "NY Legislators Stand with Israel" letter in October 2023, which strongly condemned the Hamas attack and pledged solidarity with Israel.
+CRITERIA_MATCHES: Signed solidarity letter with Israel, Strong condemnation of Oct 7 / Hamas
+EVIDENCE: Signed the "NEW YORK LEGISLATORS STAND WITH ISRAEL" letter dated October 20, 2023, hosted on the NY Assembly website. The letter called the Oct 7 attack "a despicable sneak attack" and "war crime" and pledged to "continue to stand with Israel." Source: https://assembly.state.ny.us/write/upload/member_files/013/pdfs/20231030_0107834.pdf
+
+PERSON_ID: 209
+NAME: Karen McMahon
+CHAMBER: assembly
+DISTRICT: D146
+AI_STANCE: support
+AI_RATIONALE: McMahon signed the bipartisan "NY Legislators Stand with Israel" letter in October 2023. As a Democrat signing the letter, this signals pro-Israel support though no additional statements were found.
+CRITERIA_MATCHES: Signed solidarity letter with Israel, Strong condemnation of Oct 7 / Hamas
+EVIDENCE: Signed the "NEW YORK LEGISLATORS STAND WITH ISRAEL" letter dated October 20, 2023, which condemned the Hamas attack as a "war crime" and pledged solidarity with Israel. Source: https://assembly.state.ny.us/write/upload/member_files/013/pdfs/20231030_0107834.pdf
+
+PERSON_ID: 210
+NAME: David DiPietro
+CHAMBER: assembly
+DISTRICT: D147
+AI_STANCE: unknown
+AI_RATIONALE: Conservative Republican assemblymember. No specific Israel/Palestine positions found, and he did not sign the October 2023 "NY Legislators Stand with Israel" letter.
+CRITERIA_MATCHES: none
+EVIDENCE: No evidence found. DiPietro did not sign the October 2023 "NY Legislators Stand with Israel" letter. No public statements on Israel/Palestine located.
+
+PERSON_ID: 211
+NAME: Joe Sempolinski
+CHAMBER: assembly
+DISTRICT: D148
+AI_STANCE: unknown
+AI_RATIONALE: Conservative Republican assemblymember. No specific Israel/Palestine positions found, and he did not sign the October 2023 "NY Legislators Stand with Israel" letter.
+CRITERIA_MATCHES: none
+EVIDENCE: No evidence found. Sempolinski did not sign the October 2023 "NY Legislators Stand with Israel" letter. No public statements on Israel/Palestine located.
+
+PERSON_ID: 212
+NAME: Jonathan Rivera
+CHAMBER: assembly
+DISTRICT: D149
+AI_STANCE: unknown
+AI_RATIONALE: Progressive Democratic assemblymember from Buffalo. No public statements or positions on Israel/Palestine were found.
+CRITERIA_MATCHES: none
+EVIDENCE: No evidence found. Rivera did not sign the October 2023 "NY Legislators Stand with Israel" letter. No public statements on Israel/Palestine located.
+
+PERSON_ID: 213
+NAME: Andrew M. Molitor
+CHAMBER: assembly
+DISTRICT: D150
+AI_STANCE: unknown
+AI_RATIONALE: Republican assemblymember who took office January 2025. No public statements or positions on Israel/Palestine were found.
+CRITERIA_MATCHES: none
+EVIDENCE: No evidence found. Molitor was not in office during the October 2023 "Stand with Israel" letter. No public statements on Israel/Palestine located.
+
+PERSON_ID: 214
+NAME: Christopher Marte
+CHAMBER: city_council
+DISTRICT: D1
+AI_STANCE: oppose
+AI_RATIONALE: Marte attended a 24-hour ceasefire vigil outside City Hall in February 2024 and has publicly supported a ceasefire in Gaza, aligning with the progressive pro-ceasefire bloc on the council.
+CRITERIA_MATCHES: Called for unconditional ceasefire
+EVIDENCE: Attended a 24-hour press conference/vigil outside City Hall on February 28, 2024 in support of a ceasefire in Gaza, organized by the NYC 4 Ceasefire coalition. Source: https://www.cityandstateny.com/politics/2024/03/new-york-elected-officials-calling-ceasefire-gaza/394535/ ; https://peoplesdispatch.org/2024/02/29/new-yorkers-demand-their-city-council-call-for-a-ceasefire/
+
+PERSON_ID: 215
+NAME: Harvey Epstein
+CHAMBER: city_council
+DISTRICT: D2
+AI_STANCE: oppose
+AI_RATIONALE: Epstein signed an open letter from Jewish elected officials in February 2024 that condemned Hamas but also stated they "cannot support the actions of the current Israeli government," criticized mass destruction in Gaza, and called for a two-state solution and halt to civilian killings.
+CRITERIA_MATCHES: Called for unconditional ceasefire, Strong condemnation of Oct 7 / Hamas
+EVIDENCE: Signed "An Open Letter From Jewish Elected Officials Regarding The War In Gaza" (Feb 2024) with Krueger, Hoylman-Sigal, Lander, and Restler. The letter condemned Hamas, criticized Netanyahu government for civilian deaths and settlement policy, called for hostage negotiations and a two-state solution. Source: https://www.nysenate.gov/newsroom/articles/2024/liz-krueger/open-letter-jewish-elected-officials-regarding-war-gaza
+
+PERSON_ID: 217
+NAME: Virginia Maloney
+CHAMBER: city_council
+DISTRICT: D4
+AI_STANCE: unknown
+AI_RATIONALE: Maloney took office in 2026 after the November 2025 election. No public statements on Israel/Palestine were found. She is the daughter of former Rep. Carolyn Maloney (strongly pro-Israel), but no personal positions were located.
+CRITERIA_MATCHES: none
+EVIDENCE: No evidence found. Maloney assumed office January 2026. No public statements on Israel/Palestine issues were located in available sources. Source: https://en.wikipedia.org/wiki/Virginia_Maloney
+
+PERSON_ID: 218
+NAME: Julie Menin
+CHAMBER: city_council
+DISTRICT: D5
+AI_STANCE: strongly_support
+AI_RATIONALE: Menin is the first Jewish NYC Council Speaker, went on an Israel solidarity trip visiting Kibbutz Kfar Aza, marched in the Israel Day Parade, introduced the buffer zone bill to protect synagogues from protests, and has been a vocal advocate against antisemitism and pro-Palestinian demonstrations.
+CRITERIA_MATCHES: Sponsored antisemitism protection legislation, Strong condemnation of Oct 7 / Hamas, Attended pro-Israel rally/event, Signed solidarity letter with Israel
+EVIDENCE: Visited Kibbutz Kfar Aza on solidarity trip to Israel (Feb 2024). Marched in Israel Day Parade (May 2024). Introduced and passed buffer zone bill (Int. 1025) to limit protests near houses of worship, passed 44-5 in March 2026. Described as counterweight to Mayor Mamdani on Israel issues. Sources: https://forward.com/news/798894/julie-menin-council-mamdani-antisemitism/ ; https://www.jta.org/2026/03/26/ny/nyc-council-approves-buffer-zone-legislation-insulating-houses-of-worship-from-protests ; https://www.jta.org/2025/11/26/politics/jewish-moderate-julie-menin-claims-victory-as-next-city-council-speaker
+
+PERSON_ID: 219
+NAME: Gale A. Brewer
+CHAMBER: city_council
+DISTRICT: D6
+AI_STANCE: support
+AI_RATIONALE: Brewer is a self-described strong supporter of the Jewish state, opposes BDS, has visited Israel multiple times including Iron Dome sites, though she has also acknowledged concerns about excessive Israeli military operations.
+CRITERIA_MATCHES: Supports Iron Dome funding, Attended pro-Israel rally/event
+EVIDENCE: Opposes BDS. Has traveled to Israel multiple times with JCRC-NY. Expressed support for Iron Dome funding ("I've been twice to Iron Dome locations, and they're miraculous"). In 2010, characterized Israeli military efforts as "excessive military operations in Palestine." Sources: https://jewishinsider.com/2021/12/gale-brewer-returns-to-the-city-council/ ; https://www.jcrcny.org/2010/01/from-nyc-councilmember-gale-brewer/ ; https://nyja.org/nyc-candidates/gale-brewer-2/
+
+PERSON_ID: 220
+NAME: Shaun Abreu
+CHAMBER: city_council
+DISTRICT: D7
+AI_STANCE: neutral
+AI_RATIONALE: Abreu has received backing from pro-Israel Solidarity PAC (~$8,100 in fundraisers), but was also listed on Canary Mission (a pro-Israel site that profiles pro-Palestine advocates), and left the Progressive Caucus in 2023. His actual stated position on the conflict is unclear and appears mixed.
+CRITERIA_MATCHES: none
+EVIDENCE: Backed by Solidarity PAC, a pro-Israel group, with approximately $8,100 from fundraisers. Listed on Canary Mission, suggesting some pro-Palestine advocacy. Left the NYC Council Progressive Caucus in 2023, refusing to sign onto the group's statement of principles. Sources: https://nysfocus.com/2025/03/20/new-york-city-council-mayor-election-israel-palestine ; https://canarymission.org/individual/Shaun_Abreu ; https://www.nysolidaritypac.org/2025-endorsed-candidates/shaun-abreu
+
+PERSON_ID: 221
+NAME: Elsie Encarnacion
+CHAMBER: city_council
+DISTRICT: D8
+AI_STANCE: unknown
+AI_RATIONALE: Encarnacion took office January 2026. Pro-Israel donors were active in the District 8 race, but no specific statements from Encarnacion on Israel/Palestine were found.
+CRITERIA_MATCHES: none
+EVIDENCE: No evidence found. Pro-Israel donors gave to candidates in the South Bronx and East Harlem races in 2025, but Encarnacion's personal stance was not documented in available sources. Source: https://citylimits.org/pro-israel-donors-gave-thousands-to-south-bronx-and-east-harlem-candidates/
+
+PERSON_ID: 222
+NAME: Yusef Salaam
+CHAMBER: city_council
+DISTRICT: D9
+AI_STANCE: oppose
+AI_RATIONALE: Salaam called for an immediate ceasefire in Gaza on November 20, 2023, before even taking office, urging Biden to call on the Israeli government for "an immediate, durable and sustainable ceasefire."
+CRITERIA_MATCHES: Called for unconditional ceasefire
+EVIDENCE: Released statement on November 20, 2023 calling for ceasefire: "I join voices in Harlem, New York City & State, congressional representatives in Washington D.C., and the international community, in urging President Biden to do what's right by calling on the Israeli government for an immediate, durable and sustainable ceasefire." Source: https://www.cityandstateny.com/politics/2024/03/new-york-elected-officials-calling-ceasefire-gaza/394535/
+
+PERSON_ID: 223
+NAME: Carmen De La Rosa
+CHAMBER: city_council
+DISTRICT: D10
+AI_STANCE: oppose
+AI_RATIONALE: De La Rosa signed a Local Progress letter on January 9, 2024 calling for "a durable ceasefire" in Gaza.
+CRITERIA_MATCHES: Called for unconditional ceasefire
+EVIDENCE: Signed Local Progress letter on January 9, 2024 calling for "a durable ceasefire." Source: https://www.cityandstateny.com/politics/2024/03/new-york-elected-officials-calling-ceasefire-gaza/394535/
+
+PERSON_ID: 224
+NAME: Eric Dinowitz
+CHAMBER: city_council
+DISTRICT: D11
+AI_STANCE: strongly_support
+AI_RATIONALE: Dinowitz is Chair of the Council Jewish Caucus, strongly condemned Hamas on Oct 7, denounced pro-Palestinian rallies, traveled to Israel visiting a kibbutz, sponsored the buffer zone bill for schools, received Solidarity PAC backing, and stood with CUNY professors who resigned over an anti-Israel union resolution.
+CRITERIA_MATCHES: Sponsored antisemitism protection legislation, Strong condemnation of Oct 7 / Hamas, Attended pro-Israel rally/event, Signed solidarity letter with Israel
+EVIDENCE: Statement on Oct 7: "Hamas terrorists have infiltrated Israeli towns and launched thousands of missiles, including into Jerusalem. I proudly stand with Israel." Denounced pro-Palestinian rally following Oct 7. Sponsored buffer zone bill for educational institutions. Visited kibbutz in Israel. Supported CUNY professors who resigned over anti-Israel union resolution. Received ~$11,671 from Solidarity PAC-linked fundraisers. Sources: https://www.norwoodnews.org/update-dinowitz-hochul-others-denounce-rally-in-support-of-palestinians-following-terrorist-attack-on-israel/ ; https://www.bxtimes.com/bronx-kibbutz-tour-israel-war/ ; https://nysfocus.com/2025/03/20/new-york-city-council-mayor-election-israel-palestine
+
+PERSON_ID: 225
+NAME: Kevin C. Riley
+CHAMBER: city_council
+DISTRICT: D12
+AI_STANCE: neutral
+AI_RATIONALE: Riley participated in a JCRC-organized trip to Israel in November 2022, suggesting engagement with the Jewish community and openness to Israel, but no public statements on the conflict were found.
+CRITERIA_MATCHES: Attended pro-Israel rally/event
+EVIDENCE: Participated in a JCRC-NY organized "study tour" to Israel in late November 2022 (cost $5,000-$7,500 per person, paid by JCRC). Initially failed to disclose the trip on annual financial disclosure filings but said he would revise. Source: https://www.cityandstateny.com/politics/2023/06/some-nyc-council-members-didnt-disclose-their-free-tour-israel/387391/
+
+PERSON_ID: 226
+NAME: Shirley Aldebol
+CHAMBER: city_council
+DISTRICT: D13
+AI_STANCE: unknown
+AI_RATIONALE: Aldebol took office January 2026 as a labor leader and union organizer. No public statements on Israel/Palestine were found.
+CRITERIA_MATCHES: none
+EVIDENCE: No evidence found. Aldebol assumed office January 2026. Her public focus has been on labor issues, affordable housing, and working-class concerns. No statements on Israel/Palestine located.
+
+PERSON_ID: 227
+NAME: Pierina Ana Sanchez
+CHAMBER: city_council
+DISTRICT: D14
+AI_STANCE: oppose
+AI_RATIONALE: Sanchez signed a Local Progress letter on January 9, 2024 calling for "a durable ceasefire" in Gaza, aligning with the progressive pro-ceasefire bloc.
+CRITERIA_MATCHES: Called for unconditional ceasefire
+EVIDENCE: Signed Local Progress letter on January 9, 2024 calling for "a durable ceasefire." Source: https://www.cityandstateny.com/politics/2024/03/new-york-elected-officials-calling-ceasefire-gaza/394535/
+
+PERSON_ID: 228
+NAME: Oswald Feliz
+CHAMBER: city_council
+DISTRICT: D15
+AI_STANCE: unknown
+AI_RATIONALE: No public statements or positions on Israel/Palestine were found for this Bronx council member. He was not listed among ceasefire signers or pro-Israel statement supporters.
+CRITERIA_MATCHES: none
+EVIDENCE: No evidence found. Feliz was not listed among NYC Council members calling for a ceasefire, nor among those who signed pro-Israel statements. No public statements on Israel/Palestine located.
+
+PERSON_ID: 229
+NAME: Althea Stevens
+CHAMBER: city_council
+DISTRICT: D16
+AI_STANCE: oppose
+AI_RATIONALE: Stevens signed a Local Progress letter on January 9, 2024 calling for "a durable ceasefire" in Gaza.
+CRITERIA_MATCHES: Called for unconditional ceasefire
+EVIDENCE: Signed Local Progress letter on January 9, 2024 calling for "a durable ceasefire." Source: https://www.cityandstateny.com/politics/2024/03/new-york-elected-officials-calling-ceasefire-gaza/394535/

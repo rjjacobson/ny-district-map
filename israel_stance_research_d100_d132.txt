@@ -1,0 +1,362 @@
+```
+PERSON_ID: 163
+NAME: Paula Elaine Kay
+CHAMBER: assembly
+DISTRICT: D100
+AI_STANCE: unknown
+AI_RATIONALE: No public statements or legislative actions regarding Israel/Palestine were found. She is a freshman member (sworn in January 2025) representing Sullivan County.
+CRITERIA_MATCHES: none
+EVIDENCE: No Israel-related statements, votes, or positions found in web searches. She spoke on a Holocaust Remembrance Day resolution in January 2025 but this does not indicate a specific Israel policy position.
+```
+
+```
+PERSON_ID: 164
+NAME: Brian Maher
+CHAMBER: assembly
+DISTRICT: D101
+AI_STANCE: unknown
+AI_RATIONALE: No public statements on Israel/Palestine were found. Republican Navy Reserve member deployed overseas in 2025; no Israel-specific positions identified.
+CRITERIA_MATCHES: none
+EVIDENCE: No Israel-related statements found. Maher is a Republican and Navy Reservist, but no specific Israel positions are on the public record from web searches.
+```
+
+```
+PERSON_ID: 165
+NAME: Chris Tague
+CHAMBER: assembly
+DISTRICT: D102
+AI_STANCE: strongly_support
+AI_RATIONALE: Tague praised the Trump-brokered Israel-Palestine peace deal as a "game changer" and called for the removal of assembly colleagues who voiced support for Hamas or the DSA, indicating strong pro-Israel alignment.
+CRITERIA_MATCHES: Strong condemnation of Oct 7 / Hamas
+EVIDENCE: Tague praised the Trump Israel-Palestine peace deal as saving lives and offering "a brighter future for both Israelis and Palestinians" (Facebook post). He also called for the removal of DSA-aligned assembly members who he said supported Hamas after Oct 7. Source: https://www.facebook.com/chris.tague.14/photos/president-trumps-historic-israel-palestine-peace-deal-is-a-game-changer-that-bri/1206202051319187/ ; https://midhudsonnews.com/2023/10/16/assemblymembers-begin-war-on-words-over-israel/
+```
+
+```
+PERSON_ID: 166
+NAME: Sarahana Shrestha
+CHAMBER: assembly
+DISTRICT: D103
+AI_STANCE: strongly_oppose
+AI_RATIONALE: DSA member who cosponsored the "Not on Our Dime" bill targeting Israeli settlement funding, called for an immediate ceasefire, criticized Governor Hochul's pro-Israel response as "calling for more deaths and war crimes," and was one of the first to call for ceasefire in 2023.
+CRITERIA_MATCHES: Cosponsored anti-settlement legislation, Called for unconditional ceasefire, Equivocated on Oct 7
+EVIDENCE: Cosponsored "Not on Our Dime" bill (A6943) with Mamdani targeting nonprofit funding of Israeli settlements. Signed January 2024 JVP Action letter calling for immediate and permanent ceasefire. Tweeted "The Governor has no empathy for her Palestinian constituents. Instead, she effectively calls for more deaths and war crimes." Sources: https://www.cityandstateny.com/politics/2024/03/new-york-elected-officials-calling-ceasefire-gaza/394535/ ; https://jacobin.com/2023/08/zohran-mamdani-not-on-our-dime-new-york-state-zionism-nonprofits ; https://x.com/sarahana/status/1712554662002671863
+```
+
+```
+PERSON_ID: 167
+NAME: Jonathan G. Jacobson
+CHAMBER: assembly
+DISTRICT: D104
+AI_STANCE: strongly_support
+AI_RATIONALE: Signed the October 2023 "New York Legislators Stand with Israel" letter, which strongly condemned the Hamas attack and pledged solidarity with Israel and the Jewish state.
+CRITERIA_MATCHES: Signed solidarity letter with Israel, Strong condemnation of Oct 7 / Hamas
+EVIDENCE: Listed as a signatory on the October 20, 2023 "NEW YORK LEGISLATORS STAND WITH ISRAEL" letter from the NY Assembly/Senate, which called the Oct 7 attack "a war crime" and pledged to "continue to stand with Israel." Source: https://assembly.state.ny.us/write/upload/member_files/013/pdfs/20231030_0107834.pdf
+```
+
+```
+PERSON_ID: 168
+NAME: Anil Beephan, Jr.
+CHAMBER: assembly
+DISTRICT: D105
+AI_STANCE: strongly_support
+AI_RATIONALE: Only US state legislator to attend the JNS International Policy Summit in Jerusalem (April 2025), works closely with Jewish Federation in Dutchess County, and has spoken against anti-Zionism in state politics.
+CRITERIA_MATCHES: Attended pro-Israel rally/event, Strong condemnation of Oct 7 / Hamas
+EVIDENCE: Attended JNS International Policy Summit in Jerusalem in April 2025 as the only US state legislator present. Has visited Israel twice. Works with the Jewish Federation of Dutchess County. Stated the fight against "anti-Zionism and anti-Israel rhetoric" is ongoing. Sources: https://www.jns.org/ny-assemblyman-stands-with-jewish-community-at-jns-summit/ ; https://www.columbusjewishnews.com/jns/new-york-assemblyman-stands-with-jewish-community-at-jns-summit/article_e801a110-0947-517f-a966-4a9e0d974388.html
+```
+
+```
+PERSON_ID: 169
+NAME: Didi Barrett
+CHAMBER: assembly
+DISTRICT: D106
+AI_STANCE: unknown
+AI_RATIONALE: No public statements or legislative actions regarding Israel/Palestine were found in web searches. Long-serving Democrat representing the Hudson Valley.
+CRITERIA_MATCHES: none
+EVIDENCE: No Israel-related statements, votes, or positions found.
+```
+
+```
+PERSON_ID: 170
+NAME: Scott Bendett
+CHAMBER: assembly
+DISTRICT: D107
+AI_STANCE: strongly_support
+AI_RATIONALE: Jewish Republican who signed the October 2023 "Stand with Israel" letter, expressed deep concern over Hamas attacks, and affirmed Israel as one of the US's strongest allies that "deserves to exist without being terrorized."
+CRITERIA_MATCHES: Signed solidarity letter with Israel, Strong condemnation of Oct 7 / Hamas
+EVIDENCE: Signed the Oct 20, 2023 "NEW YORK LEGISLATORS STAND WITH ISRAEL" letter. Described himself as "a family man of strong Jewish faith" and stated Israel "deserves to exist without being terrorized." Source: https://assembly.state.ny.us/write/upload/member_files/013/pdfs/20231030_0107834.pdf
+```
+
+```
+PERSON_ID: 171
+NAME: John T. McDonald III
+CHAMBER: assembly
+DISTRICT: D108
+AI_STANCE: support
+AI_RATIONALE: Signed the October 2023 "New York Legislators Stand with Israel" letter, expressing solidarity with Israel after the Hamas attack.
+CRITERIA_MATCHES: Signed solidarity letter with Israel, Strong condemnation of Oct 7 / Hamas
+EVIDENCE: Listed as a signatory on the October 20, 2023 "NEW YORK LEGISLATORS STAND WITH ISRAEL" letter. Source: https://assembly.state.ny.us/write/upload/member_files/013/pdfs/20231030_0107834.pdf
+```
+
+```
+PERSON_ID: 172
+NAME: Gabriella A. Romero
+CHAMBER: assembly
+DISTRICT: D109
+AI_STANCE: unknown
+AI_RATIONALE: Freshman member (January 2025) with Working Families Party endorsement and progressive platform, but no specific Israel/Palestine positions were found in web searches.
+CRITERIA_MATCHES: none
+EVIDENCE: No Israel-related statements found. Endorsed by Working Families Party and progressive organizations. Her platform focuses on housing, healthcare, childcare, and public safety.
+```
+
+```
+PERSON_ID: 173
+NAME: Phil Steck
+CHAMBER: assembly
+DISTRICT: D110
+AI_STANCE: support
+AI_RATIONALE: Signed the October 2023 "Stand with Israel" letter and affirms Israel's security must be "paramount," though he is critical of West Bank settlements, calling them "a disaster for the prospect of peace."
+CRITERIA_MATCHES: Signed solidarity letter with Israel, Strong condemnation of Oct 7 / Hamas
+EVIDENCE: Signed the Oct 20, 2023 "NEW YORK LEGISLATORS STAND WITH ISRAEL" letter. On his assembly page stated: "The security and defense of Israel must be paramount" but also "The settler movement has been a disaster for the prospect of peace and security for the State of Israel." Source: https://assembly.state.ny.us/write/upload/member_files/013/pdfs/20231030_0107834.pdf ; https://assembly.state.ny.us/mem/Phil-Steck/story/107661
+```
+
+```
+PERSON_ID: 174
+NAME: Angelo Santabarbara
+CHAMBER: assembly
+DISTRICT: D111
+AI_STANCE: unknown
+AI_RATIONALE: No public statements or legislative actions regarding Israel/Palestine were found in web searches.
+CRITERIA_MATCHES: none
+EVIDENCE: No Israel-related statements, votes, or positions found.
+```
+
+```
+PERSON_ID: 175
+NAME: Mary Beth Walsh
+CHAMBER: assembly
+DISTRICT: D112
+AI_STANCE: unknown
+AI_RATIONALE: No public statements or legislative actions regarding Israel/Palestine were found. Republican Assembly Minority Leader Pro Tempore.
+CRITERIA_MATCHES: none
+EVIDENCE: No Israel-related statements, votes, or positions found.
+```
+
+```
+PERSON_ID: 176
+NAME: Carrie Woerner
+CHAMBER: assembly
+DISTRICT: D113
+AI_STANCE: support
+AI_RATIONALE: Signed the October 2023 "New York Legislators Stand with Israel" letter expressing solidarity with Israel after the Hamas attack.
+CRITERIA_MATCHES: Signed solidarity letter with Israel, Strong condemnation of Oct 7 / Hamas
+EVIDENCE: Listed as signatory on the October 20, 2023 "NEW YORK LEGISLATORS STAND WITH ISRAEL" letter. Source: https://assembly.state.ny.us/write/upload/member_files/013/pdfs/20231030_0107834.pdf
+```
+
+```
+PERSON_ID: 177
+NAME: Matthew Simpson
+CHAMBER: assembly
+DISTRICT: D114
+AI_STANCE: strongly_support
+AI_RATIONALE: Signed the October 2023 "Stand with Israel" letter and separately acknowledged the Trump-brokered Israel-Palestine peace deal, consistently expressing solidarity with Israel.
+CRITERIA_MATCHES: Signed solidarity letter with Israel, Strong condemnation of Oct 7 / Hamas
+EVIDENCE: Signed the Oct 20, 2023 "NEW YORK LEGISLATORS STAND WITH ISRAEL" letter. Also issued a statement commending the Trump peace agreement. Source: https://assembly.state.ny.us/write/upload/member_files/013/pdfs/20231030_0107834.pdf ; https://nyassembly.gov/mem/Matthew-Simpson/story/107973
+```
+
+```
+PERSON_ID: 178
+NAME: Michael Cashman
+CHAMBER: assembly
+DISTRICT: D115
+AI_STANCE: unknown
+AI_RATIONALE: Freshman member elected in a November 2025 special election. No public statements on Israel/Palestine were found.
+CRITERIA_MATCHES: none
+EVIDENCE: No Israel-related statements, votes, or positions found. Cashman was elected in November 2025 and has limited public record on foreign policy issues.
+```
+
+```
+PERSON_ID: 179
+NAME: Scott Gray
+CHAMBER: assembly
+DISTRICT: D116
+AI_STANCE: strongly_support
+AI_RATIONALE: Signed the October 2023 "Stand with Israel" letter and attended a press conference opposing the "Not On Our Dime" bill, calling it "anti-Israel, anti-Semitic" and "highly offensive and discriminatory."
+CRITERIA_MATCHES: Signed solidarity letter with Israel, Strong condemnation of Oct 7 / Hamas
+EVIDENCE: Signed the Oct 20, 2023 "NEW YORK LEGISLATORS STAND WITH ISRAEL" letter. Attended a May 2023 press conference opposing the "Not On Our Dime" bill (A6943), calling it "anti-Israel, anti-Semitic...highly offensive and discriminatory to all of our Jewish friends." Source: https://assembly.state.ny.us/write/upload/member_files/013/pdfs/20231030_0107834.pdf ; https://assembly.state.ny.us/mem/Scott-Gray/story/106347
+```
+
+```
+PERSON_ID: 180
+NAME: Ken Blankenbush
+CHAMBER: assembly
+DISTRICT: D117
+AI_STANCE: unknown
+AI_RATIONALE: No public statements or legislative actions regarding Israel/Palestine were found. Long-serving Republican representing the North Country.
+CRITERIA_MATCHES: none
+EVIDENCE: No Israel-related statements, votes, or positions found.
+```
+
+```
+PERSON_ID: 181
+NAME: Robert Smullen
+CHAMBER: assembly
+DISTRICT: D118
+AI_STANCE: strongly_support
+AI_RATIONALE: Condemned the Hamas attack as "unprovoked and abhorrent" and called Israel "a peaceful partner in a large global alliance," expressing strong support for Israel's right to self-defense.
+CRITERIA_MATCHES: Strong condemnation of Oct 7 / Hamas
+EVIDENCE: Stated: "The unprovoked and abhorrent attack on the state of Israel by Hamas is a reminder that terrorists will stop at nothing in their efforts to humiliate and destroy a peaceful partner in a large global alliance." Retired Marine Corps Colonel with strong military background. The "NEW YORK LEGISLATORS STAND WITH ISRAEL" PDF is hosted on his assembly page. Source: https://assembly.state.ny.us/write/upload/member_files/013/pdfs/20231030_0107834.pdf
+```
+
+```
+PERSON_ID: 182
+NAME: Marianne Buttenschon
+CHAMBER: assembly
+DISTRICT: D119
+AI_STANCE: unknown
+AI_RATIONALE: No public statements or legislative actions regarding Israel/Palestine were found.
+CRITERIA_MATCHES: none
+EVIDENCE: No Israel-related statements, votes, or positions found.
+```
+
+```
+PERSON_ID: 183
+NAME: William A. Barclay
+CHAMBER: assembly
+DISTRICT: D120
+AI_STANCE: support
+AI_RATIONALE: Former Assembly Minority Leader who stated he "proudly stands with the people of Israel and the Jewish community" and prayed for their safety during the Oct 7 anniversary commemoration.
+CRITERIA_MATCHES: Strong condemnation of Oct 7 / Hamas
+EVIDENCE: Stated: "I proudly stand with the people of Israel and the Jewish community, and pray for their peace, safety and security during these unsettled times." Made in context of commemorating the October 7th attacks. Source: https://assembly.state.ny.us/mem/William-A-Barclay/story/112188
+```
+
+```
+PERSON_ID: 184
+NAME: Joe Angelino
+CHAMBER: assembly
+DISTRICT: D121
+AI_STANCE: unknown
+AI_RATIONALE: No public statements on Israel/Palestine were found. Republican and retired Marine/police chief.
+CRITERIA_MATCHES: none
+EVIDENCE: No Israel-related statements, votes, or positions found.
+```
+
+```
+PERSON_ID: 185
+NAME: Brian D. Miller
+CHAMBER: assembly
+DISTRICT: D122
+AI_STANCE: unknown
+AI_RATIONALE: No public statements or legislative actions regarding Israel/Palestine were found.
+CRITERIA_MATCHES: none
+EVIDENCE: No Israel-related statements, votes, or positions found.
+```
+
+```
+PERSON_ID: 186
+NAME: Donna A. Lupardo
+CHAMBER: assembly
+DISTRICT: D123
+AI_STANCE: unknown
+AI_RATIONALE: No public statements or legislative actions regarding Israel/Palestine were found. Long-serving Democrat chairing the Agriculture Committee.
+CRITERIA_MATCHES: none
+EVIDENCE: No Israel-related statements, votes, or positions found.
+```
+
+```
+PERSON_ID: 187
+NAME: Christopher S. Friend
+CHAMBER: assembly
+DISTRICT: D124
+AI_STANCE: unknown
+AI_RATIONALE: No public statements or legislative actions regarding Israel/Palestine were found. Long-serving Republican from the Southern Tier.
+CRITERIA_MATCHES: none
+EVIDENCE: No Israel-related statements, votes, or positions found.
+```
+
+```
+PERSON_ID: 188
+NAME: Dr. Anna R. Kelles
+CHAMBER: assembly
+DISTRICT: D125
+AI_STANCE: unknown
+AI_RATIONALE: Pro-Palestinian groups targeted her at a cancelled Ithaca College event, depicting her with blood splatters for alleged "pro-Israel actions," but her specific positions on Israel/Gaza could not be confirmed from available sources.
+CRITERIA_MATCHES: none
+EVIDENCE: A scheduled panel at Ithaca College was cancelled after pro-Palestinian groups protested, posting images of Kelles and other panelists with blood splatters and listing "resolutions and other actions" they claimed were pro-Israel. A petition also demanded she call for ceasefire, suggesting she had not done so. However, no direct statements from Kelles on Israel/Gaza were found. Sources: https://www.ithaca.com/news/ithaca/tompkins-chamber-cancels-event-with-panel-of-elected-officials-due-to-safety-concerns/article_9563a0b9-fe95-461e-83f7-527a71b2fe7a.html ; https://actionnetwork.org/petitions/demand-lea-webb-and-anna-kelles-take-a-stand-against-gazas-man-made-famine
+```
+
+```
+PERSON_ID: 189
+NAME: John Lemondes
+CHAMBER: assembly
+DISTRICT: D126
+AI_STANCE: support
+AI_RATIONALE: Commended the Trump-brokered Gaza ceasefire and hostage release deal, indicating support for Israel's security and the return of Israeli hostages.
+CRITERIA_MATCHES: Strong condemnation of Oct 7 / Hamas
+EVIDENCE: Issued a statement commending President Trump for the Gaza ceasefire and the release of the remaining 20 Israeli hostages. Source: https://assembly.state.ny.us/mem/John-Lemondes/story/115566
+```
+
+```
+PERSON_ID: 190
+NAME: Al Stirpe
+CHAMBER: assembly
+DISTRICT: D127
+AI_STANCE: unknown
+AI_RATIONALE: No direct Israel/Palestine statements were found, though the "Stand with Israel" PDF appeared in his search results. He was NOT listed as a signatory on the October 2023 letter itself.
+CRITERIA_MATCHES: none
+EVIDENCE: The "NEW YORK LEGISLATORS STAND WITH ISRAEL" PDF appeared in search results related to Stirpe, but he is not listed among the signatories on the letter. No other Israel-related positions found.
+```
+
+```
+PERSON_ID: 191
+NAME: Pamela J. Hunter
+CHAMBER: assembly
+DISTRICT: D128
+AI_STANCE: unknown
+AI_RATIONALE: No public statements on Israel/Palestine were found. Speaker Pro Tempore of the Assembly and Army veteran.
+CRITERIA_MATCHES: none
+EVIDENCE: No Israel-related statements, votes, or positions found.
+```
+
+```
+PERSON_ID: 192
+NAME: William B. Magnarelli
+CHAMBER: assembly
+DISTRICT: D129
+AI_STANCE: unknown
+AI_RATIONALE: No public statements or legislative actions regarding Israel/Palestine were found. Long-serving Democrat chairing the Transportation Committee.
+CRITERIA_MATCHES: none
+EVIDENCE: No Israel-related statements, votes, or positions found.
+```
+
+```
+PERSON_ID: 193
+NAME: Brian Manktelow
+CHAMBER: assembly
+DISTRICT: D130
+AI_STANCE: support
+AI_RATIONALE: Signed the October 2023 "New York Legislators Stand with Israel" letter expressing solidarity with Israel after the Hamas attack.
+CRITERIA_MATCHES: Signed solidarity letter with Israel, Strong condemnation of Oct 7 / Hamas
+EVIDENCE: Listed as signatory on the October 20, 2023 "NEW YORK LEGISLATORS STAND WITH ISRAEL" letter. Source: https://assembly.state.ny.us/write/upload/member_files/013/pdfs/20231030_0107834.pdf
+```
+
+```
+PERSON_ID: 194
+NAME: Jeff Gallahan
+CHAMBER: assembly
+DISTRICT: D131
+AI_STANCE: strongly_support
+AI_RATIONALE: Signed the October 2023 "Stand with Israel" letter and attended an April 2024 press conference in Albany calling for the release of hostages held by Hamas in Gaza, including two New York citizens.
+CRITERIA_MATCHES: Signed solidarity letter with Israel, Strong condemnation of Oct 7 / Hamas, Attended pro-Israel rally/event
+EVIDENCE: Signed the Oct 20, 2023 "NEW YORK LEGISLATORS STAND WITH ISRAEL" letter. Attended April 2024 press conference calling for release of Hamas-held hostages, noting two were New York citizens. Source: https://assembly.state.ny.us/write/upload/member_files/013/pdfs/20231030_0107834.pdf ; https://nyassembly.gov/mem/Jeff-Gallahan/story/109892
+```
+
+```
+PERSON_ID: 195
+NAME: Philip A. Palmesano
+CHAMBER: assembly
+DISTRICT: D132
+AI_STANCE: unknown
+AI_RATIONALE: No public statements or legislative actions regarding Israel/Palestine were found. Long-serving Republican and Assistant Minority Leader.
+CRITERIA_MATCHES: none
+EVIDENCE: No Israel-related statements, votes, or positions found.
+```

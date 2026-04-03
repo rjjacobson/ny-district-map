@@ -1,0 +1,296 @@
+PERSON_ID: 64
+NAME: Tommy John Schiavoni
+CHAMBER: assembly
+DISTRICT: D1
+AI_STANCE: unknown
+AI_RATIONALE: Newly elected in November 2024 (first term beginning 2025). No public statements or legislative actions found regarding Israel/Palestine issues.
+CRITERIA_MATCHES: none
+EVIDENCE: No Israel-related statements, votes, or positions found. Former teacher and local government official from Suffolk County focused on environmental and local governance issues.
+
+PERSON_ID: 65
+NAME: Jodi Giglio
+CHAMBER: assembly
+DISTRICT: D2
+AI_STANCE: support
+AI_RATIONALE: Signed the bipartisan "New York Legislators Stand with Israel" solidarity letter in October 2023, demonstrating support for Israel following the Oct 7 attacks.
+CRITERIA_MATCHES: Signed solidarity letter with Israel, Strong condemnation of Oct 7 / Hamas
+EVIDENCE: Signed the October 20, 2023 "New York Legislators Stand With Israel" letter organized by Assemblymember Lavine, which condemned the Oct 7 attack as a "war crime" and pledged to "continue to stand with Israel." Source: https://assembly.state.ny.us/write/upload/member_files/013/pdfs/20231030_0107834.pdf
+
+PERSON_ID: 66
+NAME: Joe DeStefano
+CHAMBER: assembly
+DISTRICT: D3
+AI_STANCE: support
+AI_RATIONALE: As part of the Assembly Minority Conference, called for the release of hostages held in Gaza following Oct 7 attacks. Republican member who has aligned with pro-Israel positions.
+CRITERIA_MATCHES: Strong condemnation of Oct 7 / Hamas
+EVIDENCE: Joined Assembly Minority Conference members in calling for the release of 134 hostages held in Gaza, including two New Yorkers, after the Oct 7 terrorist attacks.
+
+PERSON_ID: 67
+NAME: Rebecca Kassay
+CHAMBER: assembly
+DISTRICT: D4
+AI_STANCE: unknown
+AI_RATIONALE: Newly elected in November 2024 (first term beginning 2025), defeating Republican incumbent. No public statements found regarding Israel/Palestine issues.
+CRITERIA_MATCHES: none
+EVIDENCE: No Israel-related statements, votes, or positions found. Democrat focused on environmental conservation, small business, and local government issues.
+
+PERSON_ID: 68
+NAME: Doug Smith
+CHAMBER: assembly
+DISTRICT: D5
+AI_STANCE: support
+AI_RATIONALE: Signed the bipartisan "New York Legislators Stand with Israel" solidarity letter in October 2023 condemning the Oct 7 attacks and pledging solidarity with Israel.
+CRITERIA_MATCHES: Signed solidarity letter with Israel, Strong condemnation of Oct 7 / Hamas
+EVIDENCE: Signed the October 20, 2023 "New York Legislators Stand With Israel" letter. Source: https://assembly.state.ny.us/write/upload/member_files/013/pdfs/20231030_0107834.pdf
+
+PERSON_ID: 69
+NAME: Phil Ramos
+CHAMBER: assembly
+DISTRICT: D6
+AI_STANCE: unknown
+AI_RATIONALE: Long-serving Democrat and Deputy Speaker of the Assembly. No specific public statements or legislative positions found regarding Israel/Palestine issues.
+CRITERIA_MATCHES: none
+EVIDENCE: No Israel-related statements, votes, or positions found in public searches. Represents Suffolk County (Bay Shore, Brentwood, Central Islip area).
+
+PERSON_ID: 70
+NAME: Jarett Gandolfo
+CHAMBER: assembly
+DISTRICT: D7
+AI_STANCE: unknown
+AI_RATIONALE: Republican assemblyman from Suffolk County since 2021. No specific public statements or legislative positions found regarding Israel/Palestine issues.
+CRITERIA_MATCHES: none
+EVIDENCE: No Israel-related statements, votes, or positions found in public searches.
+
+PERSON_ID: 71
+NAME: Michael J. Fitzpatrick
+CHAMBER: assembly
+DISTRICT: D8
+AI_STANCE: support
+AI_RATIONALE: Signed the bipartisan "New York Legislators Stand with Israel" solidarity letter in October 2023 condemning the Oct 7 attacks and pledging solidarity with Israel.
+CRITERIA_MATCHES: Signed solidarity letter with Israel, Strong condemnation of Oct 7 / Hamas
+EVIDENCE: Signed the October 20, 2023 "New York Legislators Stand With Israel" letter. Source: https://assembly.state.ny.us/write/upload/member_files/013/pdfs/20231030_0107834.pdf
+
+PERSON_ID: 72
+NAME: Michael Durso
+CHAMBER: assembly
+DISTRICT: D9
+AI_STANCE: unknown
+AI_RATIONALE: Republican assemblyman from Nassau County (Massapequa Park) since 2021. No specific public statements or legislative positions found regarding Israel/Palestine issues.
+CRITERIA_MATCHES: none
+EVIDENCE: No Israel-related statements, votes, or positions found in public searches.
+
+PERSON_ID: 73
+NAME: Steve Stern
+CHAMBER: assembly
+DISTRICT: D10
+AI_STANCE: strongly_support
+AI_RATIONALE: Signed the Israel solidarity letter and released a separate statement condemning the Oct 7 Hamas attacks. Has been a consistent vocal supporter of Israel throughout his tenure.
+CRITERIA_MATCHES: Signed solidarity letter with Israel, Strong condemnation of Oct 7 / Hamas
+EVIDENCE: Signed the October 20, 2023 "New York Legislators Stand With Israel" letter. Also released an individual statement condemning the "horrific and unprovoked attacks, murder and taking of Israeli civilians by Hamas." Source: https://assembly.state.ny.us/write/upload/member_files/013/pdfs/20231030_0107834.pdf
+
+PERSON_ID: 74
+NAME: Kwani B. O'Pharrow
+CHAMBER: assembly
+DISTRICT: D11
+AI_STANCE: unknown
+AI_RATIONALE: Newly elected in November 2024 (first term beginning 2025). Former NYPD detective and Navy veteran. No public statements found regarding Israel/Palestine issues.
+CRITERIA_MATCHES: none
+EVIDENCE: No Israel-related statements, votes, or positions found. Democrat representing parts of Suffolk and Nassau counties.
+
+PERSON_ID: 75
+NAME: Keith P. Brown
+CHAMBER: assembly
+DISTRICT: D12
+AI_STANCE: strongly_support
+AI_RATIONALE: Signed the Israel solidarity letter and has made additional public statements declaring full support for Israel and solidarity with the Jewish community.
+CRITERIA_MATCHES: Signed solidarity letter with Israel, Strong condemnation of Oct 7 / Hamas
+EVIDENCE: Signed the October 20, 2023 "New York Legislators Stand With Israel" letter. Has stated he "stands with the Jewish community throughout New York and the U.S. and fully supports the State of Israel." Republican; announced he will not seek reelection. Source: https://assembly.state.ny.us/write/upload/member_files/013/pdfs/20231030_0107834.pdf
+
+PERSON_ID: 76
+NAME: Charles D. Lavine
+CHAMBER: assembly
+DISTRICT: D13
+AI_STANCE: strongly_support
+AI_RATIONALE: Authored and organized the "New York Legislators Stand with Israel" solidarity letter. Serves as President of the NY Chapter of the National Association of Jewish Legislators and is described as "a staunch voice for the Jewish community and for the state of Israel."
+CRITERIA_MATCHES: Signed solidarity letter with Israel, Strong condemnation of Oct 7 / Hamas, Sponsored antisemitism protection legislation
+EVIDENCE: Authored the October 20, 2023 "New York Legislators Stand With Israel" letter signed by dozens of legislators. Serves as President of the NY Chapter of the National Association of Jewish Legislators. Long-standing pro-Israel voice in the Assembly. Sources: https://assembly.state.ny.us/write/upload/member_files/013/pdfs/20231030_0107834.pdf ; https://spectrumlocalnews.com/nys/central-ny/politics/2023/10/30/new-york-lawmakers-sign-onto-letter-supporting-israel
+
+PERSON_ID: 77
+NAME: David G. McDonough
+CHAMBER: assembly
+DISTRICT: D14
+AI_STANCE: strongly_support
+AI_RATIONALE: Signed the Israel solidarity letter and has made explicit public statements that "Israel is our closest ally in the Middle East and has the absolute right to both exist and defend itself."
+CRITERIA_MATCHES: Signed solidarity letter with Israel, Strong condemnation of Oct 7 / Hamas
+EVIDENCE: Signed the October 20, 2023 "New York Legislators Stand With Israel" letter. Stated: "Israel is our closest ally in the Middle East and has the absolute right to both exist and defend itself" and that he "stands with Israel and all our Jewish neighbors across New York." Source: https://assembly.state.ny.us/write/upload/member_files/013/pdfs/20231030_0107834.pdf
+
+PERSON_ID: 78
+NAME: Jake Blumencranz
+CHAMBER: assembly
+DISTRICT: D15
+AI_STANCE: strongly_support
+AI_RATIONALE: Signed the Israel solidarity letter, introduced the United Against Hate Act to combat antisemitism, hosted the Israeli Consul General at the State Capitol, and has been vocally critical of anti-Israel protests and the BDS movement.
+CRITERIA_MATCHES: Signed solidarity letter with Israel, Strong condemnation of Oct 7 / Hamas, Sponsored antisemitism protection legislation, Attended pro-Israel rally/event
+EVIDENCE: Signed the October 20, 2023 solidarity letter. Introduced the United Against Hate Act. Welcomed Israeli Consul General Ofir Akunis to the NY State Capitol. Criticized antisemitic rhetoric at pro-Palestine protests. Jewish member of the Jewish Legislators Caucus. Sources: https://assembly.state.ny.us/write/upload/member_files/013/pdfs/20231030_0107834.pdf ; https://www.foxnews.com/opinion/stop-talking-start-teaching-new-york-must-fight-end-antisemitism-our-schools
+
+PERSON_ID: 79
+NAME: Daniel J. Norber
+CHAMBER: assembly
+DISTRICT: D16
+AI_STANCE: strongly_support
+AI_RATIONALE: Former IDF soldier (served as staff sergeant in military police), raised in Israel, grandchild of Holocaust survivors. Ran explicitly on combating antisemitism and supporting Israel. Proposed mask ban targeting anti-Israel protest tactics.
+CRITERIA_MATCHES: Strong condemnation of Oct 7 / Hamas, Sponsored antisemitism protection legislation, Attended pro-Israel rally/event
+EVIDENCE: Born in the US, raised in Israel, drafted into the IDF at age 17. Stated: "I saw what happened in Israel. I'll do whatever I can to prevent that from happening here." Proposed statewide mask ban aimed at preventing anonymity during anti-Israel demonstrations. First Republican to win the 16th District seat in 50 years, running on anti-antisemitism platform. Not seeking reelection. Sources: https://www.algemeiner.com/2024/11/11/ex-idf-soldier-becomes-first-republican-50-years-win-new-york-state-assembly-seat-long-island-district/ ; https://www.jfeed.com/news-israel/sms526
+
+PERSON_ID: 80
+NAME: John K. Mikulin
+CHAMBER: assembly
+DISTRICT: D17
+AI_STANCE: support
+AI_RATIONALE: Has spoken out against Iran's attacks on Israel and supports the Combating Campus Anti-Semitism Act. Republican member aligned with pro-Israel positions.
+CRITERIA_MATCHES: Strong condemnation of Oct 7 / Hamas, Cosponsored antisemitism protection legislation
+EVIDENCE: Publicly expressed outrage at the Iranian regime's attacks on Israel. Supports the "Combating Campus Anti-Semitism Act." Republican member representing Nassau County.
+
+PERSON_ID: 81
+NAME: Noah Burroughs
+CHAMBER: assembly
+DISTRICT: D18
+AI_STANCE: unknown
+AI_RATIONALE: Newly elected in November 2024 (first term beginning 2025). Former NFL player and history teacher. No public statements found regarding Israel/Palestine issues.
+CRITERIA_MATCHES: none
+EVIDENCE: No Israel-related statements, votes, or positions found. Democrat representing Hempstead, Baldwin, Freeport, Roosevelt, and Uniondale in Nassau County.
+
+PERSON_ID: 82
+NAME: Edward P. Ra
+CHAMBER: assembly
+DISTRICT: D19
+AI_STANCE: strongly_support
+AI_RATIONALE: Assembly Minority Leader who introduced the "Dismantling Student Antisemitism Act" requiring colleges to implement antisemitism training. Has been vocal against antisemitism on campuses and supportive of Israel.
+CRITERIA_MATCHES: Sponsored antisemitism protection legislation, Strong condemnation of Oct 7 / Hamas
+EVIDENCE: Introduced the "Dismantling Student Antisemitism Act" requiring accredited colleges in NY to implement antisemitism training. Stated: "It's been frustrating to see such blatant antisemitism unravel across our state." Named Assembly Minority Leader in February 2026. Source: https://assembly.state.ny.us/mem/Edward-P-Ra/story/108294
+
+PERSON_ID: 83
+NAME: Ari Brown
+CHAMBER: assembly
+DISTRICT: D20
+AI_STANCE: strongly_support
+AI_RATIONALE: First Republican Orthodox Jew elected to the Assembly. Signed the Israel solidarity letter, hosted the Israeli Consul General, and has explicitly stated he will "stand shoulder to shoulder with Israel."
+CRITERIA_MATCHES: Signed solidarity letter with Israel, Strong condemnation of Oct 7 / Hamas, Attended pro-Israel rally/event
+EVIDENCE: Signed the October 20, 2023 solidarity letter. Welcomed Israeli Consul General Ofir Akunis to the State Capitol alongside Blumencranz. Has stated he will "defend America's values, protect Long Island families, and stand shoulder to shoulder with Israel." First Republican Orthodox Jew elected to the NY Assembly. Sources: https://assembly.state.ny.us/write/upload/member_files/013/pdfs/20231030_0107834.pdf ; https://5townscentral.com/2025/06/22/assemblyman-ari-brown-a-peace-strategist-in-a-world-of-reactionaries/
+
+PERSON_ID: 84
+NAME: Judy Griffin
+CHAMBER: assembly
+DISTRICT: D21
+AI_STANCE: unknown
+AI_RATIONALE: Democrat representing Nassau County. No public statements or legislative positions found regarding Israel/Palestine issues despite multiple searches.
+CRITERIA_MATCHES: none
+EVIDENCE: No Israel-related statements, votes, or positions found. First elected 2018, lost in 2022, won back seat in 2024. Represents Rockville Centre area in Nassau County.
+
+PERSON_ID: 85
+NAME: Michaelle C. Solages
+CHAMBER: assembly
+DISTRICT: D22
+AI_STANCE: support
+AI_RATIONALE: Signed the bipartisan "New York Legislators Stand with Israel" solidarity letter in October 2023. First person of Haitian descent in the NY State Legislature; chairs the Black, Puerto Rican, Hispanic and Asian Legislative Caucus.
+CRITERIA_MATCHES: Signed solidarity letter with Israel, Strong condemnation of Oct 7 / Hamas
+EVIDENCE: Signed the October 20, 2023 "New York Legislators Stand With Israel" letter. Source: https://assembly.state.ny.us/write/upload/member_files/013/pdfs/20231030_0107834.pdf
+
+PERSON_ID: 86
+NAME: Stacey Pheffer Amato
+CHAMBER: assembly
+DISTRICT: D23
+AI_STANCE: strongly_support
+AI_RATIONALE: Self-described "proud Zionist" who signed the solidarity letter, participated in a state visit to Israel, visited a kibbutz near the Gaza border, and has chanted "Am Yisrael Chai" in response to pro-Palestinian protesters.
+CRITERIA_MATCHES: Signed solidarity letter with Israel, Strong condemnation of Oct 7 / Hamas, Attended pro-Israel rally/event
+EVIDENCE: Signed the October 20, 2023 solidarity letter. Stated "I have loved Israel since my first trip in 1981." Participated in a state visit to Israel in early 2023, visiting Kibbutz Kfar Aziz near the Gaza border. Described as "a proud Zionist." Chanted "Am Yisrael Chai" at a SUNY event countering pro-Palestinian protesters. Sources: https://assembly.state.ny.us/write/upload/member_files/013/pdfs/20231030_0107834.pdf ; https://www.nyassembly.gov/mem/Stacey-Pheffer-Amato/story/108989
+
+PERSON_ID: 87
+NAME: David I. Weprin
+CHAMBER: assembly
+DISTRICT: D24
+AI_STANCE: strongly_support
+AI_RATIONALE: Orthodox Jewish assemblyman, Co-President of the National Association of Jewish Legislators. Signed the solidarity letter, supported Gov. Cuomo's anti-BDS executive order, and sent letters threatening action against BDS activity at SUNY campuses.
+CRITERIA_MATCHES: Signed solidarity letter with Israel, Strong condemnation of Oct 7 / Hamas, Cosponsored anti-BDS legislation
+EVIDENCE: Signed the October 20, 2023 solidarity letter. Co-President of the National Association of Jewish Legislators (since 2017). Supported Cuomo's executive order divesting public funds from BDS-supporting entities, stating "The BDS movement seeks to de-legitimize Israel." Co-authored letter with Lavine threatening SUNY Binghamton Student Association over BDS activity. Sources: https://assembly.state.ny.us/write/upload/member_files/013/pdfs/20231030_0107834.pdf ; https://en.wikipedia.org/wiki/David_Weprin
+
+PERSON_ID: 88
+NAME: Nily Rozic
+CHAMBER: assembly
+DISTRICT: D25
+AI_STANCE: strongly_support
+AI_RATIONALE: Israeli-born (first Israeli-born member of the NY State Legislature), has strongly condemned Hamas as a "radical genocidal death cult," spoken against the BDS movement, sponsored pro-Israel resolutions, and marked the anniversary of Oct 7 with commemorative statements.
+CRITERIA_MATCHES: Strong condemnation of Oct 7 / Hamas, Cosponsored anti-BDS legislation, Attended pro-Israel rally/event, Signed solidarity letter with Israel
+EVIDENCE: First Israeli-born member of the NY State Legislature. Called Hamas a "radical genocidal death cult." Organized "New York Stands With Israel" conference in 2016 combating BDS. Stated: "as lawmakers, we have an opportunity to speak out against the BDS movement." Sponsored resolution stating "Supporting Israel's right to exist is a fundamental American value." Spoke on privileged resolution congratulating Israel on its 77th anniversary. Met with families of Oct 7 hostages in Dec 2023. Sources: https://nystateofpolitics.com/state-of-politics/new-york/news/2023/10/10/israeli-assembly-member-nily-rozic-speaks-out-against-hamas-attacks ; https://nystateofpolitics.com/state-of-politics/new-york/politics/2024/10/07/nily-rozic-marks-1-year-since-hamas-attack-on-israel
+
+PERSON_ID: 89
+NAME: Edward C. Braunstein
+CHAMBER: assembly
+DISTRICT: D26
+AI_STANCE: strongly_support
+AI_RATIONALE: Signed the Israel solidarity letter and met with families of Oct 7 hostages alongside Assemblywoman Rozic. Represents Northeast Queens with a large Jewish community and advocates for pro-Israel issues.
+CRITERIA_MATCHES: Signed solidarity letter with Israel, Strong condemnation of Oct 7 / Hamas, Attended pro-Israel rally/event
+EVIDENCE: Signed the October 20, 2023 solidarity letter. On December 13, 2023, joined Assemblywoman Rozic and Israel in New York to meet with families of hostages taken during the Oct 7 attack. Advocates for the large Jewish community in Northeast Queens. Sources: https://assembly.state.ny.us/write/upload/member_files/013/pdfs/20231030_0107834.pdf
+
+PERSON_ID: 90
+NAME: Sam Berger
+CHAMBER: assembly
+DISTRICT: D27
+AI_STANCE: strongly_support
+AI_RATIONALE: Orthodox Jewish assemblyman, grandson of Holocaust survivors, who studied at a yeshiva in Jerusalem. Signed the solidarity letter, introduced the HOPE Act to codify the IHRA antisemitism definition in NY law, and has been a vocal defender of the Jewish community against antisemitism and anti-Israel protests.
+CRITERIA_MATCHES: Signed solidarity letter with Israel, Strong condemnation of Oct 7 / Hamas, Sponsored antisemitism protection legislation
+EVIDENCE: Signed the October 20, 2023 solidarity letter. Introduced the HOPE Act (Honoring Our Pledge to Eliminate Antisemitism) to codify the IHRA antisemitism definition in New York State law. Studied for four years at Yeshiva Bircas HaTorah in the Old City in Jerusalem. Orthodox Jew and grandson of Holocaust survivors. Criticized planned protests targeting Jewish communities. Sources: https://assembly.state.ny.us/write/upload/member_files/013/pdfs/20231030_0107834.pdf ; https://qns.com/2024/12/assembly-member-sam-berger-bill-to-codify-antisemitism-new-york/
+
+PERSON_ID: 91
+NAME: Andrew Hevesi
+CHAMBER: assembly
+DISTRICT: D28
+AI_STANCE: support
+AI_RATIONALE: Signed the Israel solidarity letter and has convened Jewish Leadership Breakfasts to address community concerns. Worked to secure $70 million for nonpublic school safety grants in response to post-Oct 7 antisemitism.
+CRITERIA_MATCHES: Signed solidarity letter with Israel, Strong condemnation of Oct 7 / Hamas
+EVIDENCE: Signed the October 20, 2023 solidarity letter. Convened Jewish Leadership Breakfasts with Queens-based Jewish organizations. Worked with State Senator Gianaris to secure $70 million for Nonpublic School Safety Equipment (NPSE) grants following Oct 7 attacks. Sources: https://assembly.state.ny.us/write/upload/member_files/013/pdfs/20231030_0107834.pdf ; https://assembly.state.ny.us/mem/Andrew-Hevesi/story/110451
+
+PERSON_ID: 92
+NAME: Alicia Hyndman
+CHAMBER: assembly
+DISTRICT: D29
+AI_STANCE: unknown
+AI_RATIONALE: Long-serving Democrat from Southeast Queens. No public statements or legislative positions found regarding Israel/Palestine issues despite searches.
+CRITERIA_MATCHES: none
+EVIDENCE: No Israel-related statements, votes, or positions found. Chairs the Higher Education Committee. Represents Laurelton, Rosedale, St. Albans, Springfield Gardens, and Jamaica.
+
+PERSON_ID: 93
+NAME: Steven Raga
+CHAMBER: assembly
+DISTRICT: D30
+AI_STANCE: unknown
+AI_RATIONALE: Democrat representing Woodside, Elmhurst, East Elmhurst, Maspeth, and Jackson Heights in Queens. First Filipino American in the NY State Legislature. No public statements found regarding Israel/Palestine issues.
+CRITERIA_MATCHES: none
+EVIDENCE: No Israel-related statements, votes, or positions found despite searches. First elected in November 2022.
+
+PERSON_ID: 94
+NAME: Khaleel M. Anderson
+CHAMBER: assembly
+DISTRICT: D31
+AI_STANCE: oppose
+AI_RATIONALE: Called for a ceasefire in Gaza in February 2024, though with a conditional framing ("with the right controls in place"), placing him among NY elected officials publicly critical of the continuation of military operations.
+CRITERIA_MATCHES: Called for unconditional ceasefire
+EVIDENCE: On February 27, 2024, Anderson wrote on X: "We are approaching nearly 150 days of conflict. There has to be a pathway towards peace in this moment. The killings of innocent lives as a casualty of a never-ending war can not sustain. It is clear that a ceasefire (with the right controls in place) can achieve this peace." Listed among NY elected officials calling for ceasefire by City & State NY. Source: https://www.cityandstateny.com/politics/2024/03/new-york-elected-officials-calling-ceasefire-gaza/394535/
+
+PERSON_ID: 95
+NAME: Vivian E. Cook
+CHAMBER: assembly
+DISTRICT: D32
+AI_STANCE: support
+AI_RATIONALE: Signed the bipartisan "New York Legislators Stand with Israel" solidarity letter in October 2023. Long-serving Democrat (35 years) from Southeast Queens; announced she will not seek reelection.
+CRITERIA_MATCHES: Signed solidarity letter with Israel, Strong condemnation of Oct 7 / Hamas
+EVIDENCE: Signed the October 20, 2023 "New York Legislators Stand With Israel" letter. Source: https://assembly.state.ny.us/write/upload/member_files/013/pdfs/20231030_0107834.pdf
+
+PERSON_ID: 96
+NAME: Clyde Vanel
+CHAMBER: assembly
+DISTRICT: D33
+AI_STANCE: unknown
+AI_RATIONALE: Democrat representing Cambria Heights, St. Albans, Hollis, Queens Village in Queens. No public statements or legislative positions found regarding Israel/Palestine issues despite searches.
+CRITERIA_MATCHES: none
+EVIDENCE: No Israel-related statements, votes, or positions found. Intellectual property attorney and entrepreneur; former chief of staff to State Senator James Sanders Jr.
