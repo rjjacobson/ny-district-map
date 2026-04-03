@@ -76,16 +76,22 @@
     .legend-item { display: flex; align-items: center; gap: 6px; }
     .legend-swatch { width: 16px; height: 12px; border-radius: 3px; border: 1px solid rgba(0,0,0,0.15); }
 
-    /* Sidebar — two-panel layout */
+    /* Sidebar — expandable two-panel layout */
     #sidebar {
-      width: 620px;
-      min-width: 620px;
+      width: 420px;
+      min-width: 420px;
       height: 100vh;
       background: #fafafa;
       border-left: 1px solid #e5e5e5;
       display: flex;
       flex-direction: column;
       overflow: hidden;
+      transition: width 0.25s ease;
+    }
+
+    #sidebar.detail-open {
+      width: 680px;
+      min-width: 680px;
     }
 
     #sidebar-header {
@@ -115,30 +121,30 @@
       overflow: hidden;
     }
 
-    /* Left: name list */
+    /* Left: name list — full width by default, shrinks when detail open */
     #list-panel {
-      width: 280px;
-      min-width: 280px;
+      flex: 1;
       overflow-y: auto;
-      border-right: 1px solid #e5e5e5;
       background: white;
+      transition: flex 0.25s ease;
     }
 
-    /* Right: detail panel */
+    .detail-open #list-panel {
+      flex: 0 0 280px;
+      border-right: 1px solid #e5e5e5;
+    }
+
+    /* Right: detail panel — hidden by default */
     #detail-panel {
       flex: 1;
       overflow-y: auto;
       background: #fafafa;
       padding: 0;
+      display: none;
     }
 
-    #detail-panel.empty {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      color: #aaa;
-      font-size: 13px;
-      font-style: italic;
+    .detail-open #detail-panel {
+      display: block;
     }
 
     /* Detail card inside right panel */
@@ -205,12 +211,14 @@
 
     .leg-row .party-dot { width: 9px; height: 9px; border-radius: 50%; flex-shrink: 0; }
     .leg-row .district-num { font-size: 11px; color: #aaa; width: 24px; flex-shrink: 0; text-align: right; font-weight: 500; }
-    .leg-row .leg-name { font-size: 12px; font-weight: 500; color: #1a1a1a; flex: 1; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .leg-row .leg-name { font-size: 13px; font-weight: 500; color: #1a1a1a; flex: 1; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
     .leg-row .evidence-count {
       font-size: 10px; color: #888; background: #f0f0f0; border-radius: 10px;
       padding: 1px 7px; flex-shrink: 0; font-weight: 600;
     }
-    .leg-row .leg-party { font-size: 10px; color: #888; flex-shrink: 0; }
+    .leg-row .leg-tag { font-size: 11px; color: #888; flex-shrink: 0; }
+    /* Hide tag text when detail panel is open (compact mode) */
+    .detail-open .leg-row .leg-tag { display: none; }
 
     /* Loading */
     .loading-overlay {
@@ -395,8 +403,9 @@
     // Detail card
     function showDetail(leg, chamber) {
       const ch = chamber || selectedChamber || activeLayer;
+      document.getElementById('sidebar').classList.add('detail-open');
+      setTimeout(() => map.invalidateSize(), 300);
       const panel = document.getElementById('detail-panel');
-      panel.className = '';
       const pos = positionsMap[leg.person_id];
       const hasStance = pos && pos.confidence !== 'unknown';
       const sColor = hasStance ? (STANCE_COLORS[pos.stance] || '#9ca3af') : '#d1d5db';
@@ -464,9 +473,10 @@
     }
 
     function hideDetail() {
+      document.getElementById('sidebar').classList.remove('detail-open');
+      setTimeout(() => map.invalidateSize(), 300);
       const panel = document.getElementById('detail-panel');
-      panel.className = 'empty';
-      panel.innerHTML = 'Select a legislator';
+      panel.innerHTML = '';
     }
 
     // Selection
@@ -705,11 +715,13 @@
       const dotColor = colorMode === 'israel' ? stanceColor(leg.person_id) : partyColor(leg.party);
       const evidenceCount = personCriteriaMap[leg.person_id] ? personCriteriaMap[leg.person_id].length : 0;
       const countBadge = evidenceCount > 0 ? `<span class="evidence-count">${evidenceCount}</span>` : '';
+      const tagText = colorMode === 'israel' ? stanceLabel(leg.person_id) : (leg.party || '');
       row.innerHTML = `
         <span class="district-num">${leg.district}</span>
         <span class="party-dot" style="background:${dotColor}"></span>
         <span class="leg-name">${leg.name}</span>
         ${countBadge}
+        <span class="leg-tag">${tagText}</span>
       `;
       row.addEventListener('mouseenter', () => {
         if (chamber === activeLayer) highlightOnMap(leg.district, chamber);
