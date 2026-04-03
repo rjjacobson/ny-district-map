@@ -270,6 +270,8 @@
       <div class="detail" id="dc-albany"></div>
       <div class="detail" id="dc-dist-phone"></div>
       <div class="detail" id="dc-email"></div>
+      <div class="detail" id="dc-website"></div>
+      <div class="detail" id="dc-term"></div>
     </div>
     <div id="legislator-list"></div>
   </div>
@@ -355,6 +357,10 @@
       document.getElementById('dc-albany').innerHTML = leg.phone_albany ? `<strong>Albany:</strong> ${leg.phone_albany}` : '';
       document.getElementById('dc-dist-phone').innerHTML = leg.phone_district ? `<strong>District:</strong> ${leg.phone_district}` : '';
       document.getElementById('dc-email').innerHTML = leg.email ? `<strong>Email:</strong> ${leg.email}` : '';
+      document.getElementById('dc-website').innerHTML = leg.website ? `<strong>Website:</strong> <a href="${leg.website}" target="_blank" style="color:#2563eb">${leg.website.replace(/^https?:\/\//, '')}</a>` : '';
+      document.getElementById('dc-term').innerHTML = leg.start_date || leg.end_date
+        ? `<strong>Term:</strong> ${leg.start_date || '?'} — ${leg.end_date || 'present'}`
+        : '';
       card.className = 'visible';
       card.id = 'detail-card';
     }
@@ -427,20 +433,40 @@
     }
 
     // Map events
+    let hoveredMapLayer = null;
+    let hoveredMapDistrict = null;
+
     function onFeatureClick(e) {
       const district = e.target.feature.properties.DISTRICT;
-      selectDistrict(district, true);
+      if (district === selectedDistrict) {
+        clearSelection();
+      } else {
+        selectDistrict(district, true);
+      }
     }
 
     function onFeatureMouseover(e) {
       const district = e.target.feature.properties.DISTRICT;
+
+      // Clear previous hover first (mouseout can miss due to bringToFront z-order changes)
+      if (hoveredMapLayer && hoveredMapDistrict !== district && hoveredMapDistrict !== selectedDistrict) {
+        getActiveGeoLayer().resetStyle(hoveredMapLayer);
+        const prevRow = document.querySelector(`.leg-row[data-district="${hoveredMapDistrict}"]`);
+        if (prevRow) prevRow.classList.remove('highlighted');
+      }
+
+      hoveredMapLayer = e.target;
+      hoveredMapDistrict = district;
+
       if (district === selectedDistrict) return;
       e.target.setStyle(highlightStyle());
-      e.target.bringToFront();
+
+      // Keep selected on top
       if (selectedDistrict !== null) {
         const selLayer = mapLayersByDistrict[activeLayer][selectedDistrict];
         if (selLayer) selLayer.bringToFront();
       }
+
       // Highlight sidebar row
       const row = document.querySelector(`.leg-row[data-district="${district}"]`);
       if (row) row.classList.add('highlighted');
@@ -453,6 +479,11 @@
       // Un-highlight sidebar row
       const row = document.querySelector(`.leg-row[data-district="${district}"]`);
       if (row) row.classList.remove('highlighted');
+
+      if (hoveredMapDistrict === district) {
+        hoveredMapLayer = null;
+        hoveredMapDistrict = null;
+      }
     }
 
     function onEachFeature(feature, layer) {
@@ -477,52 +508,92 @@
 
     // Sidebar table
     function renderList() {
-      const legs = getLegislators(activeLayer);
-      const label = CHAMBER_MEMBER_LABELS[activeLayer];
       const query = document.getElementById('search-input').value.toLowerCase().trim();
-      const filtered = query
-        ? legs.filter(l =>
-            l.name.toLowerCase().includes(query) ||
-            String(l.district).includes(query) ||
-            (l.party && l.party.toLowerCase().includes(query))
-          )
-        : legs;
-
       const container = document.getElementById('legislator-list');
       container.innerHTML = '';
 
-      for (const leg of filtered) {
-        const row = document.createElement('div');
-        row.className = 'leg-row';
-        if (leg.district === selectedDistrict) row.classList.add('selected');
-        row.dataset.district = leg.district;
-        row.innerHTML = `
-          <span class="district-num">${leg.district}</span>
-          <span class="party-dot" style="background:${partyColor(leg.party)}"></span>
-          <span class="leg-name">${leg.name}</span>
-          <span class="leg-party">${leg.party || ''}</span>
-        `;
-        row.addEventListener('mouseenter', () => highlightOnMap(leg.district));
-        row.addEventListener('mouseleave', () => unhighlightOnMap());
-        row.addEventListener('click', () => selectDistrict(leg.district, false));
-        container.appendChild(row);
-      }
+      if (query) {
+        // Search across ALL chambers
+        const allChambers = [
+          { key: 'senate', label: 'Senate', legs: senateLegislators },
+          { key: 'assembly', label: 'Assembly', legs: assemblyLegislators },
+          { key: 'city_council', label: 'City Council', legs: cityCouncilLegislators },
+        ];
+        let totalResults = 0;
+        let totalAll = 0;
 
-      document.getElementById('result-count').textContent =
-        query ? `${filtered.length} of ${legs.length} ${label}` : `${legs.length} ${label}`;
+        for (const chamber of allChambers) {
+          const filtered = chamber.legs.filter(l =>
+            l.name.toLowerCase().includes(query) ||
+            String(l.district).includes(query) ||
+            (l.party && l.party.toLowerCase().includes(query))
+          );
+          totalResults += filtered.length;
+          totalAll += chamber.legs.length;
+
+          if (filtered.length > 0) {
+            const header = document.createElement('div');
+            header.style.cssText = 'padding:6px 16px;font-size:11px;font-weight:600;color:#888;background:#f0f0f0;text-transform:uppercase;letter-spacing:0.5px;';
+            header.textContent = `${chamber.label} (${filtered.length})`;
+            container.appendChild(header);
+
+            for (const leg of filtered) {
+              container.appendChild(createRow(leg, chamber.key));
+            }
+          }
+        }
+
+        document.getElementById('result-count').textContent = `${totalResults} results across all chambers`;
+      } else {
+        // No search — show active chamber only
+        const legs = getLegislators(activeLayer);
+        const label = CHAMBER_MEMBER_LABELS[activeLayer];
+        for (const leg of legs) {
+          container.appendChild(createRow(leg, activeLayer));
+        }
+        document.getElementById('result-count').textContent = `${legs.length} ${label}`;
+      }
+    }
+
+    function createRow(leg, chamber) {
+      const row = document.createElement('div');
+      row.className = 'leg-row';
+      if (chamber === activeLayer && leg.district === selectedDistrict) row.classList.add('selected');
+      row.dataset.district = leg.district;
+      row.dataset.chamber = chamber;
+      row.innerHTML = `
+        <span class="district-num">${leg.district}</span>
+        <span class="party-dot" style="background:${partyColor(leg.party)}"></span>
+        <span class="leg-name">${leg.name}</span>
+        <span class="leg-party">${leg.party || ''}</span>
+      `;
+      row.addEventListener('mouseenter', () => {
+        if (chamber === activeLayer) highlightOnMap(leg.district);
+      });
+      row.addEventListener('mouseleave', () => {
+        if (chamber === activeLayer) unhighlightOnMap();
+      });
+      row.addEventListener('click', () => {
+        if (chamber !== activeLayer) {
+          showLayer(chamber, true);
+        }
+        if (leg.district === selectedDistrict && chamber === activeLayer) clearSelection();
+        else selectDistrict(leg.district, false);
+      });
+      return row;
     }
 
     // Search
     document.getElementById('search-input').addEventListener('input', renderList);
 
     // Layer toggle
-    function showLayer(which) {
+    function showLayer(which, keepSearch) {
       clearSelection();
       activeLayer = which;
       ['senate', 'assembly', 'city_council'].forEach(k => {
         document.getElementById('btn-' + k).className = k === which ? 'toggle-btn active' : 'toggle-btn';
       });
-      document.getElementById('search-input').value = '';
+      if (!keepSearch) document.getElementById('search-input').value = '';
 
       if (senateLayer) map.removeLayer(senateLayer);
       if (assemblyLayer) map.removeLayer(assemblyLayer);
@@ -566,7 +637,7 @@
 
     async function fetchLegislators(chamber) {
       const resp = await fetch(
-        `${SUPABASE_URL}/rest/v1/legislators?chamber=eq.${chamber}&select=district,name,party,phone_albany,phone_district,email&order=district`,
+        `${SUPABASE_URL}/rest/v1/current_legislators?chamber=eq.${chamber}&select=person_id,district,name,party,website,phone_albany,phone_district,email,start_date,end_date&order=district`,
         { headers: { 'apikey': SUPABASE_ANON_KEY } }
       );
       if (!resp.ok) throw new Error(`Failed to fetch ${chamber} legislators`);
