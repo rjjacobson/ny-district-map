@@ -295,7 +295,6 @@
     // Supabase config
     const SUPABASE_URL = 'https://xeknqkxhfxvveeyddokl.supabase.co';
     const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inhla25xa3hoZnh2dmVleWRkb2tsIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzUyMjc1MzksImV4cCI6MjA5MDgwMzUzOX0.-CO0RkDBljPTRBO5x5JIAIZ23WfhR0A8bLJV3iE_xS0';
-    const ARCGIS_BASE = 'https://gisservices.its.ny.gov/arcgis/rest/services';
 
     // State
     let senateLayer = null, assemblyLayer = null, cityCouncilLayer = null, usHouseLayer = null;
@@ -814,21 +813,22 @@
     }
 
     // Data fetching
-    async function fetchArcGIS(serviceName) {
-      const url = `${ARCGIS_BASE}/${serviceName}/MapServer/0/query`
-        + `?where=1%3D1&outFields=DISTRICT`
-        + `&outSR=4326&f=geojson&resultRecordCount=200`;
-      const resp = await fetch(url);
-      if (!resp.ok) throw new Error(`Failed to fetch ${serviceName}: ${resp.status}`);
+    async function fetchLocalGeo(filename) {
+      const resp = await fetch(`geo/${filename}`);
+      if (!resp.ok) throw new Error(`Failed to fetch ${filename}: ${resp.status}`);
       return resp.json();
     }
 
+    async function fetchSenateGeo() {
+      return fetchLocalGeo('senate.geojson');
+    }
+
+    async function fetchAssemblyGeo() {
+      return fetchLocalGeo('assembly.geojson');
+    }
+
     async function fetchNYCCouncilGeo() {
-      const url = 'https://data.cityofnewyork.us/resource/872g-cjhh.geojson?$limit=60';
-      const resp = await fetch(url);
-      if (!resp.ok) throw new Error('Failed to fetch NYC Council districts');
-      const data = await resp.json();
-      // Normalize property name: coundist -> DISTRICT
+      const data = await fetchLocalGeo('city_council.geojson');
       for (const f of data.features) {
         f.properties.DISTRICT = parseInt(f.properties.coundist);
       }
@@ -863,11 +863,7 @@
     }
 
     async function fetchUSHouseGeo() {
-      const url = "https://tigerweb.geo.census.gov/arcgis/rest/services/TIGERweb/Legislative/MapServer/0/query?"
-        + "where=STATE='36'&outFields=CD119,BASENAME&returnGeometry=true&f=geojson&outSR=4326&maxAllowableOffset=0.001";
-      const resp = await fetch(url);
-      if (!resp.ok) throw new Error('Failed to fetch US House districts');
-      const data = await resp.json();
+      const data = await fetchLocalGeo('us_house.geojson');
       for (const f of data.features) {
         f.properties.DISTRICT = parseInt(f.properties.BASENAME);
       }
@@ -908,8 +904,8 @@
 
     // Lazy-load GeoJSON for each chamber
     const geoLoaders = {
-      senate: () => fetchArcGIS('NYS_Senate_Districts'),
-      assembly: () => fetchArcGIS('NYS_Assembly_Districts'),
+      senate: () => fetchSenateGeo(),
+      assembly: () => fetchAssemblyGeo(),
       city_council: () => fetchNYCCouncilGeo(),
       us_house: () => fetchUSHouseGeo(),
     };
