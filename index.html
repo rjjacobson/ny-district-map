@@ -244,8 +244,11 @@
       <button class="toggle-btn active" id="btn-senate" onclick="showLayer('senate')">Senate (63)</button>
       <button class="toggle-btn" id="btn-assembly" onclick="showLayer('assembly')">Assembly (150)</button>
       <button class="toggle-btn" id="btn-city_council" onclick="showLayer('city_council')">City Council (51)</button>
+      <span style="width:1px;height:24px;background:#e0e0e0;margin:0 4px"></span>
+      <button class="toggle-btn active" id="btn-color-party" onclick="setColorMode('party')">Party</button>
+      <button class="toggle-btn" id="btn-color-israel" onclick="setColorMode('israel')">Israel</button>
     </div>
-    <div class="legend">
+    <div class="legend" id="legend">
       <div class="legend-title">Party</div>
       <div class="legend-item"><span class="legend-swatch" style="background:#3b82f6"></span> Democrat</div>
       <div class="legend-item"><span class="legend-swatch" style="background:#ef4444"></span> Republican</div>
@@ -272,6 +275,7 @@
       <div class="detail" id="dc-email"></div>
       <div class="detail" id="dc-website"></div>
       <div class="detail" id="dc-term"></div>
+      <div class="detail" id="dc-stance" style="margin-top:6px;padding-top:6px;border-top:1px solid #eee"></div>
     </div>
     <div id="legislator-list"></div>
   </div>
@@ -297,6 +301,11 @@
     const NY_STATE_VIEW = { center: [42.85, -75.5], zoom: 7 };
     const NYC_VIEW = { center: [40.7128, -73.95], zoom: 11 };
 
+    // Color mode: 'party' or 'israel'
+    let colorMode = 'party';
+    // Positions data: person_id -> { stance, confidence, rationale }
+    let positionsMap = {};
+
     // Map
     const map = L.map('map', { center: [42.85, -75.5], zoom: 7, zoomControl: true });
     L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png', {
@@ -320,8 +329,33 @@
       return '#9ca3af';
     }
 
+    // Israel stance colors: blue = pro-Israel, red = anti-Israel
+    const STANCE_COLORS = {
+      'strongly_support': '#1e40af',  // dark blue
+      'support':          '#3b82f6',  // blue
+      'neutral':          '#a78bfa',  // light purple
+      'oppose':           '#f87171',  // light red
+      'strongly_oppose':  '#b91c1c',  // dark red
+    };
+
+    function stanceColor(personId) {
+      const pos = positionsMap[personId];
+      if (!pos || pos.confidence === 'unknown') return '#d1d5db'; // gray for unknown
+      return STANCE_COLORS[pos.stance] || '#d1d5db';
+    }
+
+    function stanceLabel(personId) {
+      const pos = positionsMap[personId];
+      if (!pos || pos.confidence === 'unknown') return 'Unknown';
+      return pos.stance.replace('_', ' ').replace(/\b\w/g, c => c.toUpperCase());
+    }
+
     // Style
     function defaultStyle(feature) {
+      if (colorMode === 'israel') {
+        const personId = feature.properties.PERSON_ID;
+        return { fillColor: stanceColor(personId), weight: 1.2, color: '#fff', fillOpacity: 0.6 };
+      }
       return { fillColor: partyColor(feature.properties.PARTY), weight: 1.2, color: '#fff', fillOpacity: 0.5 };
     }
 
@@ -361,6 +395,17 @@
       document.getElementById('dc-term').innerHTML = leg.start_date || leg.end_date
         ? `<strong>Term:</strong> ${leg.start_date || '?'} — ${leg.end_date || 'present'}`
         : '';
+      // Israel stance
+      const pos = positionsMap[leg.person_id];
+      const stanceEl = document.getElementById('dc-stance');
+      if (pos && pos.confidence !== 'unknown') {
+        const sColor = STANCE_COLORS[pos.stance] || '#9ca3af';
+        const sLabel = pos.stance.replace('_', ' ').replace(/\b\w/g, c => c.toUpperCase());
+        stanceEl.innerHTML = `<span class="party-badge" style="background:${sColor};margin-right:4px">${sLabel}</span>` +
+          (pos.rationale ? `<span style="color:#666;font-size:11px">${pos.rationale}</span>` : '');
+      } else {
+        stanceEl.innerHTML = '<span style="color:#aaa;font-size:11px">No public Israel stance found</span>';
+      }
       card.className = 'visible';
       card.id = 'detail-card';
     }
@@ -563,11 +608,13 @@
       if (chamber === activeLayer && leg.district === selectedDistrict) row.classList.add('selected');
       row.dataset.district = leg.district;
       row.dataset.chamber = chamber;
+      const dotColor = colorMode === 'israel' ? stanceColor(leg.person_id) : partyColor(leg.party);
+      const tagText = colorMode === 'israel' ? stanceLabel(leg.person_id) : (leg.party || '');
       row.innerHTML = `
         <span class="district-num">${leg.district}</span>
-        <span class="party-dot" style="background:${partyColor(leg.party)}"></span>
+        <span class="party-dot" style="background:${dotColor}"></span>
         <span class="leg-name">${leg.name}</span>
-        <span class="leg-party">${leg.party || ''}</span>
+        <span class="leg-party">${tagText}</span>
       `;
       row.addEventListener('mouseenter', () => {
         if (chamber === activeLayer) highlightOnMap(leg.district);
@@ -610,6 +657,47 @@
       } else if (which === 'city_council' && cityCouncilLayer) {
         cityCouncilLayer.addTo(map);
         map.setView(NYC_VIEW.center, NYC_VIEW.zoom);
+      }
+
+      renderList();
+    }
+
+    // Color mode toggle
+    function setColorMode(mode) {
+      colorMode = mode;
+      document.getElementById('btn-color-party').className = mode === 'party' ? 'toggle-btn active' : 'toggle-btn';
+      document.getElementById('btn-color-israel').className = mode === 'israel' ? 'toggle-btn active' : 'toggle-btn';
+
+      // Update legend
+      const legend = document.getElementById('legend');
+      if (mode === 'israel') {
+        legend.innerHTML = `
+          <div class="legend-title">Israel Stance</div>
+          <div class="legend-item"><span class="legend-swatch" style="background:#1e40af"></span> Strongly Pro-Israel</div>
+          <div class="legend-item"><span class="legend-swatch" style="background:#3b82f6"></span> Pro-Israel</div>
+          <div class="legend-item"><span class="legend-swatch" style="background:#a78bfa"></span> Neutral</div>
+          <div class="legend-item"><span class="legend-swatch" style="background:#f87171"></span> Anti-Israel</div>
+          <div class="legend-item"><span class="legend-swatch" style="background:#b91c1c"></span> Strongly Anti-Israel</div>
+          <div class="legend-item"><span class="legend-swatch" style="background:#d1d5db"></span> Unknown</div>
+        `;
+      } else {
+        legend.innerHTML = `
+          <div class="legend-title">Party</div>
+          <div class="legend-item"><span class="legend-swatch" style="background:#3b82f6"></span> Democrat</div>
+          <div class="legend-item"><span class="legend-swatch" style="background:#ef4444"></span> Republican</div>
+          <div class="legend-item"><span class="legend-swatch" style="background:#9ca3af"></span> Other / Vacant</div>
+        `;
+      }
+
+      // Re-style all layers
+      if (senateLayer) senateLayer.setStyle(defaultStyle);
+      if (assemblyLayer) assemblyLayer.setStyle(defaultStyle);
+      if (cityCouncilLayer) cityCouncilLayer.setStyle(defaultStyle);
+
+      // Re-apply selection if any
+      if (selectedDistrict !== null) {
+        const layer = mapLayersByDistrict[activeLayer][selectedDistrict];
+        if (layer) layer.setStyle(selectedStyle());
       }
 
       renderList();
@@ -658,21 +746,37 @@
           feature.properties.PHONE = leg.phone_albany;
           feature.properties.DIST_PHONE = leg.phone_district;
           feature.properties.EMAIL = leg.email;
+          feature.properties.PERSON_ID = leg.person_id;
         }
       }
       return geojson;
     }
 
+    async function fetchPositions() {
+      const resp = await fetch(
+        `${SUPABASE_URL}/rest/v1/positions?select=person_id,stance,confidence,rationale&assessment_type=eq.ai&topic_id=eq.1`,
+        { headers: { 'apikey': SUPABASE_ANON_KEY } }
+      );
+      if (!resp.ok) return {};
+      const data = await resp.json();
+      const m = {};
+      for (const d of data) m[d.person_id] = d;
+      return m;
+    }
+
     async function init() {
       try {
-        const [senateGeo, assemblyGeo, councilGeo, sLeg, aLeg, ccLeg] = await Promise.all([
+        const [senateGeo, assemblyGeo, councilGeo, sLeg, aLeg, ccLeg, positions] = await Promise.all([
           fetchArcGIS('NYS_Senate_Districts'),
           fetchArcGIS('NYS_Assembly_Districts'),
           fetchNYCCouncilGeo(),
           fetchLegislators('senate'),
           fetchLegislators('assembly'),
           fetchLegislators('city_council'),
+          fetchPositions(),
         ]);
+
+        positionsMap = positions;
 
         senateLegislators = sLeg;
         assemblyLegislators = aLeg;
