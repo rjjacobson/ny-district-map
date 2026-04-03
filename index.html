@@ -433,13 +433,6 @@
       if (leg.website) contactHTML += `<div><a href="${leg.website}" target="_blank">${leg.website.replace(/^https?:\/\//, '')}</a></div>`;
       if (leg.start_date) contactHTML += `<div>Term: ${leg.start_date} — ${leg.end_date || 'present'}</div>`;
 
-      // Extract URL from evidence text
-      function extractUrl(text) {
-        if (!text) return null;
-        const m = text.match(/https?:\/\/[^\s),'"]+/);
-        return m ? m[0] : null;
-      }
-
       // Evidence timeline
       let timelineHTML = '';
       const criteria = personCriteriaMap[leg.person_id] || [];
@@ -450,7 +443,9 @@
           const dotColor = isAnti ? '#ef4444' : '#3b82f6';
           const cardClass = isAnti ? 'anti' : 'pro';
           const catLabel = (c.category || 'action').replace('_', ' ').toUpperCase();
-          const url = extractUrl(c.evidence);
+          const dateStr = c.source_date || '';
+          const dateDisplay = dateStr ? `<span style="color:#999;margin-left:8px">${dateStr}</span>` : '';
+          const url = c.source_url || (c.evidence ? (c.evidence.match(/https?:\/\/[^\s),'"]+/) || [])[0] : null);
           const sourceLink = url ? `<a href="${url}" target="_blank" class="tc-source">View source &rarr;</a>` : '';
           // Clean evidence: remove URLs from display text
           const cleanEvidence = (c.evidence || '').replace(/https?:\/\/[^\s),'"]+/g, '').replace(/Sources?:\s*,?\s*$/i, '').trim();
@@ -458,7 +453,7 @@
             <div class="timeline-item">
               <div class="timeline-dot" style="background:${dotColor}"></div>
               <div class="timeline-card ${cardClass}">
-                <div class="tc-header">${catLabel}</div>
+                <div class="tc-header">${catLabel}${dateDisplay}</div>
                 <div class="tc-title">${c.criterion_label}</div>
                 ${cleanEvidence ? `<div class="tc-desc">${cleanEvidence}</div>` : ''}
                 ${sourceLink}
@@ -910,7 +905,7 @@
 
     async function fetchPersonCriteria() {
       const resp = await fetch(
-        `${SUPABASE_URL}/rest/v1/person_criteria?select=person_id,evidence,criteria(label,direction,category)&order=person_id`,
+        `${SUPABASE_URL}/rest/v1/person_criteria?select=person_id,evidence,source_url,source_date,criteria(label,direction,category)&order=person_id`,
         { headers: { 'apikey': SUPABASE_ANON_KEY } }
       );
       if (!resp.ok) return {};
@@ -923,6 +918,17 @@
           direction: d.criteria.direction,
           category: d.criteria.category,
           evidence: d.evidence,
+          source_url: d.source_url,
+          source_date: d.source_date,
+        });
+      }
+      // Sort each person's criteria by date (newest first), undated at end
+      for (const pid of Object.keys(m)) {
+        m[pid].sort((a, b) => {
+          if (a.source_date && b.source_date) return b.source_date.localeCompare(a.source_date);
+          if (a.source_date) return -1;
+          if (b.source_date) return 1;
+          return 0;
         });
       }
       return m;
