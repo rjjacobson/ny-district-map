@@ -53,6 +53,8 @@
     .control-group-buttons {
       display: flex;
       gap: 6px;
+      flex: 1;
+      align-items: stretch;
     }
 
     .toggle-btn {
@@ -65,10 +67,27 @@
       cursor: pointer;
       transition: all 0.2s;
       color: #555;
+      min-width: 80px;
+      text-align: center;
     }
 
     .toggle-btn:hover { border-color: #999; color: #333; }
     .toggle-btn.active { background: #2563eb; border-color: #2563eb; color: white; }
+
+    /* Align Leaflet zoom control with controls bar */
+    .leaflet-top.leaflet-left { top: 16px; left: 10px; }
+    .leaflet-control-zoom {
+      border: none !important;
+      box-shadow: 0 2px 12px rgba(0,0,0,0.15) !important;
+      border-radius: 10px !important;
+      overflow: hidden;
+    }
+    .leaflet-control-zoom a {
+      width: 36px !important;
+      height: 36px !important;
+      line-height: 36px !important;
+      font-size: 18px !important;
+    }
 
     .legend {
       position: absolute;
@@ -219,8 +238,8 @@
       background: white; border-radius: 8px; padding: 12px 14px;
       border-left: 3px solid #e5e5e5; box-shadow: 0 1px 4px rgba(0,0,0,0.06);
     }
-    .timeline-card.pro { border-left-color: #3b82f6; }
-    .timeline-card.anti { border-left-color: #ef4444; }
+    .timeline-card.pro { border-left-color: #15803d; }
+    .timeline-card.anti { border-left-color: #c2410c; }
     .timeline-card .tc-header { font-size: 10px; color: #888; text-transform: uppercase; letter-spacing: 0.3px; margin-bottom: 4px; }
     .timeline-card .tc-title { font-size: 14px; font-weight: 600; color: #1a1a1a; margin-bottom: 4px; }
     .timeline-card .tc-desc { font-size: 12px; color: #666; line-height: 1.5; }
@@ -369,13 +388,13 @@
       return '#9ca3af';
     }
 
-    // Israel stance colors: blue = pro-Israel, red = anti-Israel
+    // Israel stance colors: green = pro-Israel, orange = anti-Israel
     const STANCE_COLORS = {
-      'strongly_support': '#1e40af',  // dark blue
-      'support':          '#3b82f6',  // blue
-      'neutral':          '#a78bfa',  // light purple
-      'oppose':           '#f87171',  // light red
-      'strongly_oppose':  '#b91c1c',  // dark red
+      'strongly_support': '#15803d',  // dark green
+      'support':          '#4ade80',  // green
+      'neutral':          '#a1a1aa',  // neutral gray
+      'oppose':           '#fb923c',  // orange
+      'strongly_oppose':  '#c2410c',  // dark orange
     };
 
     function stanceColor(personId) {
@@ -477,7 +496,7 @@
         timelineHTML = '<div class="evidence-title">Evidence Timeline</div><div class="timeline">';
         for (const c of criteria) {
           const isAnti = c.direction === 'anti';
-          const dotColor = isAnti ? '#ef4444' : '#3b82f6';
+          const dotColor = isAnti ? '#c2410c' : '#15803d';
           const cardClass = isAnti ? 'anti' : 'pro';
           const catLabel = (c.category || 'action').replace('_', ' ').toUpperCase();
           const dateStr = c.source_date || '';
@@ -864,11 +883,11 @@
       if (mode === 'israel') {
         legend.innerHTML = `
           <div class="legend-title">Israel Stance</div>
-          <div class="legend-item"><span class="legend-swatch" style="background:#1e40af"></span> Strongly Pro-Israel</div>
-          <div class="legend-item"><span class="legend-swatch" style="background:#3b82f6"></span> Pro-Israel</div>
-          <div class="legend-item"><span class="legend-swatch" style="background:#a78bfa"></span> Neutral</div>
-          <div class="legend-item"><span class="legend-swatch" style="background:#f87171"></span> Anti-Israel</div>
-          <div class="legend-item"><span class="legend-swatch" style="background:#b91c1c"></span> Strongly Anti-Israel</div>
+          <div class="legend-item"><span class="legend-swatch" style="background:#15803d"></span> Strongly Pro-Israel</div>
+          <div class="legend-item"><span class="legend-swatch" style="background:#4ade80"></span> Pro-Israel</div>
+          <div class="legend-item"><span class="legend-swatch" style="background:#a1a1aa"></span> Neutral</div>
+          <div class="legend-item"><span class="legend-swatch" style="background:#fb923c"></span> Anti-Israel</div>
+          <div class="legend-item"><span class="legend-swatch" style="background:#c2410c"></span> Strongly Anti-Israel</div>
           <div class="legend-item"><span class="legend-swatch" style="background:#d1d5db"></span> Unknown</div>
         `;
       } else {

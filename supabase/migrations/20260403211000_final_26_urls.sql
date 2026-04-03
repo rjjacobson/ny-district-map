@@ -1,0 +1,27 @@
+-- Final 26 evidence URLs
+UPDATE person_criteria SET source_url = 'https://assembly.state.ny.us/write/upload/member_files/013/pdfs/20231030_0107834.pdf', source_date = '2023-10-20' WHERE id = 307;
+UPDATE person_criteria SET source_url = 'https://assembly.state.ny.us/write/upload/member_files/013/pdfs/20231030_0107834.pdf', source_date = '2023-10-20' WHERE id = 308;
+UPDATE person_criteria SET source_url = 'https://nyassembly.gov/mem/Karl-Brabenec/story/107693', source_date = '2023-10-09' WHERE id = 298;
+UPDATE person_criteria SET source_url = 'https://nyassembly.gov/mem/Karl-Brabenec/story/107693', source_date = '2023-10-09' WHERE id = 299;
+UPDATE person_criteria SET source_url = 'https://www.cityandstateny.com/politics/2024/03/new-york-elected-officials-calling-ceasefire-gaza/394535/', source_date = '2023-10-12' WHERE id = 185;
+UPDATE person_criteria SET source_url = 'https://www.jvpaction.org/state-and-local-elected-officials-open-letter-to-president-biden-calling-for-a-ceasefire/', source_date = '2023-10-27' WHERE id = 186;
+UPDATE person_criteria SET source_url = 'https://canarymission.org/individual/Alexa_Aviles', source_date = '2024-04-18' WHERE id = 187;
+UPDATE person_criteria SET source_url = 'https://www.cityandstateny.com/opinion/2025/12/opinion-puerto-rico-palestine-now-time-grow-our-movement/409828/', source_date = '2024-10-14' WHERE id = 188;
+UPDATE person_criteria SET source_url = 'https://x.com/ShahanaFromBK/status/1716465788389916884', source_date = '2023-10-23' WHERE id = 189;
+UPDATE person_criteria SET source_url = 'https://x.com/ShahanaFromBK/status/1716465788389916884', source_date = '2023-10-20' WHERE id = 190;
+UPDATE person_criteria SET source_url = 'https://www.jns.org/brooklyn-legislators-jewish-constituents-feel-abandoned-betrayed-endangered/', source_date = '2023-11-01' WHERE id = 191;
+UPDATE person_criteria SET source_url = 'https://canarymission.org/individual/Shahana_Hanif', source_date = '2023-10-20' WHERE id = 192;
+UPDATE person_criteria SET source_url = 'https://www.cityandstateny.com/politics/2024/03/new-york-elected-officials-calling-ceasefire-gaza/394535/', source_date = '2024-02-28' WHERE id = 193;
+UPDATE person_criteria SET source_url = 'https://www.nysenate.gov/newsroom/articles/2024/simcha-felder/senator-felders-statement-marking-one-year-october-7-2023', source_date = '2024-10-07' WHERE id = 194;
+UPDATE person_criteria SET source_url = 'https://en.wikipedia.org/wiki/Simcha_Felder', source_date = '2023-10-07' WHERE id = 195;
+UPDATE person_criteria SET source_url = 'https://jewishweek.timesofisrael.com/jewish-pols-standing-by-council-hopeful/', source_date = '2019-05-15' WHERE id = 196;
+UPDATE person_criteria SET source_url = 'https://www.thecity.nyc/2023/10/13/inna-vernikov-gun-arrest-brookl-college-palestinian-israel-protest/', source_date = '2023-10-13' WHERE id = 197;
+UPDATE person_criteria SET source_url = 'https://ijr.com/nyc-councilwoman-inna-vernikov-sends-message-support-israel-wearing-israeli-flag-dress/', source_date = '2023-12-10' WHERE id = 198;
+UPDATE person_criteria SET source_url = 'https://www.timesofisrael.com/dozens-protest-antisemitism-in-new-york-after-two-jews-attacked/', source_date = '2023-11-01' WHERE id = 199;
+UPDATE person_criteria SET source_url = 'https://unitedwithisrael.org/new-york-officials-witness-gaza-border-devastation/', source_date = '2024-02-28' WHERE id = 200;
+UPDATE person_criteria SET source_url = 'https://www.pleaforthefifth.com/constituents_speak_out_on_councilperson_kamillah_hanks_travel_to_israel/', source_date = '2024-03-08' WHERE id = 201;
+UPDATE person_criteria SET source_url = 'https://www.jns.org/city-council-members-citizens-to-sue-nyc-to-force-records-release-on-axed-policies-defending-jews/', source_date = '2026-02-19' WHERE id = 202;
+UPDATE person_criteria SET source_url = 'https://ny1.com/nyc/all-boroughs/politics/2023/10/10/new-york-officials-respond-to-terror-attacks-in-israel', source_date = '2023-10-09' WHERE id = 203;
+UPDATE person_criteria SET source_url = 'https://ny1.com/nyc/all-boroughs/politics/2023/10/10/new-york-officials-respond-to-terror-attacks-in-israel', source_date = '2023-10-09' WHERE id = 204;
+UPDATE person_criteria SET source_url = 'https://www.jns.org/city-council-members-citizens-to-sue-nyc-to-force-records-release-on-axed-policies-defending-jews/', source_date = '2026-02-19' WHERE id = 205;
+UPDATE person_criteria SET source_url = 'https://www.jns.org/city-council-members-citizens-to-sue-nyc-to-force-records-release-on-axed-policies-defending-jews/', source_date = '2026-02-19' WHERE id = 206;
