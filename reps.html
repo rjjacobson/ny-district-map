@@ -78,6 +78,7 @@
     .nav-search { display: flex; gap: 4px; } .nav-search input { padding: 6px 12px; border: none; border-radius: 6px; font-size: 13px; width: 240px; outline: none; } .nav-search button { padding: 6px 14px; background: #2563eb; color: white; border: none; border-radius: 6px; font-size: 13px; font-weight: 600; cursor: pointer; }
     @media (max-width: 480px) { .top-nav .nav-link { font-size: 11px; padding: 6px 6px; } .top-nav .site-title { font-size: 13px; margin-right: 8px; } }
   </style>
+  <link rel="stylesheet" href="detail-panel.css">
 </head>
 <body>
   <nav class="top-nav">
@@ -106,11 +107,23 @@
 
     async function init() {
       const stored = sessionStorage.getItem('shalomny_reps');
+      const urlAddress = new URLSearchParams(window.location.search).get('address');
+      if (!stored && urlAddress) {
+        // Redirect to index to perform the lookup, which will redirect back here
+        window.location = 'index.html?lookup=' + encodeURIComponent(urlAddress);
+        return;
+      }
       if (!stored) {
         document.getElementById('content').innerHTML = '<div class="no-data">No address lookup found.<br><a href="index.html">Go back and search an address</a></div>';
         return;
       }
       const { address, reps } = JSON.parse(stored);
+
+      // Add share button
+      if (urlAddress || address) {
+        const shareUrl = window.location.origin + window.location.pathname + '?address=' + encodeURIComponent(urlAddress || address);
+        history.replaceState(null, '', shareUrl);
+      }
       const personIds = reps.map(r => r.person_id);
 
       const [posResp, critResp] = await Promise.all([
@@ -220,7 +233,7 @@
         }
 
         html += `
-          <div class="rep-card" onclick="window.location='map.html#${r.chamber}-${r.district}'">
+          <div class="rep-card" onclick="event.stopPropagation();openDetailPanel(${r.person_id})">
             <div class="rep-header">
               <div class="rep-avatar" style="background:${partyColor(r.party)}">${initials(r.name)}</div>
               <div class="rep-info">
@@ -244,6 +257,13 @@
     }
     init();
   </script>
+
+  <!-- Detail panel -->
+  <div id="detail-overlay" class="detail-overlay">
+    <div id="detail-panel-content"></div>
+  </div>
+
 <script src="nav-lookup.js"></script>
+<script src="detail-panel.js"></script>
 </body>
 </html>

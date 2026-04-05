@@ -142,6 +142,24 @@
       <div class="leaders-grid" id="district-grid"></div>
     </div>
 
+    <!-- Full Neighborhood Rankings -->
+    <div class="rankings-table-container" id="full-neighborhoods">
+      <div class="rankings-back" onclick="showOverview()">&larr; Back to Overview</div>
+      <div style="overflow-x:auto;">
+        <table class="rankings-table">
+          <thead><tr>
+            <th onclick="sortHoodTable('rank')" id="th-hood-rank" class="sorted">RK</th>
+            <th>NEIGHBORHOOD</th>
+            <th onclick="sortHoodTable('reps')">REPS</th>
+            <th onclick="sortHoodTable('pro')">PRO</th>
+            <th onclick="sortHoodTable('anti')">ANTI</th>
+            <th onclick="sortHoodTable('avg')" id="th-hood-avg">AVG SCORE</th>
+          </tr></thead>
+          <tbody id="hood-rankings-body"></tbody>
+        </table>
+      </div>
+    </div>
+
     <!-- Common Actions -->
     <div id="actions-stats" style="margin-top:32px;">
       <h2 style="font-size:22px;font-weight:800;color:#0f172a;margin-bottom:16px;">Most Common Actions</h2>
@@ -171,8 +189,8 @@
     const STANCE_COLORS = { strongly_support: '#15803d', support: '#4ade80', neutral: '#a1a1aa', oppose: '#fb923c', strongly_oppose: '#c2410c' };
     const STANCE_LABELS = { strongly_support: 'Strongly Pro', support: 'Pro-Israel', neutral: 'Neutral', oppose: 'Anti-Israel', strongly_oppose: 'Strongly Anti' };
 
-    let allLegislators = [], allPositions = {}, allCriteria = [];
-    let currentSort = { key: 'score', desc: true }, currentRankingsTitle = '';
+    let allLegislators = [], allPositions = {}, allCriteria = [], allNeighborhoods = [];
+    let currentSort = { key: 'score', desc: true }, hoodSort = { key: 'avg', desc: true };
 
     function partyColor(p) { if (!p) return '#9ca3af'; p = p.toLowerCase(); return p.includes('democrat') ? '#3b82f6' : p.includes('republican') ? '#ef4444' : '#9ca3af'; }
 
@@ -218,18 +236,17 @@
           const partyShort = (l.party || '').includes('Democrat') ? 'D' : (l.party || '').includes('Republican') ? 'R' : '?';
           rows += `<div class="leader-row" onclick="openDetailPanel(${l.person_id})"><span class="leader-rank">${i+1}</span><span class="party-pill" style="background:${partyColor(l.party)}">${partyShort}</span><span class="leader-name">${l.name}<span class="leader-chamber">${CHAMBER_SHORT[l.chamber]} D${l.district}</span></span><span class="leader-score">${l.score > 0 ? '+' : ''}${l.score}</span></div>`;
         }
-        card.innerHTML = `<div class="leader-card-header"><h3>${cat.title}</h3><span class="col-label">SCORE</span></div>${rows}${matching.length > 10 ? `<div class="complete-link" onclick="showFullRankings('${cat.title}')">Complete Rankings (${matching.length})</div>` : ''}`;
+        card.innerHTML = `<div class="leader-card-header"><h3>${cat.title}</h3><span class="col-label">SCORE</span></div>${rows}<div class="complete-link" onclick="showFullRankings()">Complete Rankings (${filtered.filter(l => l.stance !== 'unknown').length})</div>`;
         grid.appendChild(card);
       }
     }
 
-    function showFullRankings(title) {
-      currentRankingsTitle = title;
+    function showFullRankings() {
       document.getElementById('overview-mode').style.display = 'none';
       document.getElementById('full-rankings').style.display = 'block';
-      let f = getFiltered();
-      if (title === 'Most Pro-Israel Legislators') f = f.filter(l => l.score > 0).sort((a,b) => b.score - a.score);
-      else if (title === 'Most Anti-Israel Legislators') f = f.filter(l => l.score < 0).sort((a,b) => a.score - b.score);
+      document.getElementById('district-stats').style.display = 'none';
+      document.getElementById('actions-stats').style.display = 'none';
+      let f = getFiltered().filter(l => l.stance !== 'unknown').sort((a,b) => b.score - a.score);
       renderRankingsTable(f);
     }
 
@@ -246,9 +263,7 @@
     function sortTable(key) {
       if (currentSort.key === key) currentSort.desc = !currentSort.desc;
       else { currentSort.key = key; currentSort.desc = true; }
-      let f = getFiltered();
-      if (currentRankingsTitle === 'Most Pro-Israel Legislators') f = f.filter(l => l.score > 0);
-      else if (currentRankingsTitle === 'Most Anti-Israel Legislators') f = f.filter(l => l.score < 0);
+      let f = getFiltered().filter(l => l.stance !== 'unknown');
       const d = currentSort.desc ? -1 : 1;
       if (key === 'score' || key === 'rank') f.sort((a,b) => (a.score - b.score) * d);
       else if (key === 'evidence') f.sort((a,b) => (a.evidenceCount - b.evidenceCount) * d);
@@ -259,7 +274,7 @@
       const th = document.getElementById('th-'+key); if (th) { th.classList.add('sorted'); if (!currentSort.desc) th.classList.add('asc'); }
     }
 
-    function showOverview() { document.getElementById('overview-mode').style.display='block'; document.getElementById('full-rankings').style.display='none'; }
+    function showOverview() { document.getElementById('overview-mode').style.display='block'; document.getElementById('full-rankings').style.display='none'; document.getElementById('district-stats').style.display=''; document.getElementById('actions-stats').style.display=''; if(document.getElementById('full-neighborhoods')) document.getElementById('full-neighborhoods').style.display='none'; }
     function applyFilters() { if (document.getElementById('full-rankings').style.display==='block') showFullRankings(currentRankingsTitle); else renderOverview(); }
 
     const DISTRICT_NEIGHBORHOODS = {
@@ -394,8 +409,11 @@
       }
       for (const [_, d] of Object.entries(scores)) d.avg = d.count ? d.total / d.count : 0;
 
+      // Store for full table
+      allNeighborhoods = Object.entries(scores).filter(([_, v]) => v.count >= 2);
+
       const grid = document.getElementById('district-grid');
-      const multiRep = Object.entries(scores).filter(([_, v]) => v.count >= 2);
+      const multiRep = [...allNeighborhoods];
       const sorted = multiRep.sort((a, b) => a[1].avg - b[1].avg);
       const worst = sorted.filter(([_, v]) => v.avg < 0).slice(0, 10);
       const best = sorted.filter(([_, v]) => v.avg > 0).sort((a, b) => b[1].avg - a[1].avg).slice(0, 10);
@@ -420,9 +438,44 @@
           const expandId = 'dist-' + i + '-' + cat.title.replace(/\s/g, '');
           rows += `<div class="leader-row" style="flex-wrap:wrap;" onclick="var el=document.getElementById('${expandId}');el.style.display=el.style.display==='none'?'block':'none'"><span class="leader-rank">${i+1}</span><span class="leader-name">${hood}<span class="leader-chamber">${data.count} representatives &bull; ${data[cat.metaKey]} ${cat.metaLabel}</span></span><span class="leader-score" style="color:${cat.scoreColor}">${avg}</span><div id="${expandId}" style="display:none;width:100%;padding:8px 0 4px 34px;border-top:1px solid #f1f5f9;margin-top:8px;" onclick="event.stopPropagation()">${repsHtml}</div></div>`;
         }
-        card.innerHTML = `<div class="leader-card-header"><h3>${cat.title}</h3><span class="col-label">AVG SCORE</span></div>${rows}`;
+        card.innerHTML = `<div class="leader-card-header"><h3>${cat.title}</h3><span class="col-label">AVG SCORE</span></div>${rows}<div class="complete-link" onclick="showFullNeighborhoods()">Complete Rankings (${allNeighborhoods.length})</div>`;
         grid.appendChild(card);
       }
+    }
+
+    function showFullNeighborhoods() {
+      document.getElementById('overview-mode').style.display = 'none';
+      document.getElementById('district-stats').style.display = 'none';
+      document.getElementById('actions-stats').style.display = 'none';
+      document.getElementById('full-neighborhoods').style.display = 'block';
+      renderHoodTable();
+    }
+
+    function renderHoodTable() {
+      const d = hoodSort.desc ? -1 : 1;
+      const sorted = [...allNeighborhoods];
+      if (hoodSort.key === 'avg' || hoodSort.key === 'rank') sorted.sort((a, b) => (a[1].avg - b[1].avg) * d);
+      else if (hoodSort.key === 'reps') sorted.sort((a, b) => (a[1].count - b[1].count) * d);
+      else if (hoodSort.key === 'pro') sorted.sort((a, b) => (a[1].pro - b[1].pro) * d);
+      else if (hoodSort.key === 'anti') sorted.sort((a, b) => (a[1].anti - b[1].anti) * d);
+
+      const tbody = document.getElementById('hood-rankings-body'); tbody.innerHTML = '';
+      for (let i = 0; i < sorted.length; i++) {
+        const [hood, data] = sorted[i];
+        const avg = data.avg >= 0 ? '+' + data.avg.toFixed(1) : data.avg.toFixed(1);
+        const color = data.avg >= 0 ? '#15803d' : '#c2410c';
+        const tr = document.createElement('tr');
+        tr.innerHTML = `<td>${i+1}</td><td style="font-weight:600;">${hood}</td><td>${data.count}</td><td>${data.pro}</td><td>${data.anti}</td><td class="score-cell" style="color:${color}">${avg}</td>`;
+        tbody.appendChild(tr);
+      }
+    }
+
+    function sortHoodTable(key) {
+      if (hoodSort.key === key) hoodSort.desc = !hoodSort.desc;
+      else { hoodSort.key = key; hoodSort.desc = key === 'avg' || key === 'rank'; }
+      renderHoodTable();
+      document.querySelectorAll('#full-neighborhoods .rankings-table th').forEach(th => th.classList.remove('sorted','asc'));
+      const th = document.getElementById('th-hood-'+key); if (th) { th.classList.add('sorted'); if (!hoodSort.desc) th.classList.add('asc'); }
     }
 
     function renderActionsStats() {

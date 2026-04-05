@@ -724,7 +724,7 @@
           reps: found.map(r => ({ person_id: r.person_id, name: r.name, party: r.party, chamber: r.chamber, district: r.district }))
         };
         sessionStorage.setItem('shalomny_reps', JSON.stringify(resultsData));
-        window.location = 'reps.html';
+        window.location = 'reps.html?address=' + encodeURIComponent(address);
       } catch (err) {
         btn.textContent = 'Grade My Reps'; btn.disabled = false;
         alert(`Error: ${err.message}`);
@@ -769,6 +769,14 @@
     });
 
     init();
+
+    // Auto-lookup if redirected from reps.html with ?lookup= param
+    const lookupParam = new URLSearchParams(window.location.search).get('lookup');
+    if (lookupParam) {
+      document.getElementById('address-input').value = lookupParam;
+      // Wait for init to load data, then trigger lookup
+      setTimeout(() => lookupAddress(), 1500);
+    }
 
     // navLookup for the nav bar search (same page — just use the hero search)
     function navLookup() {
