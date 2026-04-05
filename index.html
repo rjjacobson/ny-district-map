@@ -622,105 +622,64 @@
       btn.disabled = true;
 
       try {
-        // Geocode with Nominatim
-        const geoResp = await fetch(`https://nominatim.openstreetmap.org/search?q=${encodeURIComponent(address)}&format=json&limit=1&countrycodes=us`);
-        const geoData = await geoResp.json();
-        if (!geoData.length) { btn.textContent = 'Grade My Reps'; btn.disabled = false; alert('Address not found. Try a more specific address.'); return; }
+        // Use NYC GeoClient API via Supabase Edge Function
+        const resp = await fetch(
+          `${SUPABASE_URL}/functions/v1/geoclient?input=${encodeURIComponent(address)}`,
+          { headers: { Authorization: `Bearer ${SUPABASE_ANON_KEY}` } }
+        );
+        const data = await resp.json();
 
-        const lat = parseFloat(geoData[0].lat);
-        const lon = parseFloat(geoData[0].lon);
-
-        // Check if in NY state (roughly)
-        if (lat < 40.4 || lat > 45.1 || lon < -80 || lon > -71.5) {
+        if (data.error) {
           btn.textContent = 'Grade My Reps'; btn.disabled = false;
-          alert('This address doesn\'t appear to be in New York State.');
+          alert('Address not found. Please enter a valid NYC address (e.g. 350 5th Ave, Manhattan).');
           return;
         }
 
-        // Load all GeoJSON boundaries
-        const [senateGeo, assemblyGeo, usHouseGeo, ccGeo] = await Promise.all([
-          fetch('geo/senate.geojson').then(r => r.json()),
-          fetch('geo/assembly.geojson').then(r => r.json()),
-          fetch('geo/us_house.geojson').then(r => r.json()),
-          fetch('geo/city_council.geojson').then(r => r.json()),
-        ]);
-
-        // Point-in-polygon check
-        function pointInPolygon(point, polygon) {
-          const [x, y] = point;
-          let inside = false;
-          for (let i = 0, j = polygon.length - 1; i < polygon.length; j = i++) {
-            const [xi, yi] = polygon[i], [xj, yj] = polygon[j];
-            if (((yi > y) !== (yj > y)) && (x < (xj - xi) * (y - yi) / (yj - yi) + xi)) inside = !inside;
-          }
-          return inside;
-        }
-
-        function findDistrict(geojson, point) {
-          for (const feature of geojson.features) {
-            const geom = feature.geometry;
-            const rings = geom.type === 'MultiPolygon'
-              ? geom.coordinates.flatMap(p => p)
-              : geom.coordinates;
-            for (const ring of rings) {
-              if (pointInPolygon(point, ring)) return feature;
-            }
-          }
-          return null;
-        }
-
-        const point = [lon, lat];
+        const d = data.districts;
         const found = [];
 
-        // US Senators (statewide)
+        // US Senators (statewide — always the same two)
         const usSenators = allLegislators.filter(l => l.chamber === 'us_senate');
         for (const s of usSenators) found.push(s);
 
         // US House
-        const usHouseFeature = findDistrict(usHouseGeo, point);
-        if (usHouseFeature) {
-          const dist = parseInt(usHouseFeature.properties.BASENAME || usHouseFeature.properties.DISTRICT);
-          const rep = allLegislators.find(l => l.chamber === 'us_house' && l.district === dist);
+        if (d.congress) {
+          const rep = allLegislators.find(l => l.chamber === 'us_house' && l.district === d.congress);
           if (rep) found.push(rep);
         }
 
         // State Senate
-        const senateFeature = findDistrict(senateGeo, point);
-        if (senateFeature) {
-          const dist = parseInt(senateFeature.properties.DISTRICT);
-          const rep = allLegislators.find(l => l.chamber === 'senate' && l.district === dist);
+        if (d.stateSenate) {
+          const rep = allLegislators.find(l => l.chamber === 'senate' && l.district === d.stateSenate);
           if (rep) found.push(rep);
         }
 
         // Assembly
-        const assemblyFeature = findDistrict(assemblyGeo, point);
-        if (assemblyFeature) {
-          const dist = parseInt(assemblyFeature.properties.DISTRICT);
-          const rep = allLegislators.find(l => l.chamber === 'assembly' && l.district === dist);
+        if (d.assembly) {
+          const rep = allLegislators.find(l => l.chamber === 'assembly' && l.district === d.assembly);
           if (rep) found.push(rep);
         }
 
-        // City Council (only for NYC addresses)
-        const ccFeature = findDistrict(ccGeo, point);
-        if (ccFeature) {
-          const dist = parseInt(ccFeature.properties.coundist || ccFeature.properties.CounDist || ccFeature.properties.DISTRICT);
-          const rep = allLegislators.find(l => l.chamber === 'city_council' && l.district === dist);
+        // City Council
+        if (d.cityCouncil) {
+          const rep = allLegislators.find(l => l.chamber === 'city_council' && l.district === d.cityCouncil);
           if (rep) found.push(rep);
-          // NYC Mayor (show for any NYC address)
+          // NYC Mayor
           const mayor = allLegislators.find(l => l.chamber === 'nyc_mayor');
           if (mayor) found.push(mayor);
         }
 
-        // Store results and redirect to results page
         if (found.length === 0) {
           btn.textContent = 'Grade My Reps'; btn.disabled = false;
-          alert('No representatives found for this location.');
+          alert('No representatives found for this address.');
           return;
         }
 
+        const displayAddress = `${data.address.houseNumber} ${data.address.street}, ${data.address.borough}`;
         const resultsData = {
-          address: geoData[0].display_name.split(',').slice(0, 3).join(','),
-          lat, lon,
+          address: displayAddress,
+          lat: data.latitude,
+          lon: data.longitude,
           reps: found.map(r => ({ person_id: r.person_id, name: r.name, party: r.party, chamber: r.chamber, district: r.district }))
         };
         sessionStorage.setItem('shalomny_reps', JSON.stringify(resultsData));
