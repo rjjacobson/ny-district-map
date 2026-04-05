@@ -206,8 +206,8 @@
       const filtered = getFiltered(), grid = document.getElementById('leaders-grid');
       grid.innerHTML = '';
       const cats = [
-        { title: 'Most Pro-Israel', sort: (a,b) => b.score - a.score, filter: l => l.score > 0 },
-        { title: 'Most Anti-Israel', sort: (a,b) => a.score - b.score, filter: l => l.score < 0 },
+        { title: 'Most Pro-Israel Legislators', sort: (a,b) => b.score - a.score, filter: l => l.score > 0 },
+        { title: 'Most Anti-Israel Legislators', sort: (a,b) => a.score - b.score, filter: l => l.score < 0 },
       ];
       for (const cat of cats) {
         const matching = filtered.filter(cat.filter).sort(cat.sort), top10 = matching.slice(0, 10);
@@ -228,8 +228,8 @@
       document.getElementById('overview-mode').style.display = 'none';
       document.getElementById('full-rankings').style.display = 'block';
       let f = getFiltered();
-      if (title === 'Most Pro-Israel') f = f.filter(l => l.score > 0).sort((a,b) => b.score - a.score);
-      else if (title === 'Most Anti-Israel') f = f.filter(l => l.score < 0).sort((a,b) => a.score - b.score);
+      if (title === 'Most Pro-Israel Legislators') f = f.filter(l => l.score > 0).sort((a,b) => b.score - a.score);
+      else if (title === 'Most Anti-Israel Legislators') f = f.filter(l => l.score < 0).sort((a,b) => a.score - b.score);
       renderRankingsTable(f);
     }
 
@@ -247,8 +247,8 @@
       if (currentSort.key === key) currentSort.desc = !currentSort.desc;
       else { currentSort.key = key; currentSort.desc = true; }
       let f = getFiltered();
-      if (currentRankingsTitle === 'Most Pro-Israel') f = f.filter(l => l.score > 0);
-      else if (currentRankingsTitle === 'Most Anti-Israel') f = f.filter(l => l.score < 0);
+      if (currentRankingsTitle === 'Most Pro-Israel Legislators') f = f.filter(l => l.score > 0);
+      else if (currentRankingsTitle === 'Most Anti-Israel Legislators') f = f.filter(l => l.score < 0);
       const d = currentSort.desc ? -1 : 1;
       if (key === 'score' || key === 'rank') f.sort((a,b) => (a.score - b.score) * d);
       else if (key === 'evidence') f.sort((a,b) => (a.evidenceCount - b.evidenceCount) * d);
@@ -401,8 +401,8 @@
       const best = sorted.filter(([_, v]) => v.avg > 0).sort((a, b) => b[1].avg - a[1].avg).slice(0, 10);
 
       const cats = [
-        { title: 'Best Neighborhoods', data: best, scoreColor: '#15803d', metaKey: 'pro', metaLabel: 'pro-Israel' },
-        { title: 'Worst Neighborhoods', data: worst, scoreColor: '#c2410c', metaKey: 'anti', metaLabel: 'anti-Israel' },
+        { title: 'Most Pro-Israel Neighborhoods', data: best, scoreColor: '#15803d', metaKey: 'pro', metaLabel: 'Pro-Israel' },
+        { title: 'Most Anti-Israel Neighborhoods', data: worst, scoreColor: '#c2410c', metaKey: 'anti', metaLabel: 'Anti-Israel' },
       ];
 
       for (const cat of cats) {
@@ -418,7 +418,7 @@
             return `<div style="display:flex;align-items:center;padding:5px 0;gap:8px;cursor:pointer;" onclick="event.stopPropagation();openDetailPanel(${r.person_id})"><span style="display:inline-flex;align-items:center;justify-content:center;width:20px;height:20px;border-radius:50%;font-size:10px;font-weight:700;color:white;background:${partyColor(r.party)}">${ps}</span><span style="flex:1;font-size:13px;font-weight:600;color:#0f172a;">${r.name}</span><span style="font-size:11px;color:#94a3b8;">${CHAMBER_LABELS[r.chamber]} D${r.district}</span><span style="font-size:13px;font-weight:700;color:${color};min-width:32px;text-align:right;">${sc}</span></div>`;
           }).join('');
           const expandId = 'dist-' + i + '-' + cat.title.replace(/\s/g, '');
-          rows += `<div class="leader-row" style="flex-wrap:wrap;" onclick="var el=document.getElementById('${expandId}');el.style.display=el.style.display==='none'?'block':'none'"><span class="leader-rank">${i+1}</span><span class="leader-name">${hood}<span class="leader-chamber">${data.count} reps, ${data[cat.metaKey]} ${cat.metaLabel}</span></span><span class="leader-score" style="color:${cat.scoreColor}">${avg}</span><div id="${expandId}" style="display:none;width:100%;padding:8px 0 4px 34px;border-top:1px solid #f1f5f9;margin-top:8px;" onclick="event.stopPropagation()">${repsHtml}</div></div>`;
+          rows += `<div class="leader-row" style="flex-wrap:wrap;" onclick="var el=document.getElementById('${expandId}');el.style.display=el.style.display==='none'?'block':'none'"><span class="leader-rank">${i+1}</span><span class="leader-name">${hood}<span class="leader-chamber">${data.count} representatives &bull; ${data[cat.metaKey]} ${cat.metaLabel}</span></span><span class="leader-score" style="color:${cat.scoreColor}">${avg}</span><div id="${expandId}" style="display:none;width:100%;padding:8px 0 4px 34px;border-top:1px solid #f1f5f9;margin-top:8px;" onclick="event.stopPropagation()">${repsHtml}</div></div>`;
         }
         card.innerHTML = `<div class="leader-card-header"><h3>${cat.title}</h3><span class="col-label">AVG SCORE</span></div>${rows}`;
         grid.appendChild(card);
