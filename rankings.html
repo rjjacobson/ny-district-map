@@ -136,9 +136,9 @@
       </div>
     </div>
 
-    <!-- District Stats -->
+    <!-- Neighborhood Stats -->
     <div id="district-stats" style="margin-top:32px;">
-      <h2 style="font-size:22px;font-weight:800;color:#0f172a;margin-bottom:16px;">District Stats</h2>
+      <h2 style="font-size:22px;font-weight:800;color:#0f172a;margin-bottom:16px;">Neighborhood Stats</h2>
       <div class="leaders-grid" id="district-grid"></div>
     </div>
 
@@ -157,6 +157,33 @@
           </tr></thead>
           <tbody id="hood-rankings-body"></tbody>
         </table>
+      </div>
+    </div>
+
+    <!-- District Rankings -->
+    <div id="district-rankings-section" style="margin-top:32px;">
+      <h2 style="font-size:22px;font-weight:800;color:#0f172a;margin-bottom:16px;">District Rankings</h2>
+      <div class="filters" style="margin-bottom:16px;">
+        <select class="filter-select" id="filter-dist-chamber" onchange="renderDistrictRankings()">
+          <option value="city_council">City Council</option>
+          <option value="assembly">State Assembly</option>
+          <option value="senate">State Senate</option>
+          <option value="us_house">US House</option>
+        </select>
+      </div>
+      <div style="background:white;border-radius:12px;box-shadow:0 1px 3px rgba(0,0,0,0.08);overflow:hidden;">
+        <div style="overflow-x:auto;">
+          <table class="rankings-table" id="district-rankings-table">
+            <thead><tr>
+              <th>DISTRICT</th>
+              <th>REPRESENTATIVE</th>
+              <th>PARTY</th>
+              <th>SCORE</th>
+              <th>STANCE</th>
+            </tr></thead>
+            <tbody id="district-rankings-body"></tbody>
+          </table>
+        </div>
       </div>
     </div>
 
@@ -539,6 +566,33 @@
       const th = document.getElementById('th-hood-'+key); if (th) { th.classList.add('sorted'); if (!hoodSort.desc) th.classList.add('asc'); }
     }
 
+    function renderDistrictRankings() {
+      const chamber = document.getElementById('filter-dist-chamber').value;
+      const tbody = document.getElementById('district-rankings-body');
+      tbody.innerHTML = '';
+
+      const chamberLegs = allLegislators
+        .filter(l => l.chamber === chamber)
+        .sort((a, b) => a.district - b.district);
+
+      for (const l of chamberLegs) {
+        const sc = STANCE_COLORS[l.stance] || '#d1d5db';
+        const sl = STANCE_LABELS[l.stance] || 'Unknown';
+        const scoreColor = l.score > 0 ? '#15803d' : l.score < 0 ? '#c2410c' : '#64748b';
+        const partyShort = (l.party || '').includes('Democrat') ? 'D' : (l.party || '').includes('Republican') ? 'R' : '?';
+        const tr = document.createElement('tr');
+        tr.style.cursor = 'pointer';
+        tr.onclick = () => openDetailPanel(l.person_id);
+        tr.innerHTML = `
+          <td style="font-weight:600;">District ${l.district}</td>
+          <td class="name-cell"><span class="party-dot-inline" style="background:${partyColor(l.party)}"></span>${l.name}</td>
+          <td>${partyShort}</td>
+          <td class="score-cell" style="color:${scoreColor}">${l.score > 0 ? '+' : ''}${l.score}</td>
+          <td><span class="stance-badge" style="background:${sc}">${sl}</span></td>`;
+        tbody.appendChild(tr);
+      }
+    }
+
     function renderActionsStats() {
       const grid = document.getElementById('actions-grid');
       if (!grid) return;
@@ -588,6 +642,7 @@
     fetchData().then(() => {
       renderDistrictStats();
       renderActionsStats();
+      renderDistrictRankings();
       const hash = window.location.hash;
       if (hash && hash.startsWith('#person-')) {
         const pid = parseInt(hash.replace('#person-', ''));
