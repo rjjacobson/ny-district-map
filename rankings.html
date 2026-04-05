@@ -388,7 +388,8 @@
       for (const [_, d] of Object.entries(scores)) d.avg = d.count ? d.total / d.count : 0;
 
       const grid = document.getElementById('district-grid');
-      const sorted = Object.entries(scores).sort((a, b) => a[1].avg - b[1].avg);
+      const multiRep = Object.entries(scores).filter(([_, v]) => v.count >= 2);
+      const sorted = multiRep.sort((a, b) => a[1].avg - b[1].avg);
       const worst = sorted.filter(([_, v]) => v.avg < 0).slice(0, 10);
       const best = sorted.filter(([_, v]) => v.avg > 0).sort((a, b) => b[1].avg - a[1].avg).slice(0, 10);
 

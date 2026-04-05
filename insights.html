@@ -390,7 +390,8 @@
 
       // Compute average score per rep
       for (const [_, d] of Object.entries(neighborhoodScores)) d.avg = d.count ? d.total / d.count : 0;
-      const sortedHoods = Object.entries(neighborhoodScores).sort((a, b) => a[1].avg - b[1].avg);
+      const multiRep = Object.entries(neighborhoodScores).filter(([_, v]) => v.count >= 2);
+      const sortedHoods = multiRep.sort((a, b) => a[1].avg - b[1].avg);
       const worstHoods = sortedHoods.slice(0, 8);
       const bestHoods = sortedHoods.filter(([_, v]) => v.avg > 0).sort((a, b) => b[1].avg - a[1].avg).slice(0, 10);
 
