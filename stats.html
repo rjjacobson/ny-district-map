@@ -1,0 +1,445 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Feed - NY Legislature</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: #f8fafc; min-height: 100vh; }
+
+    .top-nav { display: flex; align-items: center; background: #1e293b; padding: 0 20px; height: 44px; position: sticky; top: 0; z-index: 1000; }
+    .top-nav .site-title { font-size: 15px; font-weight: 700; color: white; margin-right: 24px; white-space: nowrap; text-decoration: none; }
+    .top-nav .nav-link { color: #94a3b8; text-decoration: none; font-size: 14px; font-weight: 500; padding: 10px 16px; border-bottom: 3px solid transparent; }
+    .top-nav .nav-link:hover { color: #e2e8f0; }
+    .top-nav .nav-link.active { color: white; border-bottom-color: #3b82f6; }
+
+    .page-container { max-width: 700px; margin: 0 auto; padding: 20px; }
+
+    .page-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 20px;
+    }
+    .page-header h1 { font-size: 24px; font-weight: 800; color: #0f172a; }
+
+    .filters { display: flex; gap: 8px; flex-wrap: wrap; }
+    .filter-select {
+      padding: 7px 28px 7px 12px;
+      border: 1.5px solid #d1d5db;
+      border-radius: 20px;
+      font-size: 13px;
+      font-weight: 500;
+      color: #374151;
+      background: white;
+      cursor: pointer;
+      appearance: none;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='10' fill='%23666' viewBox='0 0 16 16'%3E%3Cpath d='M8 11L3 6h10z'/%3E%3C/svg%3E");
+      background-repeat: no-repeat;
+      background-position: right 10px center;
+    }
+
+    .filter-pills { display: flex; gap: 6px; margin-bottom: 16px; }
+    .pill {
+      padding: 6px 14px;
+      border-radius: 20px;
+      font-size: 13px;
+      font-weight: 500;
+      cursor: pointer;
+      border: 1.5px solid #e2e8f0;
+      background: white;
+      color: #475569;
+      transition: all 0.15s;
+    }
+    .pill:hover { border-color: #94a3b8; }
+    .pill.active { background: #1e293b; color: white; border-color: #1e293b; }
+
+    /* Feed items */
+    .feed-item {
+      background: white;
+      border-radius: 12px;
+      padding: 16px 20px;
+      margin-bottom: 12px;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.06);
+      border-left: 4px solid #d1d5db;
+      cursor: pointer;
+      transition: box-shadow 0.15s;
+    }
+    .feed-item:hover { box-shadow: 0 2px 8px rgba(0,0,0,0.1); }
+    .feed-item.pro { border-left-color: #15803d; }
+    .feed-item.anti { border-left-color: #c2410c; }
+
+    .feed-header {
+      display: flex;
+      align-items: center;
+      margin-bottom: 8px;
+      gap: 8px;
+    }
+
+    .feed-avatar {
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 14px;
+      font-weight: 700;
+      color: white;
+      flex-shrink: 0;
+    }
+
+    .feed-name-block { flex: 1; }
+    .feed-name {
+      font-size: 15px;
+      font-weight: 700;
+      color: #0f172a;
+    }
+    .feed-meta {
+      font-size: 12px;
+      color: #94a3b8;
+    }
+
+    .feed-date {
+      font-size: 12px;
+      color: #94a3b8;
+      white-space: nowrap;
+    }
+
+    .feed-tag {
+      display: inline-block;
+      padding: 2px 8px;
+      border-radius: 4px;
+      font-size: 11px;
+      font-weight: 600;
+      text-transform: uppercase;
+      margin-bottom: 6px;
+    }
+    .feed-tag.pro { background: #dcfce7; color: #15803d; }
+    .feed-tag.anti { background: #fff7ed; color: #c2410c; }
+
+    .feed-label {
+      font-size: 14px;
+      font-weight: 600;
+      color: #0f172a;
+      margin-bottom: 4px;
+    }
+
+    .feed-evidence {
+      font-size: 13px;
+      color: #475569;
+      line-height: 1.5;
+    }
+
+    .feed-source {
+      display: inline-block;
+      margin-top: 8px;
+      font-size: 12px;
+      color: #2563eb;
+      text-decoration: none;
+    }
+    .feed-source:hover { text-decoration: underline; }
+
+    .load-more {
+      display: block;
+      width: 100%;
+      padding: 12px;
+      text-align: center;
+      font-size: 14px;
+      font-weight: 600;
+      color: #2563eb;
+      background: white;
+      border: 1.5px solid #e2e8f0;
+      border-radius: 12px;
+      cursor: pointer;
+      margin-top: 8px;
+    }
+    .load-more:hover { background: #f0f5ff; }
+
+    .empty-state {
+      text-align: center;
+      padding: 40px;
+      color: #94a3b8;
+      font-size: 15px;
+    }
+
+    /* Detail panel overlay */
+    .detail-overlay {
+      display: none;
+      position: fixed;
+      top: 0; right: 0; bottom: 0;
+      width: 420px;
+      background: white;
+      box-shadow: -4px 0 20px rgba(0,0,0,0.15);
+      z-index: 2000;
+      overflow-y: auto;
+    }
+    .detail-overlay.open { display: block; }
+    .detail-overlay .close-btn {
+      position: absolute; top: 12px; right: 12px;
+      background: none; border: none; font-size: 24px; cursor: pointer; color: #64748b;
+    }
+    .detail-overlay .detail-content { padding: 24px; }
+    .detail-overlay h2 { font-size: 22px; margin-bottom: 4px; }
+    .detail-overlay .d-meta { font-size: 13px; color: #64748b; margin-bottom: 16px; }
+
+    .d-evidence-item {
+      padding: 12px;
+      margin-bottom: 8px;
+      border-radius: 8px;
+      border-left: 3px solid #d1d5db;
+      background: #f8fafc;
+      font-size: 13px;
+      line-height: 1.5;
+      color: #334155;
+    }
+    .d-evidence-item.pro { border-left-color: #15803d; }
+    .d-evidence-item.anti { border-left-color: #c2410c; }
+
+    .stance-badge {
+      display: inline-block;
+      padding: 2px 10px;
+      border-radius: 12px;
+      font-size: 12px;
+      font-weight: 600;
+      color: white;
+    }
+
+    .party-dot-inline {
+      width: 8px; height: 8px; border-radius: 50%;
+      display: inline-block; margin-right: 6px; vertical-align: middle;
+    }
+  </style>
+</head>
+<body>
+  <nav class="top-nav">
+    <a href="index.html" class="site-title">Shalom NY</a>
+    <a href="stats.html" class="nav-link active">Feed</a>
+    <a href="map.html" class="nav-link">Map</a>
+    <a href="rankings.html" class="nav-link">Rankings</a>
+    <a href="insights.html" class="nav-link">Insights</a>
+  </nav>
+
+  <div class="page-container">
+    <div class="page-header">
+      <h1>Israel Activity Feed</h1>
+      <div class="filters">
+        <select class="filter-select" id="filter-chamber" onchange="renderFeed()">
+          <option value="all">All Chambers</option>
+          <option value="us_senate">US Senate</option>
+          <option value="us_house">US House</option>
+          <option value="senate">State Senate</option>
+          <option value="assembly">Assembly</option>
+          <option value="city_council">City Council</option>
+        </select>
+      </div>
+    </div>
+
+    <div class="filter-pills">
+      <div class="pill active" onclick="setDirection('all')">All</div>
+      <div class="pill" onclick="setDirection('pro')">Pro-Israel</div>
+      <div class="pill" onclick="setDirection('anti')">Anti-Israel</div>
+    </div>
+
+    <div id="feed-container"></div>
+    <button class="load-more" id="load-more-btn" onclick="loadMore()" style="display:none;">Load more</button>
+  </div>
+
+  <!-- Detail panel -->
+  <div class="detail-overlay" id="detail-overlay">
+    <button class="close-btn" onclick="closeDetail()">&times;</button>
+    <div class="detail-content" id="detail-content"></div>
+  </div>
+
+  <script>
+    const SUPABASE_URL = 'https://xeknqkxhfxvveeyddokl.supabase.co';
+    const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inhla25xa3hoZnh2dmVleWRkb2tsIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzUyMjc1MzksImV4cCI6MjA5MDgwMzUzOX0.-CO0RkDBljPTRBO5x5JIAIZ23WfhR0A8bLJV3iE_xS0';
+
+    const CHAMBER_SHORT = { us_senate: 'US Senate', us_house: 'US House', senate: 'State Senate', assembly: 'Assembly', city_council: 'City Council' };
+    const STANCE_COLORS = {
+      strongly_support: '#15803d', support: '#4ade80', neutral: '#a1a1aa',
+      oppose: '#fb923c', strongly_oppose: '#c2410c'
+    };
+    const STANCE_LABELS = {
+      strongly_support: 'Strongly Pro', support: 'Pro-Israel', neutral: 'Neutral',
+      oppose: 'Anti-Israel', strongly_oppose: 'Strongly Anti'
+    };
+
+    let allCriteria = [];
+    let legLookup = {};
+    let posLookup = {};
+    let currentDirection = 'all';
+    let visibleCount = 30;
+
+    function partyColor(party) {
+      if (!party) return '#9ca3af';
+      const p = party.toLowerCase();
+      if (p.includes('democrat')) return '#3b82f6';
+      if (p.includes('republican')) return '#ef4444';
+      return '#9ca3af';
+    }
+
+    function initials(name) {
+      return name.split(' ').map(w => w[0]).filter(Boolean).slice(0, 2).join('').toUpperCase();
+    }
+
+    function formatDate(dateStr) {
+      if (!dateStr) return '';
+      const d = new Date(dateStr + 'T00:00:00');
+      const months = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+      return months[d.getMonth()] + ' ' + d.getDate() + ', ' + d.getFullYear();
+    }
+
+    function relativeDate(dateStr) {
+      if (!dateStr) return '';
+      const d = new Date(dateStr + 'T00:00:00');
+      const now = new Date();
+      const diff = Math.floor((now - d) / (1000 * 60 * 60 * 24));
+      if (diff === 0) return 'Today';
+      if (diff === 1) return 'Yesterday';
+      if (diff < 30) return diff + 'd ago';
+      if (diff < 365) return Math.floor(diff / 30) + 'mo ago';
+      return Math.floor(diff / 365) + 'y ago';
+    }
+
+    async function fetchData() {
+      const [legResp, posResp, critResp] = await Promise.all([
+        fetch(`${SUPABASE_URL}/rest/v1/current_legislators?select=person_id,name,party,chamber,district&order=name`, { headers: { apikey: SUPABASE_ANON_KEY } }),
+        fetch(`${SUPABASE_URL}/rest/v1/positions?select=person_id,stance&assessment_type=eq.ai&topic_id=eq.1`, { headers: { apikey: SUPABASE_ANON_KEY } }),
+        fetch(`${SUPABASE_URL}/rest/v1/person_criteria?select=person_id,criterion_id,evidence,source_url,source_date,criteria(label,direction,category)&order=source_date.desc.nullslast`, { headers: { apikey: SUPABASE_ANON_KEY } }),
+      ]);
+      const legislators = await legResp.json();
+      for (const l of legislators) legLookup[l.person_id] = l;
+      const positions = await posResp.json();
+      for (const p of positions) posLookup[p.person_id] = p;
+      allCriteria = await critResp.json();
+
+      renderFeed();
+    }
+
+    function getFilteredFeed() {
+      const chamber = document.getElementById('filter-chamber').value;
+      return allCriteria.filter(c => {
+        const leg = legLookup[c.person_id];
+        if (!leg) return false;
+        if (chamber !== 'all' && leg.chamber !== chamber) return false;
+        if (currentDirection !== 'all' && c.criteria?.direction !== currentDirection) return false;
+        return true;
+      });
+    }
+
+    function renderFeed() {
+      const filtered = getFilteredFeed();
+      const container = document.getElementById('feed-container');
+      container.innerHTML = '';
+
+      if (filtered.length === 0) {
+        container.innerHTML = '<div class="empty-state">No activity found for these filters.</div>';
+        document.getElementById('load-more-btn').style.display = 'none';
+        return;
+      }
+
+      const toShow = filtered.slice(0, visibleCount);
+      for (const c of toShow) {
+        const leg = legLookup[c.person_id];
+        if (!leg) continue;
+        const dir = c.criteria?.direction || 'unknown';
+        const label = c.criteria?.label || '';
+        const cat = (c.criteria?.category || '').replace('_', ' ');
+        const color = partyColor(leg.party);
+
+        const item = document.createElement('div');
+        item.className = 'feed-item ' + dir;
+        item.onclick = () => showPersonDetail(c.person_id);
+
+        const sourceLink = c.source_url
+          ? `<a href="${c.source_url}" target="_blank" class="feed-source" onclick="event.stopPropagation()">View source &rarr;</a>`
+          : '';
+
+        item.innerHTML = `
+          <div class="feed-header">
+            <div class="feed-avatar" style="background:${color}">${initials(leg.name)}</div>
+            <div class="feed-name-block">
+              <div class="feed-name">${leg.name}</div>
+              <div class="feed-meta">${CHAMBER_SHORT[leg.chamber]} D${leg.district} &middot; ${leg.party || ''}</div>
+            </div>
+            <div class="feed-date">${relativeDate(c.source_date)}</div>
+          </div>
+          <div class="feed-tag ${dir}">${dir === 'pro' ? 'Pro-Israel' : 'Anti-Israel'} &middot; ${cat}</div>
+          <div class="feed-label">${label}</div>
+          <div class="feed-evidence">${c.evidence || ''}</div>
+          ${sourceLink}
+        `;
+        container.appendChild(item);
+      }
+
+      document.getElementById('load-more-btn').style.display = filtered.length > visibleCount ? 'block' : 'none';
+    }
+
+    function loadMore() {
+      visibleCount += 30;
+      renderFeed();
+    }
+
+    function setDirection(dir) {
+      currentDirection = dir;
+      visibleCount = 30;
+      document.querySelectorAll('.pill').forEach(p => p.classList.remove('active'));
+      event.target.classList.add('active');
+      renderFeed();
+    }
+
+    function showPersonDetail(personId) {
+      const leg = legLookup[personId];
+      if (!leg) return;
+      const pos = posLookup[personId];
+      const criteria = allCriteria.filter(c => c.person_id === personId);
+      const stanceColor = pos ? (STANCE_COLORS[pos.stance] || '#d1d5db') : '#d1d5db';
+      const stanceLabel = pos ? (STANCE_LABELS[pos.stance] || 'Unknown') : 'Unknown';
+
+      let score = 0;
+      for (const c of criteria) {
+        const w = c.criteria?.weight || 1;
+        if (c.criteria?.direction === 'pro') score += w; else score -= w;
+      }
+
+      let evidenceHTML = '';
+      for (const c of criteria) {
+        const dir = c.criteria?.direction || 'unknown';
+        const label = c.criteria?.label || '';
+        const cat = (c.criteria?.category || '').replace('_', ' ').toUpperCase();
+        const sourceLink = c.source_url ? `<a href="${c.source_url}" target="_blank" style="display:inline-block;margin-top:6px;font-size:12px;color:#2563eb;text-decoration:none;">View source &rarr;</a>` : '';
+        evidenceHTML += `
+          <div class="d-evidence-item ${dir}">
+            <div style="font-size:11px;font-weight:600;text-transform:uppercase;color:#64748b;margin-bottom:4px;">${cat}<span style="color:#94a3b8;margin-left:8px;">${c.source_date || ''}</span></div>
+            <strong>${label}</strong><br>
+            ${c.evidence || ''}
+            ${sourceLink}
+          </div>`;
+      }
+
+      const content = document.getElementById('detail-content');
+      content.innerHTML = `
+        <h2>${leg.name}</h2>
+        <div class="d-meta">
+          <span class="party-dot-inline" style="background:${partyColor(leg.party)}"></span>
+          ${leg.party || 'Unknown'} &middot; ${CHAMBER_SHORT[leg.chamber]} District ${leg.district}
+        </div>
+        <div style="margin-bottom:16px;">
+          <span class="stance-badge" style="background:${stanceColor}">${stanceLabel}</span>
+          <span style="margin-left:12px;font-size:14px;font-weight:600;">Score: ${score > 0 ? '+' : ''}${score}</span>
+          <span style="margin-left:12px;font-size:13px;color:#64748b;">${criteria.length} evidence items</span>
+        </div>
+        <div>${evidenceHTML || '<p style="color:#94a3b8;font-size:14px;">No evidence on record.</p>'}</div>
+      `;
+      document.getElementById('detail-overlay').classList.add('open');
+    }
+
+    function closeDetail() { document.getElementById('detail-overlay').classList.remove('open'); }
+    document.addEventListener('keydown', e => { if (e.key === 'Escape') closeDetail(); });
+
+    fetchData();
+  </script>
+</body>
+</html>

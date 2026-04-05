@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Your Representatives - Shalom NY</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: #f8fafc; min-height: 100vh; }
+    .top-nav { display: flex; align-items: center; background: #1e293b; padding: 0 20px; height: 44px; position: sticky; top: 0; z-index: 1000; }
+    .top-nav .site-title { font-size: 15px; font-weight: 700; color: white; margin-right: 24px; white-space: nowrap; text-decoration: none; }
+    .top-nav .nav-link { color: #94a3b8; text-decoration: none; font-size: 14px; font-weight: 500; padding: 10px 16px; border-bottom: 3px solid transparent; }
+    .top-nav .nav-link:hover { color: #e2e8f0; }
+    .top-nav .nav-link.active { color: white; border-bottom-color: #3b82f6; }
+
+    .container { max-width: 800px; margin: 0 auto; padding: 24px 20px; }
+
+    .area-grade {
+      background: white;
+      border-radius: 14px;
+      padding: 24px;
+      margin-bottom: 20px;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.06);
+      text-align: center;
+    }
+    .area-grade h1 { font-size: 22px; font-weight: 800; color: #0f172a; margin-bottom: 4px; }
+    .area-grade .subtitle { font-size: 14px; color: #64748b; margin-bottom: 16px; }
+    .grade-circle {
+      width: 80px; height: 80px; border-radius: 50%;
+      display: inline-flex; align-items: center; justify-content: center;
+      font-size: 32px; font-weight: 800; color: white; margin-bottom: 8px;
+    }
+    .grade-label { font-size: 14px; font-weight: 600; color: #475569; }
+    .grade-breakdown { display: flex; justify-content: center; gap: 24px; margin-top: 16px; }
+    .grade-stat { text-align: center; }
+    .grade-stat .num { font-size: 20px; font-weight: 700; color: #0f172a; }
+    .grade-stat .label { font-size: 12px; color: #94a3b8; }
+
+    .rep-card {
+      background: white;
+      border-radius: 14px;
+      padding: 20px;
+      margin-bottom: 12px;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.06);
+      cursor: pointer;
+      transition: box-shadow 0.15s;
+    }
+    .rep-card:hover { box-shadow: 0 3px 12px rgba(0,0,0,0.1); }
+
+    .rep-header { display: flex; align-items: center; gap: 14px; margin-bottom: 12px; }
+    .rep-avatar { width: 48px; height: 48px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 16px; font-weight: 700; color: white; flex-shrink: 0; }
+    .rep-info { flex: 1; }
+    .rep-name { font-size: 18px; font-weight: 700; color: #0f172a; }
+    .rep-detail { font-size: 13px; color: #64748b; }
+    .stance-badge { display: inline-block; padding: 4px 12px; border-radius: 12px; font-size: 12px; font-weight: 600; color: white; }
+
+    .rep-score-bar { display: flex; align-items: center; gap: 10px; margin-bottom: 8px; }
+    .score-label { font-size: 13px; font-weight: 600; color: #475569; min-width: 80px; }
+    .score-bar { flex: 1; height: 8px; background: #e2e8f0; border-radius: 4px; overflow: hidden; }
+    .score-fill { height: 100%; border-radius: 4px; }
+    .score-value { font-size: 13px; font-weight: 700; min-width: 40px; text-align: right; }
+
+    .rep-evidence-summary { font-size: 13px; color: #64748b; margin-top: 8px; }
+    .rep-evidence-summary strong { color: #334155; }
+
+    .back-link { display: inline-block; margin-bottom: 16px; font-size: 14px; font-weight: 600; color: #2563eb; text-decoration: none; }
+    .back-link:hover { text-decoration: underline; }
+
+    .no-data { text-align: center; padding: 60px 20px; color: #94a3b8; }
+    .no-data a { color: #2563eb; }
+
+    @media (max-width: 768px) {
+      .grade-breakdown { gap: 16px; }
+      .top-nav .nav-link { font-size: 13px; padding: 10px 8px; }
+    }
+  </style>
+</head>
+<body>
+  <nav class="top-nav">
+    <a href="index.html" class="site-title">Shalom NY</a>
+    <a href="stats.html" class="nav-link">Feed</a>
+    <a href="map.html" class="nav-link">Map</a>
+    <a href="rankings.html" class="nav-link">Rankings</a>
+    <a href="insights.html" class="nav-link">Insights</a>
+  </nav>
+
+  <div class="container">
+    <a href="index.html" class="back-link">&larr; Back to search</a>
+    <div id="content"><div class="no-data">Loading your representatives...</div></div>
+  </div>
+
+  <script>
+    const SUPABASE_URL = 'https://xeknqkxhfxvveeyddokl.supabase.co';
+    const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inhla25xa3hoZnh2dmVleWRkb2tsIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzUyMjc1MzksImV4cCI6MjA5MDgwMzUzOX0.-CO0RkDBljPTRBO5x5JIAIZ23WfhR0A8bLJV3iE_xS0';
+    const CHAMBER_LABELS = { us_senate: 'US Senate', us_house: 'US House', senate: 'State Senate', assembly: 'Assembly', city_council: 'City Council' };
+    const STANCE_COLORS = { strongly_support: '#15803d', support: '#4ade80', neutral: '#a1a1aa', oppose: '#fb923c', strongly_oppose: '#c2410c' };
+    const STANCE_LABELS = { strongly_support: 'Strongly Pro-Israel', support: 'Pro-Israel', neutral: 'Neutral', oppose: 'Anti-Israel', strongly_oppose: 'Strongly Anti-Israel' };
+
+    function partyColor(p) { if (!p) return '#9ca3af'; p = p.toLowerCase(); return p.includes('democrat') ? '#3b82f6' : p.includes('republican') ? '#ef4444' : '#9ca3af'; }
+    function initials(n) { return n.split(' ').map(w => w[0]).filter(Boolean).slice(0, 2).join('').toUpperCase(); }
+
+    async function init() {
+      const stored = sessionStorage.getItem('shalomny_reps');
+      if (!stored) {
+        document.getElementById('content').innerHTML = '<div class="no-data">No address lookup found.<br><a href="index.html">Go back and search an address</a></div>';
+        return;
+      }
+      const { address, reps } = JSON.parse(stored);
+      const personIds = reps.map(r => r.person_id);
+
+      const [posResp, critResp] = await Promise.all([
+        fetch(`${SUPABASE_URL}/rest/v1/positions?select=person_id,stance,rationale&assessment_type=eq.ai&topic_id=eq.1`, { headers: { apikey: SUPABASE_ANON_KEY } }),
+        fetch(`${SUPABASE_URL}/rest/v1/person_criteria?select=person_id,criterion_id,evidence,source_url,source_date,criteria(label,direction,weight)&order=source_date.desc`, { headers: { apikey: SUPABASE_ANON_KEY } }),
+      ]);
+      const allPos = await posResp.json();
+      const allCrit = await critResp.json();
+      const posMap = {}; for (const p of allPos) posMap[p.person_id] = p;
+
+      // Compute scores and area grade
+      let totalScore = 0, proCount = 0, antiCount = 0;
+      const repData = reps.map(r => {
+        const crit = allCrit.filter(c => c.person_id === r.person_id);
+        let score = 0;
+        for (const c of crit) { const w = c.criteria?.weight || 1; score += c.criteria?.direction === 'pro' ? w : -w; }
+        const stance = posMap[r.person_id]?.stance || 'unknown';
+        totalScore += score;
+        if (stance.includes('support')) proCount++;
+        if (stance.includes('oppose')) antiCount++;
+        return { ...r, score, stance, criteria: crit, rationale: posMap[r.person_id]?.rationale };
+      });
+
+      const avgScore = totalScore / reps.length;
+      let grade, gradeColor;
+      if (avgScore >= 8) { grade = 'A+'; gradeColor = '#15803d'; }
+      else if (avgScore >= 5) { grade = 'A'; gradeColor = '#16a34a'; }
+      else if (avgScore >= 3) { grade = 'B+'; gradeColor = '#4ade80'; }
+      else if (avgScore >= 1) { grade = 'B'; gradeColor = '#86efac'; }
+      else if (avgScore >= -1) { grade = 'C'; gradeColor = '#a1a1aa'; }
+      else if (avgScore >= -3) { grade = 'D'; gradeColor = '#fb923c'; }
+      else { grade = 'F'; gradeColor = '#c2410c'; }
+
+      let html = `
+        <div class="area-grade">
+          <h1>Your Representatives</h1>
+          <div class="subtitle">${address}</div>
+          <div class="grade-circle" style="background:${gradeColor}">${grade}</div>
+          <div class="grade-label">Area Israel Support Grade</div>
+          <div class="grade-breakdown">
+            <div class="grade-stat"><div class="num">${reps.length}</div><div class="label">Representatives</div></div>
+            <div class="grade-stat"><div class="num">${proCount}</div><div class="label">Pro-Israel</div></div>
+            <div class="grade-stat"><div class="num">${antiCount}</div><div class="label">Anti-Israel</div></div>
+            <div class="grade-stat"><div class="num">${totalScore > 0 ? '+' : ''}${totalScore}</div><div class="label">Total Score</div></div>
+          </div>
+        </div>`;
+
+      for (const r of repData) {
+        const sc = STANCE_COLORS[r.stance] || '#d1d5db';
+        const sl = STANCE_LABELS[r.stance] || 'Unknown';
+        const maxScore = 20;
+        const barPct = Math.min(100, Math.max(0, ((r.score + maxScore) / (maxScore * 2)) * 100));
+        const barColor = r.score >= 0 ? '#15803d' : '#c2410c';
+
+        const topEvidence = r.criteria.slice(0, 3);
+        let evSummary = '';
+        if (topEvidence.length > 0) {
+          evSummary = '<div class="rep-evidence-summary"><strong>Recent:</strong> ' +
+            topEvidence.map(c => c.criteria?.label).join(', ') +
+            (r.criteria.length > 3 ? ` (+${r.criteria.length - 3} more)` : '') + '</div>';
+        }
+
+        html += `
+          <div class="rep-card" onclick="window.location='map.html#${r.chamber}-${r.district}'">
+            <div class="rep-header">
+              <div class="rep-avatar" style="background:${partyColor(r.party)}">${initials(r.name)}</div>
+              <div class="rep-info">
+                <div class="rep-name">${r.name}</div>
+                <div class="rep-detail">${CHAMBER_LABELS[r.chamber]} District ${r.district} &middot; ${r.party || ''}</div>
+              </div>
+              <span class="stance-badge" style="background:${sc}">${sl}</span>
+            </div>
+            <div class="rep-score-bar">
+              <span class="score-label">Israel Score</span>
+              <div class="score-bar"><div class="score-fill" style="width:${barPct}%;background:${barColor}"></div></div>
+              <span class="score-value">${r.score > 0 ? '+' : ''}${r.score}</span>
+            </div>
+            ${evSummary}
+          </div>`;
+      }
+
+      document.getElementById('content').innerHTML = html;
+    }
+    init();
+  </script>
+</body>
+</html>

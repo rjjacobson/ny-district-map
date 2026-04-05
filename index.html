@@ -3,1094 +3,542 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>New York State Legislative Districts</title>
-  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+  <title>Shalom NY — Know Your Representatives</title>
   <style>
     * { margin: 0; padding: 0; box-sizing: border-box; }
-    .us-senate-label div {
-      font-size: 13px;
-      font-weight: 600;
-      color: #1e293b;
+    body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: #f8fafc; min-height: 100vh; }
+
+    .top-nav { display: flex; align-items: center; background: #1e293b; padding: 0 20px; height: 44px; }
+    .top-nav .site-title { font-size: 15px; font-weight: 700; color: white; margin-right: 24px; white-space: nowrap; text-decoration: none; }
+    .top-nav a.nav-link { color: #94a3b8; text-decoration: none; font-size: 14px; font-weight: 500; padding: 10px 16px; border-bottom: 3px solid transparent; transition: all 0.15s; }
+    .top-nav a.nav-link:hover { color: #e2e8f0; }
+    .top-nav a.nav-link.active { color: white; border-bottom-color: #3b82f6; }
+
+    .hero {
+      background: linear-gradient(135deg, #1e293b 0%, #334155 100%);
+      padding: 48px 20px 40px;
       text-align: center;
-      text-shadow: 0 0 4px #fff, 0 0 4px #fff, 0 0 4px #fff;
+      color: white;
+    }
+    .hero h1 { font-size: 36px; font-weight: 800; margin-bottom: 8px; }
+    .hero p { font-size: 16px; color: #94a3b8; margin-bottom: 28px; }
+
+    .address-bar {
+      max-width: 600px;
+      margin: 0 auto;
+      display: flex;
+      gap: 8px;
+    }
+    .address-bar input {
+      flex: 1;
+      padding: 14px 18px;
+      border: none;
+      border-radius: 12px;
+      font-size: 15px;
+      outline: none;
+      background: white;
+      color: #0f172a;
+    }
+    .address-bar input::placeholder { color: #94a3b8; }
+    .address-bar button {
+      padding: 14px 24px;
+      background: #2563eb;
+      color: white;
+      border: none;
+      border-radius: 12px;
+      font-size: 15px;
+      font-weight: 600;
+      cursor: pointer;
       white-space: nowrap;
     }
-    body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; display: flex; height: 100vh; overflow: hidden; }
+    .address-bar button:hover { background: #1d4ed8; }
 
-    #map-container { flex: 1; position: relative; }
-    #map { width: 100%; height: 100%; }
-
-    .controls {
-      position: absolute;
-      top: 16px;
-      left: 60px;
-      right: 436px;
-      z-index: 1000;
-      display: flex;
-      gap: 12px;
-      align-items: stretch;
+    /* Representatives results */
+    .reps-container {
+      max-width: 800px;
+      margin: 0 auto;
+      padding: 0 20px;
     }
-
-    .control-group {
+    .reps-results {
+      display: none;
       background: white;
+      border-radius: 16px;
+      margin: -20px auto 24px;
+      padding: 24px;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+      position: relative;
+      z-index: 10;
+      max-width: 800px;
+    }
+    .reps-results.visible { display: block; }
+    .reps-results h2 { font-size: 18px; font-weight: 700; margin-bottom: 16px; color: #0f172a; }
+    .reps-loading { text-align: center; padding: 20px; color: #64748b; }
+
+    .rep-card {
+      display: flex;
+      align-items: center;
+      padding: 12px 16px;
       border-radius: 10px;
-      box-shadow: 0 2px 12px rgba(0,0,0,0.15);
-      padding: 8px 14px 10px;
-      display: flex;
-      flex-direction: column;
-      justify-content: space-between;
-    }
-
-    .control-group-label {
-      font-size: 10px;
-      font-weight: 600;
-      color: #888;
-      text-transform: uppercase;
-      letter-spacing: 0.5px;
-      margin-bottom: 6px;
-    }
-
-    .control-group-buttons {
-      display: flex;
-      gap: 6px;
-      flex: 1;
-      align-items: stretch;
-    }
-
-    .toggle-btn {
-      padding: 7px 16px;
-      border: 2px solid #e0e0e0;
-      background: white;
-      border-radius: 8px;
-      font-size: 13px;
-      font-weight: 500;
+      margin-bottom: 8px;
+      background: #f8fafc;
       cursor: pointer;
-      transition: all 0.2s;
-      color: #555;
-      min-width: 80px;
+      transition: background 0.15s;
+      gap: 12px;
+    }
+    .rep-card:hover { background: #eef2ff; }
+    .rep-avatar {
+      width: 40px; height: 40px; border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 14px; font-weight: 700; color: white; flex-shrink: 0;
+    }
+    .rep-info { flex: 1; }
+    .rep-name { font-size: 15px; font-weight: 600; color: #0f172a; }
+    .rep-detail { font-size: 12px; color: #64748b; }
+    .rep-stance {
+      display: inline-block; padding: 3px 10px; border-radius: 12px;
+      font-size: 11px; font-weight: 600; color: white; flex-shrink: 0;
+    }
+
+    /* Dashboard grid */
+    .dashboard {
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 24px 20px;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 20px;
+    }
+
+    .dash-card {
+      background: white;
+      border-radius: 14px;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.06);
+      overflow: hidden;
+    }
+    .dash-card-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 16px 20px 12px;
+      border-bottom: 1px solid #f1f5f9;
+    }
+    .dash-card-header h3 { font-size: 16px; font-weight: 700; color: #0f172a; }
+    .dash-card-header a {
+      font-size: 13px; font-weight: 600; color: #2563eb; text-decoration: none;
+    }
+    .dash-card-header a:hover { text-decoration: underline; }
+
+    /* Feed preview */
+    .feed-preview-item {
+      padding: 12px 20px;
+      border-bottom: 1px solid #f8fafc;
+      border-left: 3px solid #d1d5db;
+      cursor: pointer;
+    }
+    .feed-preview-item:hover { background: #f8fafc; }
+    .feed-preview-item.pro { border-left-color: #15803d; }
+    .feed-preview-item.anti { border-left-color: #c2410c; }
+    .feed-preview-name { font-size: 14px; font-weight: 600; color: #0f172a; }
+    .feed-preview-meta { font-size: 11px; color: #94a3b8; margin-bottom: 4px; }
+    .feed-preview-text { font-size: 13px; color: #475569; line-height: 1.4; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+
+    /* Rankings preview */
+    .rank-row {
+      display: flex; align-items: center; padding: 10px 20px;
+      border-bottom: 1px solid #f8fafc;
+    }
+    .rank-num { width: 24px; font-size: 14px; font-weight: 600; color: #94a3b8; }
+    .rank-dot { width: 8px; height: 8px; border-radius: 50%; margin-right: 10px; }
+    .rank-name { flex: 1; font-size: 14px; font-weight: 600; color: #2563eb; }
+    .rank-score { font-size: 14px; font-weight: 700; color: #0f172a; }
+
+    /* Signup section */
+    .signup-section {
+      grid-column: 1 / -1;
+      background: linear-gradient(135deg, #1e3a5f 0%, #1e293b 100%);
+      border-radius: 14px;
+      padding: 32px;
+      color: white;
       text-align: center;
     }
-
-    .toggle-btn:hover { border-color: #999; color: #333; }
-    .toggle-btn.active { background: #2563eb; border-color: #2563eb; color: white; }
-
-    /* Align Leaflet zoom control with controls bar */
-    .leaflet-top.leaflet-left { top: 16px; left: 10px; }
-    .leaflet-control-zoom {
-      border: none !important;
-      box-shadow: 0 2px 12px rgba(0,0,0,0.15) !important;
-      border-radius: 10px !important;
-      overflow: hidden;
-    }
-    .leaflet-control-zoom a {
-      width: 36px !important;
-      height: 36px !important;
-      line-height: 36px !important;
-      font-size: 18px !important;
-    }
-
-    .legend {
-      position: absolute;
-      bottom: 24px;
-      left: 16px;
-      z-index: 1000;
-      background: white;
-      border-radius: 10px;
-      box-shadow: 0 2px 12px rgba(0,0,0,0.15);
-      padding: 12px 16px;
-      font-size: 12px;
-      line-height: 1.5;
-    }
-
-    .legend-title { font-weight: 600; margin-bottom: 4px; font-size: 13px; }
-    .legend-item { display: flex; align-items: center; gap: 6px; }
-    .legend-swatch { width: 16px; height: 12px; border-radius: 3px; border: 1px solid rgba(0,0,0,0.15); }
-
-    /* Sidebar — expandable two-panel layout */
-    #sidebar {
-      width: 420px;
-      min-width: 420px;
-      height: 100vh;
-      background: #fafafa;
-      border-left: 1px solid #e5e5e5;
+    .signup-section h3 { font-size: 20px; font-weight: 700; margin-bottom: 8px; }
+    .signup-section p { font-size: 14px; color: #94a3b8; margin-bottom: 20px; }
+    .signup-form {
       display: flex;
-      flex-direction: column;
-      overflow: hidden;
-      transition: width 0.25s ease;
+      gap: 8px;
+      max-width: 500px;
+      margin: 0 auto;
     }
-
-    #sidebar.detail-open {
-      width: 680px;
-      min-width: 680px;
-    }
-
-    #sidebar-header {
-      padding: 12px 16px 10px;
-      background: white;
-      border-bottom: 1px solid #e5e5e5;
-      flex-shrink: 0;
-    }
-
-    #search-input {
-      width: 100%;
-      padding: 10px 14px;
-      border: 2px solid #e0e0e0;
-      border-radius: 8px;
+    .signup-form input {
+      flex: 1;
+      padding: 12px 16px;
+      border: none;
+      border-radius: 10px;
       font-size: 14px;
       outline: none;
-      transition: border-color 0.2s;
     }
-    #search-input:focus { border-color: #2563eb; }
-    #search-input::placeholder { color: #aaa; }
+    .signup-form button {
+      padding: 12px 24px;
+      background: #2563eb;
+      color: white;
+      border: none;
+      border-radius: 10px;
+      font-size: 14px;
+      font-weight: 600;
+      cursor: pointer;
+      white-space: nowrap;
+    }
+    .signup-form button:hover { background: #1d4ed8; }
+    .signup-success { display: none; font-size: 15px; color: #4ade80; font-weight: 600; }
 
-    #result-count { font-size: 12px; color: #888; margin-top: 6px; }
-
-    #sidebar-panels {
-      flex: 1;
+    .signup-options {
       display: flex;
-      overflow: hidden;
+      gap: 16px;
+      justify-content: center;
+      margin-top: 12px;
+    }
+    .signup-options label {
+      font-size: 13px;
+      color: #cbd5e1;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 6px;
     }
 
-    /* Left: name list — full width by default, shrinks when detail open */
-    #list-panel {
-      flex: 1;
-      overflow-y: auto;
-      background: white;
-      transition: flex 0.25s ease;
-    }
-
-    .detail-open #list-panel {
-      flex: 0 0 280px;
-      border-right: 1px solid #e5e5e5;
-    }
-
-    /* Right: detail panel — hidden by default */
-    #detail-panel {
-      flex: 1;
-      overflow-y: auto;
-      background: #fafafa;
-      padding: 0;
-      display: none;
-    }
-
-    .detail-open #detail-panel {
-      display: block;
-    }
-
-    /* Detail card inside right panel */
-    .detail-header {
-      position: sticky; top: 0; z-index: 1; background: #fafafa;
-      padding: 16px 20px 8px; border-bottom: 1px solid #eee;
-    }
-    .detail-header h2 { font-size: 20px; font-weight: 700; color: #1a1a1a; margin-bottom: 2px; }
-    .detail-header .district-label { font-size: 13px; color: #888; font-weight: 500; display: flex; align-items: center; gap: 8px; }
-    .party-pill {
-      display: inline-block; padding: 2px 10px; border-radius: 12px;
-      font-size: 11px; font-weight: 600; color: white;
-    }
-    .detail-header .close-btn {
-      float: right; background: none; border: none; font-size: 20px;
-      color: #aaa; cursor: pointer; padding: 0 4px; line-height: 1;
-    }
-    .detail-header .close-btn:hover { color: #333; }
-    .detail-body { padding: 12px 20px 20px; }
-    .detail-content { padding: 20px; }
-    .detail-content h2 { font-size: 20px; font-weight: 700; color: #1a1a1a; margin-bottom: 2px; }
-    .detail-content .district-label { font-size: 13px; color: #888; font-weight: 500; margin-bottom: 10px; }
-    .detail-content .party-badge {
-      display: inline-block; padding: 3px 12px; border-radius: 14px;
-      font-size: 12px; font-weight: 600; color: white; margin-bottom: 12px;
-    }
-    .detail-content .close-btn {
-      float: right; background: none; border: none; font-size: 20px;
-      color: #aaa; cursor: pointer; padding: 0 4px; line-height: 1;
-    }
-    .detail-content .close-btn:hover { color: #333; }
-
-    /* Collapsible contact */
-    .contact-toggle {
-      font-size: 13px; color: #555; cursor: pointer; margin-bottom: 8px;
-      display: flex; align-items: center; gap: 6px; font-weight: 500;
-    }
-    .contact-toggle:hover { color: #333; }
-    .contact-details { font-size: 12px; color: #555; margin-bottom: 12px; padding-left: 4px; line-height: 1.8; }
-    .contact-details a { color: #2563eb; text-decoration: none; }
-    .contact-details a:hover { text-decoration: underline; }
-
-    /* Stance badge */
-    .stance-row { display: flex; align-items: center; gap: 12px; margin-bottom: 16px; }
-    .stance-badge {
-      display: inline-block; padding: 6px 16px; border-radius: 8px;
-      font-size: 13px; font-weight: 700; color: white;
-    }
-    .stance-meta { font-size: 12px; color: #888; }
-
-    /* Evidence timeline */
-    .evidence-title { font-size: 11px; font-weight: 600; color: #888; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 12px; }
-    .timeline { position: relative; padding-left: 24px; }
-    .timeline::before { content: ''; position: absolute; left: 7px; top: 0; bottom: 0; width: 2px; background: #e5e5e5; }
-    .timeline-item { position: relative; margin-bottom: 16px; }
-    .timeline-dot {
-      position: absolute; left: -20px; top: 8px; width: 12px; height: 12px;
-      border-radius: 50%; border: 2px solid white;
-    }
-    .timeline-card {
-      background: white; border-radius: 8px; padding: 12px 14px;
-      border-left: 3px solid #e5e5e5; box-shadow: 0 1px 4px rgba(0,0,0,0.06);
-    }
-    .timeline-card.pro { border-left-color: #15803d; }
-    .timeline-card.anti { border-left-color: #c2410c; }
-    .timeline-card .tc-header { font-size: 10px; color: #888; text-transform: uppercase; letter-spacing: 0.3px; margin-bottom: 4px; }
-    .timeline-card .tc-title { font-size: 14px; font-weight: 600; color: #1a1a1a; margin-bottom: 4px; }
-    .timeline-card .tc-desc { font-size: 12px; color: #666; line-height: 1.5; }
-    .timeline-card .tc-source { font-size: 11px; color: #2563eb; margin-top: 6px; display: inline-block; }
-
-    /* List rows */
-    .leg-row {
-      display: flex; align-items: center; padding: 7px 12px;
-      border-bottom: 1px solid #f0f0f0; cursor: pointer;
-      transition: background 0.15s; gap: 8px;
-    }
-    .leg-row:hover { background: #eef2ff; }
-    .leg-row.highlighted { background: #dbeafe; }
-    .leg-row.selected { background: #dbeafe; border-left: 3px solid #2563eb; }
-
-    .leg-row .party-dot { width: 9px; height: 9px; border-radius: 50%; flex-shrink: 0; }
-    .leg-row .district-num { font-size: 11px; color: #aaa; width: 24px; flex-shrink: 0; text-align: right; font-weight: 500; }
-    .leg-row .leg-name { font-size: 13px; font-weight: 500; color: #1a1a1a; flex: 1; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-    .leg-row .evidence-count {
-      font-size: 10px; color: #888; background: #f0f0f0; border-radius: 10px;
-      padding: 1px 7px; flex-shrink: 0; font-weight: 600;
-    }
-    .leg-row .leg-tag { font-size: 11px; color: #888; flex-shrink: 0; }
-    /* Hide tag text when detail panel is open (compact mode) */
-    .detail-open .leg-row .leg-tag { display: none; }
-
-    /* Loading */
-    .loading-overlay {
-      position: absolute;
-      top: 0; left: 0; right: 0; bottom: 0;
-      z-index: 2000;
-      background: rgba(255,255,255,0.9);
+    /* Map preview */
+    .map-preview {
+      height: 200px;
+      background: #e2e8f0;
       display: flex;
       align-items: center;
       justify-content: center;
-      flex-direction: column;
-      gap: 12px;
+      cursor: pointer;
+      position: relative;
+      overflow: hidden;
+    }
+    .map-preview img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+    .map-preview-overlay {
+      position: absolute;
+      inset: 0;
+      background: rgba(0,0,0,0.3);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: white;
       font-size: 16px;
-      color: #555;
+      font-weight: 600;
     }
+    .map-preview-overlay:hover { background: rgba(0,0,0,0.4); }
 
-    .spinner {
-      width: 36px; height: 36px;
-      border: 3px solid #e0e0e0;
-      border-top-color: #2563eb;
-      border-radius: 50%;
-      animation: spin 0.8s linear infinite;
+    /* Mobile */
+    @media (max-width: 768px) {
+      .hero h1 { font-size: 26px; }
+      .hero p { font-size: 14px; }
+      .address-bar { flex-direction: column; }
+      .address-bar button { width: 100%; }
+      .dashboard { grid-template-columns: 1fr; }
+      .signup-form { flex-direction: column; }
+      .signup-form button { width: 100%; }
+      .top-nav .site-title { font-size: 13px; margin-right: 12px; }
+      .top-nav a.nav-link { font-size: 13px; padding: 10px 10px; }
+      .signup-options { flex-direction: column; align-items: center; gap: 8px; }
     }
-    @keyframes spin { to { transform: rotate(360deg); } }
   </style>
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
 </head>
 <body>
-  <div id="map-container">
-    <div id="map"></div>
-    <div class="controls">
-      <div class="control-group">
-        <div class="control-group-label">Legislative Body</div>
-        <div class="control-group-buttons">
-          <button class="toggle-btn" id="btn-us_senate" onclick="showLayer('us_senate')">US Senate</button>
-          <button class="toggle-btn" id="btn-us_house" onclick="showLayer('us_house')">US House</button>
-          <button class="toggle-btn active" id="btn-senate" onclick="showLayer('senate')">State Senate</button>
-          <button class="toggle-btn" id="btn-assembly" onclick="showLayer('assembly')">Assembly</button>
-          <button class="toggle-btn" id="btn-city_council" onclick="showLayer('city_council')">City Council</button>
-        </div>
-      </div>
-      <div class="control-group">
-        <div class="control-group-label">View By</div>
-        <div class="control-group-buttons">
-          <button class="toggle-btn active" id="btn-color-party" onclick="setColorMode('party')">Party</button>
-          <button class="toggle-btn" id="btn-color-israel" onclick="setColorMode('israel')">Israel</button>
-        </div>
-      </div>
-    </div>
-    <div class="legend" id="legend">
-      <div class="legend-title">Party</div>
-      <div class="legend-item"><span class="legend-swatch" style="background:#3b82f6"></span> Democrat</div>
-      <div class="legend-item"><span class="legend-swatch" style="background:#ef4444"></span> Republican</div>
-      <div class="legend-item"><span class="legend-swatch" style="background:#9ca3af"></span> Other / Vacant</div>
-    </div>
-    <div class="loading-overlay" id="loading">
-      <div class="spinner"></div>
-      <span>Loading district boundaries...</span>
+  <nav class="top-nav">
+    <a href="index.html" class="site-title">Shalom NY</a>
+    <a href="stats.html" class="nav-link">Feed</a>
+    <a href="map.html" class="nav-link">Map</a>
+    <a href="rankings.html" class="nav-link">Rankings</a>
+    <a href="insights.html" class="nav-link">Insights</a>
+  </nav>
+
+  <div class="hero">
+    <h1>Know Your NY Representatives on Israel</h1>
+    <p>Track where your elected officials stand — from City Council to Congress</p>
+    <div class="address-bar">
+      <input type="text" id="address-input" placeholder="Enter your address (e.g. 350 5th Ave, New York, NY)" onkeydown="if(event.key==='Enter')lookupAddress()" />
+      <button onclick="lookupAddress()">Find My Reps</button>
     </div>
   </div>
 
-  <div id="sidebar">
-    <div id="sidebar-header">
-      <input type="text" id="search-input" placeholder="Search by name, district, or party..." />
-      <div id="result-count"></div>
+  <div class="reps-container">
+    <div class="reps-results" id="reps-results">
+      <h2 id="reps-title">Your Representatives</h2>
+      <div id="reps-list"></div>
     </div>
-    <div id="sidebar-panels">
-      <div id="list-panel"></div>
-      <div id="detail-panel" class="empty">Select a legislator</div>
+  </div>
+
+  <div class="dashboard">
+    <!-- Feed preview -->
+    <div class="dash-card">
+      <div class="dash-card-header">
+        <h3>Latest Activity</h3>
+        <a href="stats.html">View all &rarr;</a>
+      </div>
+      <div id="feed-preview"></div>
+    </div>
+
+    <!-- Rankings preview -->
+    <div class="dash-card">
+      <div class="dash-card-header">
+        <h3>Israel Stance Rankings</h3>
+        <a href="rankings.html">Full rankings &rarr;</a>
+      </div>
+      <div style="padding:14px 20px 6px;font-size:12px;font-weight:600;color:#64748b;text-transform:uppercase;">Most Pro-Israel</div>
+      <div id="pro-preview"></div>
+      <div style="padding:14px 20px 6px;font-size:12px;font-weight:600;color:#64748b;text-transform:uppercase;border-top:1px solid #f1f5f9;">Most Anti-Israel</div>
+      <div id="anti-preview"></div>
+    </div>
+
+    <!-- Map preview -->
+    <div class="dash-card">
+      <div class="dash-card-header">
+        <h3>Interactive Map</h3>
+        <a href="map.html">Open map &rarr;</a>
+      </div>
+      <div id="mini-map" style="height:220px;cursor:pointer;" onclick="window.location='map.html'"></div>
+    </div>
+
+    <!-- Signup -->
+    <div class="signup-section">
+      <h3>Stay Updated</h3>
+      <p>Get weekly updates on what your representatives are saying about Israel</p>
+      <div class="signup-form" id="signup-form">
+        <input type="email" id="signup-email" placeholder="Enter your email" />
+        <button onclick="handleSignup()">Subscribe</button>
+      </div>
+      <div class="signup-options">
+        <label><input type="checkbox" id="opt-my-reps" checked /> My representatives</label>
+        <label><input type="checkbox" id="opt-all" checked /> All NY legislators</label>
+      </div>
+      <div class="signup-success" id="signup-success">Thanks for subscribing! We'll keep you updated.</div>
     </div>
   </div>
 
   <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
   <script>
-    // Supabase config
     const SUPABASE_URL = 'https://xeknqkxhfxvveeyddokl.supabase.co';
     const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inhla25xa3hoZnh2dmVleWRkb2tsIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzUyMjc1MzksImV4cCI6MjA5MDgwMzUzOX0.-CO0RkDBljPTRBO5x5JIAIZ23WfhR0A8bLJV3iE_xS0';
 
-    // State
-    let senateLayer = null, assemblyLayer = null, cityCouncilLayer = null, usHouseLayer = null, usSenateLayer = null;
-    let senateData = null, assemblyData = null, cityCouncilData = null, usHouseData = null, usSenateData = null;
-    let senateLegislators = [], assemblyLegislators = [], cityCouncilLegislators = [];
-    let usHouseLegislators = [], usSenateLegislators = [];
-    let activeLayer = 'senate';
-    let selectedDistrict = null;
-    let highlightedDistrict = null;
-    let mapLayersByDistrict = { senate: {}, assembly: {}, city_council: {}, us_house: {}, us_senate: {} };
+    const CHAMBER_LABELS = { us_senate: 'US Senate', us_house: 'US House', senate: 'State Senate', assembly: 'Assembly', city_council: 'City Council' };
+    const STANCE_COLORS = { strongly_support: '#15803d', support: '#4ade80', neutral: '#a1a1aa', oppose: '#fb923c', strongly_oppose: '#c2410c' };
+    const STANCE_LABELS = { strongly_support: 'Strongly Pro', support: 'Pro-Israel', neutral: 'Neutral', oppose: 'Anti-Israel', strongly_oppose: 'Strongly Anti' };
 
-    const CHAMBER_LABELS = { senate: 'State Senate', assembly: 'Assembly', city_council: 'City Council', us_house: 'US House', us_senate: 'US Senate' };
-    const CHAMBER_MEMBER_LABELS = { senate: 'state senators', assembly: 'assembly members', city_council: 'council members', us_house: 'representatives', us_senate: 'senators' };
-    const ALL_CHAMBERS = ['us_senate', 'us_house', 'senate', 'assembly', 'city_council'];
-    const NY_STATE_VIEW = { center: [42.85, -75.5], zoom: 7 };
-    const NYC_VIEW = { center: [40.7128, -73.95], zoom: 11 };
+    let allLegislators = [], positions = {}, allCriteria = [];
 
-    // Color mode: 'party' or 'israel'
-    let colorMode = 'party';
-    // Positions data: person_id -> { stance, confidence, rationale }
-    let positionsMap = {};
-    // Person criteria: person_id -> [{ criterion_label, direction, category, evidence }]
-    let personCriteriaMap = {};
-
-    // Map
-    const map = L.map('map', { center: [42.85, -75.5], zoom: 7, zoomControl: true, preferCanvas: true });
-    L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png', {
-      attribution: '&copy; OpenStreetMap &copy; CARTO', maxZoom: 18,
-    }).addTo(map);
-
-    // Colors
-    const PARTY_COLORS = {
-      'democrat': '#3b82f6', 'democratic': '#3b82f6',
-      'republican': '#ef4444',
-      'working families': '#a855f7',
-      'conservative': '#b91c1c',
-    };
-
-    function partyColor(party) {
-      if (!party) return '#9ca3af';
-      const p = party.toLowerCase();
-      for (const [key, color] of Object.entries(PARTY_COLORS)) {
-        if (p.includes(key)) return color;
-      }
-      return '#9ca3af';
-    }
-
-    // Israel stance colors: green = pro-Israel, orange = anti-Israel
-    const STANCE_COLORS = {
-      'strongly_support': '#15803d',  // dark green
-      'support':          '#4ade80',  // green
-      'neutral':          '#a1a1aa',  // neutral gray
-      'oppose':           '#fb923c',  // orange
-      'strongly_oppose':  '#c2410c',  // dark orange
-    };
-
-    function stanceColor(personId) {
-      const pos = positionsMap[personId];
-      if (!pos || pos.confidence === 'unknown') return '#d1d5db'; // gray for unknown
-      return STANCE_COLORS[pos.stance] || '#d1d5db';
-    }
-
-    const STANCE_LABEL_MAP = {
-      'strongly_support': 'Strongly Pro-Israel',
-      'support': 'Pro-Israel',
-      'neutral': 'Neutral',
-      'oppose': 'Anti-Israel',
-      'strongly_oppose': 'Strongly Anti-Israel',
-    };
-
-    function stanceLabel(personId) {
-      const pos = positionsMap[personId];
-      if (!pos || pos.confidence === 'unknown') return 'Unknown';
-      return STANCE_LABEL_MAP[pos.stance] || 'Unknown';
-    }
-
-    // Style
-    function defaultStyle(feature) {
-      const isSenateUS = feature.properties._CHAMBER === 'us_senate';
-      if (colorMode === 'israel') {
-        const personId = feature.properties.PERSON_ID;
-        return {
-          fillColor: stanceColor(personId),
-          weight: isSenateUS ? 3 : 1.2,
-          color: isSenateUS ? '#94a3b8' : '#fff',
-          fillOpacity: isSenateUS ? 0.45 : 0.6,
-          dashArray: isSenateUS ? '8 6' : null,
-        };
-      }
-      return {
-        fillColor: partyColor(feature.properties.PARTY),
-        weight: isSenateUS ? 3 : 1.2,
-        color: isSenateUS ? '#94a3b8' : '#fff',
-        fillOpacity: isSenateUS ? 0.45 : 0.5,
-        dashArray: isSenateUS ? '8 6' : null,
-      };
-    }
-
-    function highlightStyle() {
-      return { weight: 3, color: '#1e293b', fillOpacity: 0.75 };
-    }
-
-    function selectedStyle() {
-      return { weight: 3, color: '#facc15', fillOpacity: 0.85 };
-    }
-
-    function getGeoLayerForChamber(chamber) {
-      if (chamber === 'senate') return senateLayer;
-      if (chamber === 'assembly') return assemblyLayer;
-      if (chamber === 'us_house') return usHouseLayer;
-      if (chamber === 'us_senate') return usSenateLayer;
-      return cityCouncilLayer;
-    }
-
-    function getActiveGeoLayer() {
-      return getGeoLayerForChamber(activeLayer);
-    }
-
-    function getLegislators(chamber) {
-      if (chamber === 'senate') return senateLegislators;
-      if (chamber === 'assembly') return assemblyLegislators;
-      if (chamber === 'us_house') return usHouseLegislators;
-      if (chamber === 'us_senate') return usSenateLegislators;
-      return cityCouncilLegislators;
-    }
-
-    // Detail card
-    function showDetail(leg, chamber) {
-      const ch = chamber || selectedChamber || activeLayer;
-      document.getElementById('sidebar').classList.add('detail-open');
-      setTimeout(() => map.invalidateSize(), 300);
-      const panel = document.getElementById('detail-panel');
-      const pos = positionsMap[leg.person_id];
-      const hasStance = pos && pos.confidence !== 'unknown';
-      const sColor = hasStance ? (STANCE_COLORS[pos.stance] || '#9ca3af') : '#d1d5db';
-      const sLabel = hasStance ? (STANCE_LABEL_MAP[pos.stance] || 'Unknown') : 'Unknown';
-
-      // Count evidence (criteria matches)
-      const evidenceCount = personCriteriaMap[leg.person_id] ? personCriteriaMap[leg.person_id].length : 0;
-
-      // Contact info
-      let contactHTML = '';
-      if (leg.phone_albany) contactHTML += `<div>Albany: ${leg.phone_albany}</div>`;
-      if (leg.phone_district) contactHTML += `<div>District: ${leg.phone_district}</div>`;
-      if (leg.email) contactHTML += `<div><a href="mailto:${leg.email}">${leg.email}</a></div>`;
-      if (leg.website) contactHTML += `<div><a href="${leg.website}" target="_blank">${leg.website.replace(/^https?:\/\//, '')}</a></div>`;
-      if (leg.start_date) contactHTML += `<div>Term: ${leg.start_date} — ${leg.end_date || 'present'}</div>`;
-
-      // Evidence timeline
-      let timelineHTML = '';
-      const criteria = personCriteriaMap[leg.person_id] || [];
-      if (criteria.length > 0) {
-        timelineHTML = '<div class="evidence-title">Evidence Timeline</div><div class="timeline">';
-        for (const c of criteria) {
-          const isAnti = c.direction === 'anti';
-          const dotColor = isAnti ? '#c2410c' : '#15803d';
-          const cardClass = isAnti ? 'anti' : 'pro';
-          const catLabel = (c.category || 'action').replace('_', ' ').toUpperCase();
-          const dateStr = c.source_date || '';
-          const dateDisplay = dateStr ? `<span style="color:#999;margin-left:8px">${dateStr}</span>` : '';
-          const url = c.source_url || (c.evidence ? (c.evidence.match(/https?:\/\/[^\s),'"]+/) || [])[0] : null);
-          const sourceLink = url ? `<a href="${url}" target="_blank" class="tc-source">View source &rarr;</a>` : '';
-          // Clean evidence: remove URLs from display text
-          const cleanEvidence = (c.evidence || '').replace(/https?:\/\/[^\s),'"]+/g, '').replace(/Sources?:\s*,?\s*$/i, '').trim();
-          timelineHTML += `
-            <div class="timeline-item">
-              <div class="timeline-dot" style="background:${dotColor}"></div>
-              <div class="timeline-card ${cardClass}">
-                <div class="tc-header">${catLabel}${dateDisplay}</div>
-                <div class="tc-title">${c.criterion_label}</div>
-                ${cleanEvidence ? `<div class="tc-desc">${cleanEvidence}</div>` : ''}
-                ${sourceLink}
-              </div>
-            </div>`;
-        }
-        timelineHTML += '</div>';
-      }
-
-      // AI rationale
-      let rationaleHTML = '';
-      if (pos && pos.rationale) {
-        rationaleHTML = `<div style="margin-bottom:16px;font-size:12px;color:#666;line-height:1.5;padding:10px;background:white;border-radius:6px;border:1px solid #eee"><strong style="color:#444">AI Assessment:</strong> ${pos.rationale}</div>`;
-      }
-
-      panel.innerHTML = `
-        <div class="detail-header">
-          <button class="close-btn" onclick="clearSelection()">&times;</button>
-          <h2>${leg.name}</h2>
-          <div class="district-label">${CHAMBER_LABELS[ch]} District ${leg.district} <span class="party-pill" style="background:${partyColor(leg.party)}">${leg.party || 'Unknown'}</span></div>
-        </div>
-        <div class="detail-body">
-          ${contactHTML ? `
-            <div class="contact-toggle" onclick="this.nextElementSibling.style.display=this.nextElementSibling.style.display==='none'?'block':'none'; this.querySelector('span').textContent=this.nextElementSibling.style.display==='none'?'\\u25B8':'\\u25BE'">
-              <span>&#x25B8;</span> Contact Details
-            </div>
-            <div class="contact-details" style="display:none">${contactHTML}</div>
-          ` : ''}
-          <div class="stance-row">
-            <span class="stance-badge" style="background:${sColor}">${sLabel}</span>
-          </div>
-          ${rationaleHTML}
-          ${timelineHTML}
-        </div>`;
-    }
-
-    function hideDetail() {
-      document.getElementById('sidebar').classList.remove('detail-open');
-      setTimeout(() => map.invalidateSize(), 300);
-      const panel = document.getElementById('detail-panel');
-      panel.innerHTML = '';
-    }
-
-    // Selection
-    let selectedChamber = null;
-
-    function clearSelection() {
-      if (selectedDistrict !== null && selectedChamber) {
-        const layer = mapLayersByDistrict[selectedChamber][selectedDistrict];
-        if (layer) getGeoLayerForChamber(selectedChamber).resetStyle(layer);
-      }
-      selectedDistrict = null;
-      selectedChamber = null;
-      hideDetail();
-      document.querySelectorAll('.leg-row.selected').forEach(el => el.classList.remove('selected'));
-    }
-
-    function selectDistrict(district, fromMap, chamber) {
-      const ch = chamber || activeLayer;
-      if (district === selectedDistrict && ch === selectedChamber) {
-        clearSelection();
-        return;
-      }
-      clearSelection();
-      selectedDistrict = district;
-      selectedChamber = ch;
-
-      const layer = mapLayersByDistrict[ch][district];
-      if (layer) {
-        layer.setStyle(selectedStyle());
-        layer.bringToFront();
-        if (!fromMap) {
-          map.fitBounds(layer.getBounds(), { padding: [60, 60], maxZoom: 13 });
-        }
-      }
-
-      const legs = getLegislators(ch);
-      const leg = legs.find(l => l.district === district);
-      if (leg) showDetail(leg, ch);
-
-      const row = document.querySelector(`.leg-row[data-chamber="${ch}"][data-district="${district}"]`);
-      if (row) {
-        row.classList.add('selected');
-        row.scrollIntoView({ block: 'nearest', behavior: 'smooth' });
-      }
-    }
-
-    // Map hover (from sidebar)
-    let highlightedChamber = null;
-
-    function highlightOnMap(district, chamber) {
-      const ch = chamber || activeLayer;
-      unhighlightOnMap();
-      highlightedDistrict = district;
-      highlightedChamber = ch;
-      const layer = mapLayersByDistrict[ch][district];
-      if (layer) {
-        layer.setStyle(highlightStyle());
-        layer.bringToFront();
-      }
-    }
-
-    function unhighlightOnMap(chamber) {
-      if (highlightedDistrict !== null) {
-        const ch = highlightedChamber || chamber || activeLayer;
-        if (!(highlightedDistrict === selectedDistrict && ch === selectedChamber)) {
-          const layer = mapLayersByDistrict[ch][highlightedDistrict];
-          if (layer) getGeoLayerForChamber(ch).resetStyle(layer);
-        }
-      }
-      highlightedDistrict = null;
-      highlightedChamber = null;
-    }
-
-    // Map events
-    let hoveredMapLayer = null;
-    let hoveredMapDistrict = null;
-
-    function onFeatureClick(e) {
-      const district = e.target.feature.properties.DISTRICT;
-      const chamber = e.target.feature.properties._CHAMBER;
-      selectDistrict(district, true, chamber);
-    }
-
-    function onFeatureMouseover(e) {
-      const district = e.target.feature.properties.DISTRICT;
-      const chamber = e.target.feature.properties._CHAMBER;
-
-      // Clear previous hover first (mouseout can miss due to bringToFront z-order changes)
-      if (hoveredMapLayer && hoveredMapDistrict !== district) {
-        const prevChamber = hoveredMapLayer.feature.properties._CHAMBER;
-        getGeoLayerForChamber(prevChamber).resetStyle(hoveredMapLayer);
-      }
-      if (hoveredMapDistrict !== null && hoveredMapDistrict !== district) {
-        document.querySelectorAll('.leg-row.highlighted').forEach(el => el.classList.remove('highlighted'));
-      }
-
-      hoveredMapLayer = e.target;
-      hoveredMapDistrict = district;
-
-      if (district === selectedDistrict && chamber === (selectedChamber || activeLayer)) return;
-      e.target.setStyle(highlightStyle());
-
-      // Highlight sidebar row
-      const row = document.querySelector(`.leg-row[data-chamber="${chamber}"][data-district="${district}"]`);
-      if (row) row.classList.add('highlighted');
-    }
-
-    function onFeatureMouseout(e) {
-      const district = e.target.feature.properties.DISTRICT;
-      const chamber = e.target.feature.properties._CHAMBER;
-      if (district === selectedDistrict && chamber === (selectedChamber || activeLayer)) return;
-      getGeoLayerForChamber(chamber).resetStyle(e.target);
-      const row = document.querySelector(`.leg-row[data-chamber="${chamber}"][data-district="${district}"]`);
-      if (row) row.classList.remove('highlighted');
-
-      if (hoveredMapDistrict === district) {
-        hoveredMapLayer = null;
-        hoveredMapDistrict = null;
-      }
-    }
-
-    function onEachFeature(feature, layer) {
-      layer.on({
-        click: onFeatureClick,
-        mouseover: onFeatureMouseover,
-        mouseout: onFeatureMouseout,
-      });
-    }
-
-    // US Senate name labels (markers)
-    let usSenateLabels = [];
-
-    function buildLayer(geojson, chamber) {
-      mapLayersByDistrict[chamber] = {};
-      const geoLayer = L.geoJSON(geojson, {
-        style: defaultStyle,
-        onEachFeature: (feature, layer) => {
-          feature.properties._CHAMBER = chamber;
-          mapLayersByDistrict[chamber][feature.properties.DISTRICT] = layer;
-          onEachFeature(feature, layer);
-        },
-      });
-
-      // Add name labels for US Senate halves
-      if (chamber === 'us_senate') {
-        usSenateLabels = [];
-        for (const feature of geojson.features) {
-          const name = feature.properties.NAME;
-          if (!name) continue;
-          const dist = feature.properties.DISTRICT;
-          // Place label at a nice spot in each half
-          const labelPos = dist === 1 ? [43.0, -77.5] : [41.5, -73.8];
-          const marker = L.marker(labelPos, {
-            icon: L.divIcon({
-              className: 'us-senate-label',
-              html: `<div>${name}</div>`,
-              iconSize: [140, 30],
-              iconAnchor: [70, 15],
-            }),
-            interactive: false,
-          });
-          usSenateLabels.push(marker);
-          geoLayer.addLayer(marker);
-        }
-      }
-
-      return geoLayer;
-    }
-
-    // Sidebar table
-    function renderList() {
-      const query = document.getElementById('search-input').value.toLowerCase().trim();
-      const container = document.getElementById('list-panel');
-      container.innerHTML = '';
-
-      if (query) {
-        // Search across ALL chambers
-        const allChambers = [
-          { key: 'us_senate', label: 'US Senate', legs: usSenateLegislators },
-          { key: 'us_house', label: 'US House', legs: usHouseLegislators },
-          { key: 'senate', label: 'State Senate', legs: senateLegislators },
-          { key: 'assembly', label: 'Assembly', legs: assemblyLegislators },
-          { key: 'city_council', label: 'City Council', legs: cityCouncilLegislators },
-        ];
-        let totalResults = 0;
-        let totalAll = 0;
-
-        for (const chamber of allChambers) {
-          const filtered = chamber.legs.filter(l =>
-            l.name.toLowerCase().includes(query) ||
-            String(l.district).includes(query) ||
-            (l.party && l.party.toLowerCase().includes(query))
-          );
-          totalResults += filtered.length;
-          totalAll += chamber.legs.length;
-
-          if (filtered.length > 0) {
-            const header = document.createElement('div');
-            header.style.cssText = 'padding:6px 16px;font-size:11px;font-weight:600;color:#888;background:#f0f0f0;text-transform:uppercase;letter-spacing:0.5px;';
-            header.textContent = `${chamber.label} (${filtered.length})`;
-            container.appendChild(header);
-
-            for (const leg of filtered) {
-              container.appendChild(createRow(leg, chamber.key));
-            }
-          }
-        }
-
-        document.getElementById('result-count').textContent = `${totalResults} results across all chambers`;
-      } else {
-        // No search — show active chamber
-        let legs = [...getLegislators(activeLayer)].map(l => ({ ...l, _chamber: activeLayer }));
-        let label = CHAMBER_MEMBER_LABELS[activeLayer];
-
-        if (colorMode !== 'party') {
-          // Sort by stance: strongly_support first → unknown last
-          const STANCE_ORDER = { strongly_support: 0, support: 1, neutral: 2, oppose: 3, strongly_oppose: 4 };
-          legs.sort((a, b) => {
-            const pa = positionsMap[a.person_id];
-            const pb = positionsMap[b.person_id];
-            const oa = (pa && pa.confidence !== 'unknown') ? (STANCE_ORDER[pa.stance] ?? 5) : 5;
-            const ob = (pb && pb.confidence !== 'unknown') ? (STANCE_ORDER[pb.stance] ?? 5) : 5;
-            return oa - ob || a.district - b.district;
-          });
-
-          // Group by stance with section headers
-          let lastStance = null;
-          const STANCE_LABELS = {
-            0: 'Strongly Pro-Israel', 1: 'Pro-Israel', 2: 'Neutral',
-            3: 'Anti-Israel', 4: 'Strongly Anti-Israel', 5: 'Unknown'
-          };
-          for (const leg of legs) {
-            const pa = positionsMap[leg.person_id];
-            const order = (pa && pa.confidence !== 'unknown') ? (STANCE_ORDER[pa.stance] ?? 5) : 5;
-            if (order !== lastStance) {
-              lastStance = order;
-              const count = legs.filter(l => {
-                const p = positionsMap[l.person_id];
-                const o = (p && p.confidence !== 'unknown') ? (STANCE_ORDER[p.stance] ?? 5) : 5;
-                return o === order;
-              }).length;
-              const header = document.createElement('div');
-              header.style.cssText = 'padding:6px 16px;font-size:11px;font-weight:600;color:#888;background:#f0f0f0;text-transform:uppercase;letter-spacing:0.5px;';
-              header.textContent = `${STANCE_LABELS[order]} (${count})`;
-              container.appendChild(header);
-            }
-            container.appendChild(createRow(leg, leg._chamber || activeLayer));
-          }
-        } else {
-          for (const leg of legs) {
-            container.appendChild(createRow(leg, activeLayer));
-          }
-        }
-
-        document.getElementById('result-count').textContent = `${legs.length} ${label}`;
-      }
-    }
-
-    function createRow(leg, chamber) {
-      const row = document.createElement('div');
-      row.className = 'leg-row';
-      if (chamber === (selectedChamber || activeLayer) && leg.district === selectedDistrict) row.classList.add('selected');
-      row.dataset.district = leg.district;
-      row.dataset.chamber = chamber;
-      const dotColor = colorMode === 'israel' ? stanceColor(leg.person_id) : partyColor(leg.party);
-      const tagText = colorMode === 'israel' ? stanceLabel(leg.person_id) : (leg.party || '');
-      row.innerHTML = `
-        <span class="district-num">${leg.district}</span>
-        <span class="party-dot" style="background:${dotColor}"></span>
-        <span class="leg-name">${leg.name}</span>
-        <span class="leg-tag">${tagText}</span>
-      `;
-      row.addEventListener('mouseenter', () => {
-        if (chamber === activeLayer) highlightOnMap(leg.district, chamber);
-      });
-      row.addEventListener('mouseleave', () => {
-        if (chamber === activeLayer) unhighlightOnMap(chamber);
-      });
-      row.addEventListener('click', () => {
-        if (chamber !== activeLayer) {
-          showLayer(chamber, true);
-        }
-        selectDistrict(leg.district, false, chamber);
-      });
-      return row;
-    }
-
-    // Search
-    document.getElementById('search-input').addEventListener('input', renderList);
-
-    // Layer toggle
-    async function showLayer(which, keepSearch) {
-      clearSelection();
-      activeLayer = which;
-      ALL_CHAMBERS.forEach(k => {
-        document.getElementById('btn-' + k).className = k === which ? 'toggle-btn active' : 'toggle-btn';
-      });
-      if (!keepSearch) document.getElementById('search-input').value = '';
-
-      // Remove all map layers
-      if (senateLayer) map.removeLayer(senateLayer);
-      if (assemblyLayer) map.removeLayer(assemblyLayer);
-      if (cityCouncilLayer) map.removeLayer(cityCouncilLayer);
-      if (usHouseLayer) map.removeLayer(usHouseLayer);
-      if (usSenateLayer) map.removeLayer(usSenateLayer);
-
-      // Show sidebar immediately (data already loaded)
-      renderList();
-
-      // Only zoom in (e.g. to NYC for city council), never zoom out
-      const view = which === 'city_council' ? NYC_VIEW : NY_STATE_VIEW;
-      if (view.zoom > map.getZoom()) {
-        map.setView(view.center, view.zoom);
-      }
-
-      // Lazy-load GeoJSON if needed, then show
-      await ensureGeoLayer(which);
-      const layer = getGeoLayerForChamber(which);
-      if (layer && activeLayer === which) layer.addTo(map);
-    }
-
-    // Color mode toggle
-    function setColorMode(mode) {
-      colorMode = mode;
-      document.getElementById('btn-color-party').className = mode === 'party' ? 'toggle-btn active' : 'toggle-btn';
-      document.getElementById('btn-color-israel').className = mode === 'israel' ? 'toggle-btn active' : 'toggle-btn';
-
-      // Update legend
-      const legend = document.getElementById('legend');
-      if (mode === 'israel') {
-        legend.innerHTML = `
-          <div class="legend-title">Israel Stance</div>
-          <div class="legend-item"><span class="legend-swatch" style="background:#15803d"></span> Strongly Pro-Israel</div>
-          <div class="legend-item"><span class="legend-swatch" style="background:#4ade80"></span> Pro-Israel</div>
-          <div class="legend-item"><span class="legend-swatch" style="background:#a1a1aa"></span> Neutral</div>
-          <div class="legend-item"><span class="legend-swatch" style="background:#fb923c"></span> Anti-Israel</div>
-          <div class="legend-item"><span class="legend-swatch" style="background:#c2410c"></span> Strongly Anti-Israel</div>
-          <div class="legend-item"><span class="legend-swatch" style="background:#d1d5db"></span> Unknown</div>
-        `;
-      } else {
-        legend.innerHTML = `
-          <div class="legend-title">Party</div>
-          <div class="legend-item"><span class="legend-swatch" style="background:#3b82f6"></span> Democrat</div>
-          <div class="legend-item"><span class="legend-swatch" style="background:#ef4444"></span> Republican</div>
-          <div class="legend-item"><span class="legend-swatch" style="background:#9ca3af"></span> Other / Vacant</div>
-        `;
-      }
-
-      // Re-style all layers
-      if (senateLayer) senateLayer.setStyle(defaultStyle);
-      if (assemblyLayer) assemblyLayer.setStyle(defaultStyle);
-      if (cityCouncilLayer) cityCouncilLayer.setStyle(defaultStyle);
-      if (usHouseLayer) usHouseLayer.setStyle(defaultStyle);
-
-      // Re-apply selection if any
-      if (selectedDistrict !== null) {
-        const layer = mapLayersByDistrict[activeLayer][selectedDistrict];
-        if (layer) layer.setStyle(selectedStyle());
-      }
-
-      renderList();
-    }
-
-    // Data fetching
-    async function fetchLocalGeo(filename) {
-      const resp = await fetch(`geo/${filename}`);
-      if (!resp.ok) throw new Error(`Failed to fetch ${filename}: ${resp.status}`);
-      return resp.json();
-    }
-
-    async function fetchSenateGeo() {
-      return fetchLocalGeo('senate.geojson');
-    }
-
-    async function fetchAssemblyGeo() {
-      return fetchLocalGeo('assembly.geojson');
-    }
-
-    async function fetchNYCCouncilGeo() {
-      const data = await fetchLocalGeo('city_council.geojson');
-      for (const f of data.features) {
-        f.properties.DISTRICT = parseInt(f.properties.coundist);
-      }
-      return data;
-    }
-
-    async function fetchLegislators(chamber) {
-      const resp = await fetch(
-        `${SUPABASE_URL}/rest/v1/current_legislators?chamber=eq.${chamber}&select=person_id,district,name,party,website,phone_albany,phone_district,email,start_date,end_date&order=district`,
-        { headers: { 'apikey': SUPABASE_ANON_KEY } }
-      );
-      if (!resp.ok) throw new Error(`Failed to fetch ${chamber} legislators`);
-      return resp.json();
-    }
-
-    function mergeData(geojson, legislators) {
-      const lookup = {};
-      for (const leg of legislators) lookup[leg.district] = leg;
-      for (const feature of geojson.features) {
-        const dist = feature.properties.DISTRICT;
-        const leg = lookup[dist];
-        if (leg) {
-          feature.properties.NAME = leg.name;
-          feature.properties.PARTY = leg.party;
-          feature.properties.PHONE = leg.phone_albany;
-          feature.properties.DIST_PHONE = leg.phone_district;
-          feature.properties.EMAIL = leg.email;
-          feature.properties.PERSON_ID = leg.person_id;
-        }
-      }
-      return geojson;
-    }
-
-    async function fetchUSHouseGeo() {
-      const data = await fetchLocalGeo('us_house.geojson');
-      for (const f of data.features) {
-        f.properties.DISTRICT = parseInt(f.properties.BASENAME);
-      }
-      return data;
-    }
-
-    async function fetchPositions() {
-      const resp = await fetch(
-        `${SUPABASE_URL}/rest/v1/positions?select=person_id,stance,confidence,rationale&assessment_type=eq.ai&topic_id=eq.1`,
-        { headers: { 'apikey': SUPABASE_ANON_KEY } }
-      );
-      if (!resp.ok) return {};
-      const data = await resp.json();
-      const m = {};
-      for (const d of data) m[d.person_id] = d;
-      return m;
-    }
-
-    async function fetchPersonCriteria() {
-      const resp = await fetch(
-        `${SUPABASE_URL}/rest/v1/person_criteria?select=person_id,evidence,source_url,source_date,criteria(label,direction,category)&order=person_id`,
-        { headers: { 'apikey': SUPABASE_ANON_KEY } }
-      );
-      if (!resp.ok) return {};
-      const data = await resp.json();
-      const m = {};
-      for (const d of data) {
-        if (!m[d.person_id]) m[d.person_id] = [];
-        m[d.person_id].push({
-          criterion_label: d.criteria.label,
-          direction: d.criteria.direction,
-          category: d.criteria.category,
-          evidence: d.evidence,
-          source_url: d.source_url,
-          source_date: d.source_date,
-        });
-      }
-      // Sort each person's criteria by date (newest first), undated at end
-      for (const pid of Object.keys(m)) {
-        m[pid].sort((a, b) => {
-          if (a.source_date && b.source_date) return b.source_date.localeCompare(a.source_date);
-          if (a.source_date) return -1;
-          if (b.source_date) return 1;
-          return 0;
-        });
-      }
-      return m;
-    }
-
-    async function fetchUSSenateGeo() {
-      const data = await fetchLocalGeo('us_senate.geojson');
-      for (const f of data.features) {
-        f.properties.DISTRICT = parseInt(f.properties.DISTRICT || f.properties.BASENAME);
-      }
-      return data;
-    }
-
-    // Lazy-load GeoJSON for each chamber
-    const geoLoaders = {
-      senate: () => fetchSenateGeo(),
-      assembly: () => fetchAssemblyGeo(),
-      city_council: () => fetchNYCCouncilGeo(),
-      us_house: () => fetchUSHouseGeo(),
-      us_senate: () => fetchUSSenateGeo(),
-    };
-    const geoCache = {};
-
-    async function ensureGeoLayer(chamber) {
-      if (chamber === 'senate' && senateLayer) return;
-      if (chamber === 'assembly' && assemblyLayer) return;
-      if (chamber === 'city_council' && cityCouncilLayer) return;
-      if (chamber === 'us_house' && usHouseLayer) return;
-      if (chamber === 'us_senate' && usSenateLayer) return;
-
-      const geo = geoCache[chamber] || await geoLoaders[chamber]();
-      geoCache[chamber] = geo;
-      const legs = getLegislators(chamber);
-      const merged = mergeData(geo, legs);
-      const layer = buildLayer(merged, chamber);
-
-      if (chamber === 'senate') { senateData = merged; senateLayer = layer; }
-      else if (chamber === 'assembly') { assemblyData = merged; assemblyLayer = layer; }
-      else if (chamber === 'city_council') { cityCouncilData = merged; cityCouncilLayer = layer; }
-      else if (chamber === 'us_house') { usHouseData = merged; usHouseLayer = layer; }
-      else if (chamber === 'us_senate') { usSenateData = merged; usSenateLayer = layer; }
-    }
+    function partyColor(p) { if (!p) return '#9ca3af'; p = p.toLowerCase(); return p.includes('democrat') ? '#3b82f6' : p.includes('republican') ? '#ef4444' : '#9ca3af'; }
+    function initials(n) { return n.split(' ').map(w => w[0]).filter(Boolean).slice(0, 2).join('').toUpperCase(); }
 
     async function init() {
-      try {
-        // Step 1: Fetch lightweight Supabase data first (fast)
-        const [sLeg, aLeg, ccLeg, uhLeg, usLeg, positions, pCriteria] = await Promise.all([
-          fetchLegislators('senate'),
-          fetchLegislators('assembly'),
-          fetchLegislators('city_council'),
-          fetchLegislators('us_house'),
-          fetchLegislators('us_senate'),
-          fetchPositions(),
-          fetchPersonCriteria(),
-        ]);
+      const [legR, posR, critR] = await Promise.all([
+        fetch(`${SUPABASE_URL}/rest/v1/current_legislators?select=person_id,name,party,chamber,district&order=name`, { headers: { apikey: SUPABASE_ANON_KEY } }),
+        fetch(`${SUPABASE_URL}/rest/v1/positions?select=person_id,stance&assessment_type=eq.ai&topic_id=eq.1`, { headers: { apikey: SUPABASE_ANON_KEY } }),
+        fetch(`${SUPABASE_URL}/rest/v1/person_criteria?select=person_id,evidence,source_date,criteria(label,direction,category,weight)&order=source_date.desc.nullslast&limit=200`, { headers: { apikey: SUPABASE_ANON_KEY } }),
+      ]);
+      allLegislators = await legR.json();
+      const pos = await posR.json();
+      for (const p of pos) positions[p.person_id] = p;
+      allCriteria = await critR.json();
 
-        positionsMap = positions;
-        personCriteriaMap = pCriteria;
-        senateLegislators = sLeg;
-        assemblyLegislators = aLeg;
-        cityCouncilLegislators = ccLeg;
-        usHouseLegislators = uhLeg;
-        usSenateLegislators = usLeg;
+      // Compute scores
+      for (const leg of allLegislators) {
+        const crit = allCriteria.filter(c => c.person_id === leg.person_id);
+        let score = 0;
+        for (const c of crit) { const w = c.criteria?.weight || 1; score += c.criteria?.direction === 'pro' ? w : -w; }
+        leg.score = score;
+        leg.stance = positions[leg.person_id]?.stance || 'unknown';
+      }
 
-        // Step 2: Show sidebar immediately
-        renderList();
+      renderFeedPreview();
+      renderRankingsPreview();
+    }
 
-        // Step 3: Fetch only the default tab's GeoJSON
-        await ensureGeoLayer('senate');
-        senateLayer.addTo(map);
-
-        document.getElementById('loading').style.display = 'none';
-      } catch (err) {
-        console.error(err);
-        document.getElementById('loading').innerHTML = `
-          <p style="color:#ef4444;font-weight:600;">Failed to load district data</p>
-          <p style="font-size:14px;color:#888;">${err.message}</p>
-          <p style="font-size:13px;color:#aaa;margin-top:8px;">Try refreshing the page.</p>
+    function renderFeedPreview() {
+      const container = document.getElementById('feed-preview');
+      // Show 5 most recent with dates
+      const withDates = allCriteria.filter(c => c.source_date);
+      const top5 = withDates.slice(0, 5);
+      for (const c of top5) {
+        const leg = allLegislators.find(l => l.person_id === c.person_id);
+        if (!leg) continue;
+        const dir = c.criteria?.direction || '';
+        const item = document.createElement('div');
+        item.className = 'feed-preview-item ' + dir;
+        item.onclick = () => window.location = 'stats.html';
+        item.innerHTML = `
+          <div class="feed-preview-meta">${CHAMBER_LABELS[leg.chamber]} &middot; ${c.source_date || ''}</div>
+          <div class="feed-preview-name">${leg.name}</div>
+          <div class="feed-preview-text">${c.criteria?.label || ''}: ${(c.evidence || '').substring(0, 120)}...</div>
         `;
+        container.appendChild(item);
       }
     }
+
+    function renderRankingsPreview() {
+      const proContainer = document.getElementById('pro-preview');
+      const antiContainer = document.getElementById('anti-preview');
+
+      const sorted = [...allLegislators].filter(l => l.stance !== 'unknown');
+      const proTop = sorted.filter(l => l.score > 0).sort((a, b) => b.score - a.score).slice(0, 3);
+      const antiTop = sorted.filter(l => l.score < 0).sort((a, b) => a.score - b.score).slice(0, 3);
+
+      for (let i = 0; i < proTop.length; i++) {
+        const l = proTop[i];
+        proContainer.innerHTML += `<div class="rank-row"><span class="rank-num">${i + 1}</span><span class="rank-dot" style="background:${partyColor(l.party)}"></span><span class="rank-name">${l.name}</span><span class="rank-score">+${l.score}</span></div>`;
+      }
+      for (let i = 0; i < antiTop.length; i++) {
+        const l = antiTop[i];
+        antiContainer.innerHTML += `<div class="rank-row"><span class="rank-num">${i + 1}</span><span class="rank-dot" style="background:${partyColor(l.party)}"></span><span class="rank-name">${l.name}</span><span class="rank-score">${l.score}</span></div>`;
+      }
+    }
+
+    // Address lookup using Nominatim geocoding + point-in-polygon
+    async function lookupAddress() {
+      const address = document.getElementById('address-input').value.trim();
+      if (!address) return;
+
+      const results = document.getElementById('reps-results');
+      const list = document.getElementById('reps-list');
+      results.classList.add('visible');
+      list.innerHTML = '<div class="reps-loading">Looking up your address...</div>';
+
+      try {
+        // Geocode with Nominatim
+        const geoResp = await fetch(`https://nominatim.openstreetmap.org/search?q=${encodeURIComponent(address)}&format=json&limit=1&countrycodes=us`);
+        const geoData = await geoResp.json();
+        if (!geoData.length) { list.innerHTML = '<div class="reps-loading">Address not found. Try a more specific address.</div>'; return; }
+
+        const lat = parseFloat(geoData[0].lat);
+        const lon = parseFloat(geoData[0].lon);
+
+        // Check if in NY state (roughly)
+        if (lat < 40.4 || lat > 45.1 || lon < -80 || lon > -71.5) {
+          list.innerHTML = '<div class="reps-loading">This address doesn\'t appear to be in New York State.</div>';
+          return;
+        }
+
+        document.getElementById('reps-title').textContent = `Representatives for ${geoData[0].display_name.split(',').slice(0, 3).join(',')}`;
+        list.innerHTML = '<div class="reps-loading">Finding your districts...</div>';
+
+        // Load all GeoJSON boundaries
+        const [senateGeo, assemblyGeo, usHouseGeo, ccGeo] = await Promise.all([
+          fetch('geo/senate.geojson').then(r => r.json()),
+          fetch('geo/assembly.geojson').then(r => r.json()),
+          fetch('geo/us_house.geojson').then(r => r.json()),
+          fetch('geo/city_council.geojson').then(r => r.json()),
+        ]);
+
+        // Point-in-polygon check
+        function pointInPolygon(point, polygon) {
+          const [x, y] = point;
+          let inside = false;
+          for (let i = 0, j = polygon.length - 1; i < polygon.length; j = i++) {
+            const [xi, yi] = polygon[i], [xj, yj] = polygon[j];
+            if (((yi > y) !== (yj > y)) && (x < (xj - xi) * (y - yi) / (yj - yi) + xi)) inside = !inside;
+          }
+          return inside;
+        }
+
+        function findDistrict(geojson, point) {
+          for (const feature of geojson.features) {
+            const geom = feature.geometry;
+            const rings = geom.type === 'MultiPolygon'
+              ? geom.coordinates.flatMap(p => p)
+              : geom.coordinates;
+            for (const ring of rings) {
+              if (pointInPolygon(point, ring)) return feature;
+            }
+          }
+          return null;
+        }
+
+        const point = [lon, lat];
+        const found = [];
+
+        // US Senators (statewide)
+        const usSenators = allLegislators.filter(l => l.chamber === 'us_senate');
+        for (const s of usSenators) found.push(s);
+
+        // US House
+        const usHouseFeature = findDistrict(usHouseGeo, point);
+        if (usHouseFeature) {
+          const dist = parseInt(usHouseFeature.properties.BASENAME || usHouseFeature.properties.DISTRICT);
+          const rep = allLegislators.find(l => l.chamber === 'us_house' && l.district === dist);
+          if (rep) found.push(rep);
+        }
+
+        // State Senate
+        const senateFeature = findDistrict(senateGeo, point);
+        if (senateFeature) {
+          const dist = parseInt(senateFeature.properties.DISTRICT);
+          const rep = allLegislators.find(l => l.chamber === 'senate' && l.district === dist);
+          if (rep) found.push(rep);
+        }
+
+        // Assembly
+        const assemblyFeature = findDistrict(assemblyGeo, point);
+        if (assemblyFeature) {
+          const dist = parseInt(assemblyFeature.properties.DISTRICT);
+          const rep = allLegislators.find(l => l.chamber === 'assembly' && l.district === dist);
+          if (rep) found.push(rep);
+        }
+
+        // City Council (only for NYC addresses)
+        const ccFeature = findDistrict(ccGeo, point);
+        if (ccFeature) {
+          const dist = parseInt(ccFeature.properties.CounDist || ccFeature.properties.DISTRICT);
+          const rep = allLegislators.find(l => l.chamber === 'city_council' && l.district === dist);
+          if (rep) found.push(rep);
+        }
+
+        // Store results and redirect to results page
+        if (found.length === 0) {
+          list.innerHTML = '<div class="reps-loading">No representatives found for this location.</div>';
+          return;
+        }
+
+        const resultsData = {
+          address: geoData[0].display_name.split(',').slice(0, 3).join(','),
+          lat, lon,
+          reps: found.map(r => ({ person_id: r.person_id, name: r.name, party: r.party, chamber: r.chamber, district: r.district }))
+        };
+        sessionStorage.setItem('shalomny_reps', JSON.stringify(resultsData));
+        window.location = 'reps.html';
+      } catch (err) {
+        list.innerHTML = `<div class="reps-loading">Error: ${err.message}</div>`;
+      }
+    }
+
+    function handleSignup() {
+      const email = document.getElementById('signup-email').value.trim();
+      if (!email || !email.includes('@')) { alert('Please enter a valid email.'); return; }
+      // Store in localStorage for now (would go to Supabase in production)
+      const prefs = {
+        email,
+        myReps: document.getElementById('opt-my-reps').checked,
+        allLegislators: document.getElementById('opt-all').checked,
+        subscribedAt: new Date().toISOString(),
+      };
+      localStorage.setItem('shalomny_subscription', JSON.stringify(prefs));
+      document.getElementById('signup-form').style.display = 'none';
+      document.querySelector('.signup-options').style.display = 'none';
+      document.getElementById('signup-success').style.display = 'block';
+    }
+
+    // Mini map
+    const miniMap = L.map('mini-map', { center: [42.85, -75.5], zoom: 7, zoomControl: false, dragging: false, scrollWheelZoom: false, attributionControl: false });
+    L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png', { maxZoom: 18 }).addTo(miniMap);
+    fetch('geo/senate.geojson').then(r => r.json()).then(geo => {
+      L.geoJSON(geo, { style: { fillColor: '#3b82f6', weight: 1, color: '#fff', fillOpacity: 0.4 } }).addTo(miniMap);
+    });
 
     init();
   </script>

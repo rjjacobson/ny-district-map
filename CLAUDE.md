@@ -56,17 +56,29 @@ vercel --prod --yes --scope ron-jacobsons-projects
 git push origin main && vercel --prod --yes --scope ron-jacobsons-projects
 ```
 
-## Current Data (as of 2026-04-03)
-- 264 legislators: 63 Senate + 150 Assembly + 51 City Council (1 vacant: CC District 3)
+## Current Data (as of 2026-04-04)
+- 292 legislators: 2 US Senate + 26 US House + 63 State Senate + 150 Assembly + 51 City Council (1 vacant: CC District 3)
 - 5 topics seeded
 - 6 Israel-related bills with 5 known sponsor actions
 - Term dates and websites backfilled for all non-vacant seats
 - Special election start dates for: Bottcher (Senate 47), Sutton (Senate 22), Zellner (Senate 61), Powers (Assembly 74)
+- **296 evidence records** in person_criteria (after data integrity fix — see below)
+
+## ⚠️ Data Integrity Warning
+The `person_criteria` evidence data was corrupted by batch migrations on 2026-04-03. A fix migration (`20260404000000`) deleted 102 duplicates and reassigned 80 records, but:
+- AI stance assessments in `positions` table were generated from corrupted data and need re-running
+- ~11 records with generic evidence (no person name) are unverified
+- No manual spot-check against source URLs has been done
+- **Do not present evidence/stance data as verified until manually audited**
 
 ## Frontend Architecture
 - Single HTML file with inline CSS and JS
 - Split layout: Leaflet map (left) + sidebar with search + legislator list (right)
-- Search is cross-chamber (searches all 3 chambers at once, grouped by section headers)
+- 5 chambers: US Senate, US House, State Senate, Assembly, City Council
+- Search is cross-chamber (searches all 5 chambers at once, grouped by section headers)
 - Click map district or sidebar row to select; click again to deselect
-- Toggling to City Council auto-zooms to NYC; Senate/Assembly zoom to full state
+- Clicking a search result from a different chamber auto-switches the map layer
+- Toggling to City Council auto-zooms to NYC; all others zoom to full state
+- US Senate shows state split east/west with dashed borders and senator name labels
+- Israel stance colors: green (pro) → gray (neutral) → orange (anti) — avoids D/R connotation
 - GeoJSON boundaries merged with Supabase data at load time (boundaries have geometry, Supabase has metadata)

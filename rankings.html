@@ -1,0 +1,255 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Rankings - NY Legislature</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: #f8fafc; min-height: 100vh; }
+
+    .top-nav { display: flex; align-items: center; background: #1e293b; padding: 0 20px; height: 44px; position: sticky; top: 0; z-index: 1000; }
+    .top-nav .site-title { font-size: 15px; font-weight: 700; color: white; margin-right: 24px; white-space: nowrap; text-decoration: none; }
+    .top-nav .nav-link { color: #94a3b8; text-decoration: none; font-size: 14px; font-weight: 500; padding: 10px 16px; border-bottom: 3px solid transparent; }
+    .top-nav .nav-link:hover { color: #e2e8f0; }
+    .top-nav .nav-link.active { color: white; border-bottom-color: #3b82f6; }
+
+    .stats-container { max-width: 1200px; margin: 0 auto; padding: 24px 20px; }
+
+    .stats-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 24px; flex-wrap: wrap; gap: 12px; }
+    .stats-header h1 { font-size: 28px; font-weight: 800; color: #0f172a; }
+
+    .filters { display: flex; gap: 8px; flex-wrap: wrap; }
+    .filter-select {
+      padding: 7px 28px 7px 12px; border: 1.5px solid #d1d5db; border-radius: 20px;
+      font-size: 13px; font-weight: 500; color: #374151; background: white; cursor: pointer; appearance: none;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='10' fill='%23666' viewBox='0 0 16 16'%3E%3Cpath d='M8 11L3 6h10z'/%3E%3C/svg%3E");
+      background-repeat: no-repeat; background-position: right 10px center;
+    }
+
+    .leaders-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; margin-bottom: 32px; }
+    .leader-card { background: white; border-radius: 12px; box-shadow: 0 1px 3px rgba(0,0,0,0.08); overflow: hidden; }
+    .leader-card-header { padding: 14px 20px 10px; display: flex; justify-content: space-between; align-items: baseline; border-bottom: 2px solid #f1f5f9; }
+    .leader-card-header h3 { font-size: 16px; font-weight: 700; color: #0f172a; }
+    .leader-card-header .col-label { font-size: 11px; font-weight: 700; color: #64748b; text-transform: uppercase; }
+
+    .leader-row { display: flex; align-items: center; padding: 10px 20px; border-bottom: 1px solid #f1f5f9; cursor: pointer; transition: background 0.1s; }
+    .leader-row:hover { background: #f8fafc; }
+    .leader-rank { width: 24px; font-size: 14px; font-weight: 600; color: #94a3b8; }
+    .leader-dot { width: 10px; height: 10px; border-radius: 50%; margin-right: 10px; flex-shrink: 0; }
+    .leader-name { font-size: 14px; font-weight: 600; color: #2563eb; flex: 1; }
+    .leader-chamber { font-size: 12px; color: #94a3b8; margin-left: 6px; font-weight: 400; }
+    .leader-score { font-size: 14px; font-weight: 700; color: #0f172a; min-width: 40px; text-align: right; }
+    .complete-link { display: block; text-align: center; padding: 12px; font-size: 13px; font-weight: 600; color: #2563eb; cursor: pointer; border-top: 1px solid #f1f5f9; }
+    .complete-link:hover { background: #f0f5ff; }
+
+    .rankings-table-container { background: white; border-radius: 12px; box-shadow: 0 1px 3px rgba(0,0,0,0.08); overflow: hidden; display: none; }
+    .rankings-back { padding: 14px 20px; font-size: 13px; font-weight: 600; color: #2563eb; cursor: pointer; border-bottom: 1px solid #f1f5f9; }
+    .rankings-back:hover { background: #f0f5ff; }
+    .rankings-table { width: 100%; border-collapse: collapse; }
+    .rankings-table th { padding: 10px 16px; text-align: left; font-size: 11px; font-weight: 700; color: #64748b; text-transform: uppercase; border-bottom: 2px solid #e2e8f0; cursor: pointer; user-select: none; white-space: nowrap; }
+    .rankings-table th:hover { color: #0f172a; }
+    .rankings-table th.sorted { color: #2563eb; }
+    .rankings-table th.sorted::after { content: ' \u25BE'; }
+    .rankings-table th.sorted.asc::after { content: ' \u25B4'; }
+    .rankings-table td { padding: 10px 16px; font-size: 14px; color: #334155; border-bottom: 1px solid #f1f5f9; }
+    .rankings-table tr:hover { background: #f8fafc; }
+    .rankings-table .name-cell { font-weight: 600; color: #2563eb; cursor: pointer; }
+    .rankings-table .score-cell { font-weight: 700; }
+    .stance-badge { display: inline-block; padding: 2px 10px; border-radius: 12px; font-size: 12px; font-weight: 600; color: white; }
+    .party-dot-inline { width: 8px; height: 8px; border-radius: 50%; display: inline-block; margin-right: 6px; vertical-align: middle; }
+
+    .detail-overlay { display: none; position: fixed; top: 0; right: 0; bottom: 0; width: 420px; background: white; box-shadow: -4px 0 20px rgba(0,0,0,0.15); z-index: 2000; overflow-y: auto; }
+    .detail-overlay.open { display: block; }
+    .detail-overlay .close-btn { position: absolute; top: 12px; right: 12px; background: none; border: none; font-size: 24px; cursor: pointer; color: #64748b; }
+    .detail-overlay .detail-content { padding: 24px; }
+    .detail-overlay h2 { font-size: 22px; margin-bottom: 4px; }
+    .detail-overlay .meta { font-size: 13px; color: #64748b; margin-bottom: 16px; }
+    .d-evidence-item { padding: 12px; margin-bottom: 8px; border-radius: 8px; border-left: 3px solid #d1d5db; background: #f8fafc; font-size: 13px; line-height: 1.5; color: #334155; }
+    .d-evidence-item.pro { border-left-color: #15803d; }
+    .d-evidence-item.anti { border-left-color: #c2410c; }
+
+    /* Mobile */
+    @media (max-width: 768px) {
+      .leaders-grid { grid-template-columns: 1fr; }
+      .stats-header { flex-direction: column; align-items: flex-start; }
+      .detail-overlay { width: 100%; }
+      .rankings-table { font-size: 13px; }
+      .rankings-table th, .rankings-table td { padding: 8px 10px; }
+    }
+  </style>
+</head>
+<body>
+  <nav class="top-nav">
+    <a href="index.html" class="site-title">Shalom NY</a>
+    <a href="stats.html" class="nav-link">Feed</a>
+    <a href="map.html" class="nav-link">Map</a>
+    <a href="rankings.html" class="nav-link active">Rankings</a>
+    <a href="insights.html" class="nav-link">Insights</a>
+  </nav>
+
+  <div class="stats-container">
+    <div class="stats-header">
+      <h1>Legislator Rankings</h1>
+      <div class="filters">
+        <select class="filter-select" id="filter-chamber" onchange="applyFilters()">
+          <option value="all">All Chambers</option>
+          <option value="us_senate">US Senate</option>
+          <option value="us_house">US House</option>
+          <option value="senate">State Senate</option>
+          <option value="assembly">Assembly</option>
+          <option value="city_council">City Council</option>
+        </select>
+        <select class="filter-select" id="filter-party" onchange="applyFilters()">
+          <option value="all">All Parties</option>
+          <option value="Democratic">Democratic</option>
+          <option value="Republican">Republican</option>
+        </select>
+      </div>
+    </div>
+
+    <div id="overview-mode">
+      <div class="leaders-grid" id="leaders-grid"></div>
+    </div>
+
+    <div class="rankings-table-container" id="full-rankings">
+      <div class="rankings-back" onclick="showOverview()">&larr; Back to Overview</div>
+      <div style="overflow-x:auto;">
+        <table class="rankings-table">
+          <thead><tr>
+            <th onclick="sortTable('rank')" id="th-rank" class="sorted">RK</th>
+            <th>NAME</th>
+            <th onclick="sortTable('chamber')">CHAMBER</th>
+            <th onclick="sortTable('party')">PARTY</th>
+            <th onclick="sortTable('score')" id="th-score">SCORE</th>
+            <th onclick="sortTable('evidence')">EVIDENCE</th>
+            <th>STANCE</th>
+          </tr></thead>
+          <tbody id="rankings-body"></tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <div class="detail-overlay" id="detail-overlay">
+    <button class="close-btn" onclick="closeDetail()">&times;</button>
+    <div class="detail-content" id="detail-content"></div>
+  </div>
+
+  <script>
+    const SUPABASE_URL = 'https://xeknqkxhfxvveeyddokl.supabase.co';
+    const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inhla25xa3hoZnh2dmVleWRkb2tsIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzUyMjc1MzksImV4cCI6MjA5MDgwMzUzOX0.-CO0RkDBljPTRBO5x5JIAIZ23WfhR0A8bLJV3iE_xS0';
+    const CHAMBER_SHORT = { us_senate: 'US-SEN', us_house: 'US-HR', senate: 'SEN', assembly: 'ASM', city_council: 'CC' };
+    const STANCE_COLORS = { strongly_support: '#15803d', support: '#4ade80', neutral: '#a1a1aa', oppose: '#fb923c', strongly_oppose: '#c2410c' };
+    const STANCE_LABELS = { strongly_support: 'Strongly Pro', support: 'Pro-Israel', neutral: 'Neutral', oppose: 'Anti-Israel', strongly_oppose: 'Strongly Anti' };
+
+    let allLegislators = [], allPositions = {}, allCriteria = [];
+    let currentSort = { key: 'score', desc: true }, currentRankingsTitle = '';
+
+    function partyColor(p) { if (!p) return '#9ca3af'; p = p.toLowerCase(); return p.includes('democrat') ? '#3b82f6' : p.includes('republican') ? '#ef4444' : '#9ca3af'; }
+
+    async function fetchData() {
+      const [legR, posR, critR] = await Promise.all([
+        fetch(`${SUPABASE_URL}/rest/v1/current_legislators?select=person_id,name,party,chamber,district&order=name`, { headers: { apikey: SUPABASE_ANON_KEY } }),
+        fetch(`${SUPABASE_URL}/rest/v1/positions?select=person_id,stance,confidence,rationale&assessment_type=eq.ai&topic_id=eq.1`, { headers: { apikey: SUPABASE_ANON_KEY } }),
+        fetch(`${SUPABASE_URL}/rest/v1/person_criteria?select=person_id,criterion_id,evidence,source_url,source_date,criteria(label,direction,category,weight)&order=source_date.desc`, { headers: { apikey: SUPABASE_ANON_KEY } }),
+      ]);
+      allLegislators = await legR.json();
+      const positions = await posR.json();
+      for (const p of positions) allPositions[p.person_id] = p;
+      allCriteria = await critR.json();
+      for (const leg of allLegislators) {
+        const crit = allCriteria.filter(c => c.person_id === leg.person_id);
+        let score = 0;
+        for (const c of crit) { const w = c.criteria?.weight || 1; score += c.criteria?.direction === 'pro' ? w : -w; }
+        leg.score = score;
+        leg.evidenceCount = crit.length;
+        leg.stance = allPositions[leg.person_id]?.stance || 'unknown';
+      }
+      renderOverview();
+    }
+
+    function getFiltered() {
+      const ch = document.getElementById('filter-chamber').value, pa = document.getElementById('filter-party').value;
+      return allLegislators.filter(l => (ch === 'all' || l.chamber === ch) && (pa === 'all' || l.party === pa));
+    }
+
+    function renderOverview() {
+      const filtered = getFiltered(), grid = document.getElementById('leaders-grid');
+      grid.innerHTML = '';
+      const cats = [
+        { title: 'Most Pro-Israel', sort: (a,b) => b.score - a.score, filter: l => l.score > 0 },
+        { title: 'Most Anti-Israel', sort: (a,b) => a.score - b.score, filter: l => l.score < 0 },
+      ];
+      for (const cat of cats) {
+        const matching = filtered.filter(cat.filter).sort(cat.sort), top5 = matching.slice(0, 5);
+        const card = document.createElement('div'); card.className = 'leader-card';
+        let rows = '';
+        for (let i = 0; i < top5.length; i++) {
+          const l = top5[i];
+          rows += `<div class="leader-row" onclick="showPersonDetail(${l.person_id})"><span class="leader-rank">${i+1}</span><span class="leader-dot" style="background:${partyColor(l.party)}"></span><span class="leader-name">${l.name}<span class="leader-chamber">${CHAMBER_SHORT[l.chamber]} D${l.district}</span></span><span class="leader-score">${l.score > 0 ? '+' : ''}${l.score}</span></div>`;
+        }
+        card.innerHTML = `<div class="leader-card-header"><h3>${cat.title}</h3><span class="col-label">SCORE</span></div>${rows}${matching.length > 5 ? `<div class="complete-link" onclick="showFullRankings('${cat.title}')">Complete Rankings (${matching.length})</div>` : ''}`;
+        grid.appendChild(card);
+      }
+    }
+
+    function showFullRankings(title) {
+      currentRankingsTitle = title;
+      document.getElementById('overview-mode').style.display = 'none';
+      document.getElementById('full-rankings').style.display = 'block';
+      let f = getFiltered();
+      if (title === 'Most Pro-Israel') f = f.filter(l => l.score > 0).sort((a,b) => b.score - a.score);
+      else if (title === 'Most Anti-Israel') f = f.filter(l => l.score < 0).sort((a,b) => a.score - b.score);
+      renderRankingsTable(f);
+    }
+
+    function renderRankingsTable(data) {
+      const tbody = document.getElementById('rankings-body'); tbody.innerHTML = '';
+      for (let i = 0; i < data.length; i++) {
+        const l = data[i], sc = STANCE_COLORS[l.stance] || '#d1d5db', sl = STANCE_LABELS[l.stance] || 'Unknown';
+        const tr = document.createElement('tr');
+        tr.innerHTML = `<td>${i+1}</td><td class="name-cell" onclick="showPersonDetail(${l.person_id})"><span class="party-dot-inline" style="background:${partyColor(l.party)}"></span>${l.name}</td><td>${CHAMBER_SHORT[l.chamber]} D${l.district}</td><td>${l.party||'Unknown'}</td><td class="score-cell">${l.score>0?'+':''}${l.score}</td><td>${l.evidenceCount}</td><td><span class="stance-badge" style="background:${sc}">${sl}</span></td>`;
+        tbody.appendChild(tr);
+      }
+    }
+
+    function sortTable(key) {
+      if (currentSort.key === key) currentSort.desc = !currentSort.desc;
+      else { currentSort.key = key; currentSort.desc = true; }
+      let f = getFiltered();
+      if (currentRankingsTitle === 'Most Pro-Israel') f = f.filter(l => l.score > 0);
+      else if (currentRankingsTitle === 'Most Anti-Israel') f = f.filter(l => l.score < 0);
+      const d = currentSort.desc ? -1 : 1;
+      if (key === 'score' || key === 'rank') f.sort((a,b) => (a.score - b.score) * d);
+      else if (key === 'evidence') f.sort((a,b) => (a.evidenceCount - b.evidenceCount) * d);
+      else if (key === 'chamber') f.sort((a,b) => a.chamber.localeCompare(b.chamber) * d);
+      else if (key === 'party') f.sort((a,b) => (a.party||'').localeCompare(b.party||'') * d);
+      renderRankingsTable(f);
+      document.querySelectorAll('.rankings-table th').forEach(th => th.classList.remove('sorted','asc'));
+      const th = document.getElementById('th-'+key); if (th) { th.classList.add('sorted'); if (!currentSort.desc) th.classList.add('asc'); }
+    }
+
+    function showOverview() { document.getElementById('overview-mode').style.display='block'; document.getElementById('full-rankings').style.display='none'; }
+    function applyFilters() { if (document.getElementById('full-rankings').style.display==='block') showFullRankings(currentRankingsTitle); else renderOverview(); }
+
+    function showPersonDetail(pid) {
+      const leg = allLegislators.find(l => l.person_id === pid); if (!leg) return;
+      const pos = allPositions[pid], crit = allCriteria.filter(c => c.person_id === pid);
+      const sc = pos ? (STANCE_COLORS[pos.stance]||'#d1d5db') : '#d1d5db', sl = pos ? (STANCE_LABELS[pos.stance]||'Unknown') : 'Unknown';
+      let evHTML = '';
+      for (const c of crit) {
+        const dir = c.criteria?.direction||'', cat = (c.criteria?.category||'').replace('_',' ').toUpperCase();
+        const src = c.source_url ? `<a href="${c.source_url}" target="_blank" style="display:inline-block;margin-top:6px;font-size:12px;color:#2563eb;">View source &rarr;</a>` : '';
+        evHTML += `<div class="d-evidence-item ${dir}"><div style="font-size:11px;font-weight:600;text-transform:uppercase;color:#64748b;margin-bottom:4px;">${cat}<span style="color:#94a3b8;margin-left:8px;">${c.source_date||''}</span></div><strong>${c.criteria?.label||''}</strong><br>${c.evidence||''}${src}</div>`;
+      }
+      document.getElementById('detail-content').innerHTML = `<h2>${leg.name}</h2><div class="meta"><span class="party-dot-inline" style="background:${partyColor(leg.party)}"></span>${leg.party||''} &middot; ${CHAMBER_SHORT[leg.chamber]} D${leg.district}</div><div style="margin-bottom:16px;"><span class="stance-badge" style="background:${sc}">${sl}</span><span style="margin-left:12px;font-size:14px;font-weight:600;">Score: ${leg.score>0?'+':''}${leg.score}</span><span style="margin-left:12px;font-size:13px;color:#64748b;">${crit.length} items</span></div>${pos?.rationale?`<div style="font-size:13px;color:#555;line-height:1.5;padding:12px;background:#f8fafc;border-radius:8px;margin-bottom:16px;">${pos.rationale}</div>`:''}${evHTML||'<p style="color:#94a3b8;">No evidence.</p>'}`;
+      document.getElementById('detail-overlay').classList.add('open');
+    }
+
+    function closeDetail() { document.getElementById('detail-overlay').classList.remove('open'); }
+    document.addEventListener('keydown', e => { if (e.key === 'Escape') closeDetail(); });
+    fetchData();
+  </script>
+</body>
+</html>
