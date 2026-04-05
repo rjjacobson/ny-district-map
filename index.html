@@ -321,24 +321,25 @@
     <!-- Rankings preview (left) -->
     <div class="dash-card">
       <div class="dash-card-header">
-        <h3>Legislator Israel Rankings</h3>
+        <h3>Where Legislators Stand on Israel</h3>
         <a href="rankings.html">Full rankings &rarr;</a>
       </div>
-      <div style="padding:14px 20px 6px;font-size:12px;font-weight:600;color:#64748b;text-transform:uppercase;">Most Pro-Israel</div>
+      <div style="padding:14px 20px 6px;font-size:12px;font-weight:600;color:#64748b;">Most Pro-Israel Legislators</div>
       <div id="pro-preview"></div>
-      <div style="padding:14px 20px 6px;font-size:12px;font-weight:600;color:#64748b;text-transform:uppercase;border-top:1px solid #f1f5f9;">Most Anti-Israel</div>
+      <div style="padding:14px 20px 6px;font-size:12px;font-weight:600;color:#64748b;border-top:1px solid #f1f5f9;">Most Anti-Israel Legislators</div>
       <div id="anti-preview"></div>
     </div>
 
     <!-- Neighborhood Rankings (right) -->
     <div class="dash-card">
       <div class="dash-card-header">
-        <h3>Neighborhood Rankings</h3>
+        <h3>Neighborhood Representation on Israel</h3>
         <a href="insights.html">Full insights &rarr;</a>
       </div>
-      <a href="insights.html#best-hoods" style="display:block;padding:14px 20px 6px;font-size:12px;font-weight:600;color:#15803d;text-transform:uppercase;text-decoration:none;">Best Neighborhoods</a>
+      <div style="padding:4px 20px 0;font-size:12px;color:#94a3b8;">Based on the positions of elected representatives serving each area</div>
+      <a href="insights.html#best-hoods" style="display:block;padding:14px 20px 6px;font-size:12px;font-weight:600;color:#15803d;text-decoration:none;">Most Pro-Israel Neighborhoods</a>
       <div id="best-hoods"></div>
-      <a href="insights.html#worst-hoods" style="display:block;padding:14px 20px 6px;font-size:12px;font-weight:600;color:#c2410c;text-transform:uppercase;border-top:1px solid #f1f5f9;text-decoration:none;">Worst Neighborhoods</a>
+      <a href="insights.html#worst-hoods" style="display:block;padding:14px 20px 6px;font-size:12px;font-weight:600;color:#c2410c;border-top:1px solid #f1f5f9;text-decoration:none;">Most Anti-Israel Neighborhoods</a>
       <div id="worst-hoods"></div>
     </div>
 
@@ -351,13 +352,13 @@
       <div id="mini-map" style="height:260px;cursor:pointer;" onclick="window.location='map.html'"></div>
     </div>
 
-    <!-- Anti-Israel Actions -->
+    <!-- Latest Activity -->
     <div class="dash-card desktop-only">
       <div class="dash-card-header">
-        <h3>Most Common Anti-Israel Actions</h3>
-        <a href="insights.html">Full insights &rarr;</a>
+        <h3>Latest Activity</h3>
+        <a href="stats.html">View all &rarr;</a>
       </div>
-      <div id="anti-actions"></div>
+      <div id="feed-preview"></div>
     </div>
 
     <!-- Signup -->
@@ -413,12 +414,12 @@
 
       renderRankingsPreview();
       renderNeighborhoodPreview();
-      renderAntiActions();
+      renderFeedPreview();
     }
 
     const DISTRICT_NEIGHBORHOODS = {
       'city_council-1': 'Chinatown, Lower East Side, FiDi',
-      'city_council-2': 'East Village, Gramercy, Stuyvesant Town',
+      'city_council-2': 'East Village, Gramercy, Stuyvesant Town, Lower East Side',
       'city_council-4': 'Chelsea, Hells Kitchen, Times Square',
       'city_council-5': 'Upper East Side, Roosevelt Island',
       'city_council-6': 'Upper West Side, Lincoln Square',
@@ -427,27 +428,27 @@
       'city_council-9': 'Central Harlem',
       'city_council-10': 'Washington Heights, Inwood',
       'city_council-11': 'Riverdale, Kingsbridge, Norwood',
-      'city_council-12': 'Wakefield, Williamsbridge, Eastchester',
-      'city_council-13': 'Pelham Bay, Morris Park, Co-op City',
+      'city_council-12': 'Wakefield, Williamsbridge, Eastchester, Soundview',
+      'city_council-13': 'Pelham Bay, Morris Park, Co-op City, Soundview',
       'city_council-14': 'Soundview, Parkchester, Castle Hill',
       'city_council-15': 'Melrose, Mott Haven, Port Morris',
-      'city_council-16': 'Morrisania, Highbridge, Concourse',
+      'city_council-16': 'Morrisania, Highbridge, Concourse, Mott Haven',
       'city_council-17': 'University Heights, Fordham, Tremont',
-      'city_council-18': 'Throgs Neck, Country Club, City Island',
+      'city_council-18': 'Throgs Neck, Country Club, City Island, Parkchester',
       'city_council-19': 'Bayside, Whitestone, College Point',
       'city_council-20': 'Flushing, Mitchell-Linden',
       'city_council-21': 'Hollis, Jamaica, St. Albans',
       'city_council-22': 'Astoria, Woodside, Long Island City',
-      'city_council-23': 'Fresh Meadows, Oakland Gardens, Bayside Hills',
-      'city_council-24': 'Briarwood, Jamaica Hills, Hillcrest',
+      'city_council-23': 'Fresh Meadows, Oakland Gardens, Bayside Hills, Bayside',
+      'city_council-24': 'Briarwood, Jamaica Hills, Hillcrest, Jamaica',
       'city_council-25': 'Jackson Heights, Elmhurst',
       'city_council-26': 'Sunnyside, Woodside, Maspeth',
       'city_council-27': 'East Elmhurst, Jackson Heights, Corona',
       'city_council-28': 'Jamaica, South Jamaica',
-      'city_council-29': 'Forest Hills, Rego Park, Kew Gardens',
+      'city_council-29': 'Forest Hills, Rego Park, Kew Gardens, Jackson Heights',
       'city_council-30': 'Ridgewood, Middle Village, Glendale',
       'city_council-31': 'Far Rockaway, Arverne, Laurelton',
-      'city_council-32': 'Howard Beach, Ozone Park, Woodhaven',
+      'city_council-32': 'Howard Beach, Ozone Park, Woodhaven, Ridgewood',
       'city_council-33': 'Crown Heights, Brownsville',
       'city_council-34': 'Sunset Park, Red Hook, Greenwood',
       'city_council-35': 'Prospect Lefferts, East Flatbush',
@@ -464,12 +465,12 @@
       'city_council-46': 'Canarsie, Flatlands, Georgetown',
       'city_council-47': 'Coney Island, Brighton Beach, Sheepshead Bay',
       'city_council-48': 'Sheepshead Bay, Marine Park, Manhattan Beach',
-      'city_council-49': 'North Shore Staten Island, West Brighton',
-      'city_council-50': 'Mid-Island Staten Island, Todt Hill',
-      'city_council-51': 'South Shore Staten Island, Great Kills',
+      'city_council-49': 'North Shore Staten Island, West Brighton, Staten Island',
+      'city_council-50': 'Mid-Island Staten Island, Todt Hill, Staten Island',
+      'city_council-51': 'South Shore Staten Island, Great Kills, Staten Island',
       'assembly-36': 'Woodside, Corona',
       'assembly-37': 'Sunset Park, Windsor Terrace',
-      'assembly-38': 'South Ozone Park, Richmond Hill',
+      'assembly-38': 'South Ozone Park, Richmond Hill, Jamaica',
       'assembly-39': 'Jackson Heights, Woodside',
       'assembly-40': 'Flushing, Murray Hill',
       'assembly-41': 'Borough Park, Kensington',
@@ -495,7 +496,7 @@
       'assembly-68': 'Harlem, Morningside Heights',
       'assembly-69': 'Upper East Side, Yorkville',
       'assembly-70': 'East Harlem',
-      'assembly-73': 'East Side Manhattan',
+      'assembly-73': 'East Side Manhattan, Upper East Side',
       'assembly-74': 'Hells Kitchen, Chelsea',
       'assembly-75': 'West Village, Chelsea',
       'assembly-76': 'Upper East Side, Lenox Hill',
@@ -527,7 +528,7 @@
       'us_house-11': 'Staten Island, Southern Brooklyn',
       'us_house-12': 'Upper West Side, Midtown, Lower Manhattan',
       'us_house-13': 'Washington Heights, South Bronx',
-      'us_house-14': 'Bronx, NE Queens',
+      'us_house-14': 'Bronx, NE Queens, Bayside',
       'us_house-15': 'South Bronx, Central Bronx',
     };
 
@@ -559,59 +560,33 @@
       for (const [hood, data] of best5) {
         const slug = hood.toLowerCase().replace(/[^a-z0-9]+/g, '-');
         const avg = data.avg >= 0 ? '+' + data.avg.toFixed(1) : data.avg.toFixed(1);
-        bestContainer.innerHTML += `<a href="insights.html#hood-${slug}" class="hood-row" style="text-decoration:none;color:inherit;"><span class="hood-name">${hood}<span class="hood-meta">${data.count} reps, ${data.pro} pro-Israel</span></span><span class="hood-score" style="color:#15803d">${avg}</span></a>`;
+        bestContainer.innerHTML += `<a href="insights.html#hood-${slug}" class="hood-row" style="text-decoration:none;color:inherit;"><span class="hood-name">${hood}<span class="hood-meta">${data.count} representatives &bull; ${data.pro} Pro-Israel</span></span><span class="hood-score" style="color:#15803d">${avg}</span></a>`;
       }
       for (const [hood, data] of worst5) {
         const slug = hood.toLowerCase().replace(/[^a-z0-9]+/g, '-');
         const avg = data.avg.toFixed(1);
-        worstContainer.innerHTML += `<a href="insights.html#hood-${slug}" class="hood-row" style="text-decoration:none;color:inherit;"><span class="hood-name">${hood}<span class="hood-meta">${data.count} reps, ${data.anti} anti-Israel</span></span><span class="hood-score" style="color:#c2410c">${avg}</span></a>`;
+        worstContainer.innerHTML += `<a href="insights.html#hood-${slug}" class="hood-row" style="text-decoration:none;color:inherit;"><span class="hood-name">${hood}<span class="hood-meta">${data.count} representatives &bull; ${data.anti} Anti-Israel</span></span><span class="hood-score" style="color:#c2410c">${avg}</span></a>`;
       }
     }
 
-    function renderAntiActions() {
-      const container = document.getElementById('anti-actions');
+    function renderFeedPreview() {
+      const container = document.getElementById('feed-preview');
       if (!container) return;
-
-      // Group criteria by label, anti-direction only
-      const actionMap = {};
-      for (const c of allCriteria) {
-        if (c.criteria?.direction !== 'anti') continue;
-        const label = c.criteria?.label || 'Unknown';
-        if (!actionMap[label]) actionMap[label] = [];
-        actionMap[label].push(c);
-      }
-
-      // Sort by count descending, take top actions
-      const sorted = Object.entries(actionMap).sort((a, b) => b[1].length - a[1].length);
-
-      let idx = 0;
-      for (const [label, entries] of sorted) {
-        const id = 'anti-action-' + (idx++);
-        // Dedupe legislators per action
-        const seen = new Set();
-        const legs = [];
-        for (const e of entries) {
-          if (seen.has(e.person_id)) continue;
-          seen.add(e.person_id);
-          const leg = allLegislators.find(l => l.person_id === e.person_id);
-          if (leg) legs.push(leg);
-        }
-        legs.sort((a, b) => a.score - b.score);
-
-        const legsHtml = legs.map(l => {
-          const sc = l.score > 0 ? '+' + l.score : l.score;
-          const color = l.score >= 0 ? '#15803d' : '#c2410c';
-          return `<div class="action-leg" onclick="event.stopPropagation();openDetailPanel(${l.person_id})"><span style="display:inline-flex;align-items:center;justify-content:center;width:20px;height:20px;border-radius:50%;font-size:10px;font-weight:700;color:white;background:${partyColor(l.party)}">${(l.party||'').includes('Democrat')?'D':'R'}</span><span style="flex:1;font-weight:600;color:#0f172a;">${l.name}</span><span style="font-size:12px;color:#64748b;">${CHAMBER_LABELS[l.chamber]} D${l.district}</span><span style="font-size:13px;font-weight:700;color:${color};min-width:32px;text-align:right;">${sc}</span></div>`;
-        }).join('');
-
-        container.innerHTML += `<div class="action-row" onclick="var el=document.getElementById('${id}');var ch=this.querySelector('.action-chevron');if(el.style.display==='none'){el.style.display='block';ch.classList.add('open')}else{el.style.display='none';ch.classList.remove('open')}">
-          <div class="action-header">
-            <span class="action-label">${label}</span>
-            <span class="action-count">${legs.length}</span>
-            <span class="action-chevron">&#9654;</span>
-          </div>
-          <div class="action-legs" id="${id}">${legsHtml}</div>
-        </div>`;
+      const withDates = allCriteria.filter(c => c.source_date);
+      const top4 = withDates.slice(0, 4);
+      for (const c of top4) {
+        const leg = allLegislators.find(l => l.person_id === c.person_id);
+        if (!leg) continue;
+        const dir = c.criteria?.direction || '';
+        const item = document.createElement('div');
+        item.className = 'feed-preview-item ' + dir;
+        item.onclick = () => openDetailPanel(c.person_id);
+        item.innerHTML = `
+          <div class="feed-preview-meta">${CHAMBER_LABELS[leg.chamber]} &middot; ${c.source_date || ''}</div>
+          <div class="feed-preview-name">${leg.name}</div>
+          <div class="feed-preview-text">${c.criteria?.label || ''}: ${(c.evidence || '').substring(0, 120)}...</div>
+        `;
+        container.appendChild(item);
       }
     }
 

@@ -142,6 +142,12 @@
       <div class="leaders-grid" id="district-grid"></div>
     </div>
 
+    <!-- Common Actions -->
+    <div id="actions-stats" style="margin-top:32px;">
+      <h2 style="font-size:22px;font-weight:800;color:#0f172a;margin-bottom:16px;">Most Common Actions</h2>
+      <div class="leaders-grid" id="actions-grid"></div>
+    </div>
+
     <div style="background:linear-gradient(135deg,#1e3a5f 0%,#1e293b 100%);border-radius:14px;padding:32px;color:white;text-align:center;margin-top:24px;">
       <h3 style="font-size:20px;font-weight:700;margin-bottom:8px;">Stay Updated</h3>
       <p style="font-size:14px;color:#94a3b8;margin-bottom:20px;">Get weekly updates on what your representatives are saying about Israel</p>
@@ -258,7 +264,7 @@
 
     const DISTRICT_NEIGHBORHOODS = {
       'city_council-1': 'Chinatown, Lower East Side, FiDi',
-      'city_council-2': 'East Village, Gramercy, Stuyvesant Town',
+      'city_council-2': 'East Village, Gramercy, Stuyvesant Town, Lower East Side',
       'city_council-4': 'Chelsea, Hells Kitchen, Times Square',
       'city_council-5': 'Upper East Side, Roosevelt Island',
       'city_council-6': 'Upper West Side, Lincoln Square',
@@ -267,27 +273,27 @@
       'city_council-9': 'Central Harlem',
       'city_council-10': 'Washington Heights, Inwood',
       'city_council-11': 'Riverdale, Kingsbridge, Norwood',
-      'city_council-12': 'Wakefield, Williamsbridge, Eastchester',
-      'city_council-13': 'Pelham Bay, Morris Park, Co-op City',
+      'city_council-12': 'Wakefield, Williamsbridge, Eastchester, Soundview',
+      'city_council-13': 'Pelham Bay, Morris Park, Co-op City, Soundview',
       'city_council-14': 'Soundview, Parkchester, Castle Hill',
       'city_council-15': 'Melrose, Mott Haven, Port Morris',
-      'city_council-16': 'Morrisania, Highbridge, Concourse',
+      'city_council-16': 'Morrisania, Highbridge, Concourse, Mott Haven',
       'city_council-17': 'University Heights, Fordham, Tremont',
-      'city_council-18': 'Throgs Neck, Country Club, City Island',
+      'city_council-18': 'Throgs Neck, Country Club, City Island, Parkchester',
       'city_council-19': 'Bayside, Whitestone, College Point',
       'city_council-20': 'Flushing, Mitchell-Linden',
       'city_council-21': 'Hollis, Jamaica, St. Albans',
       'city_council-22': 'Astoria, Woodside, Long Island City',
-      'city_council-23': 'Fresh Meadows, Oakland Gardens, Bayside Hills',
-      'city_council-24': 'Briarwood, Jamaica Hills, Hillcrest',
+      'city_council-23': 'Fresh Meadows, Oakland Gardens, Bayside Hills, Bayside',
+      'city_council-24': 'Briarwood, Jamaica Hills, Hillcrest, Jamaica',
       'city_council-25': 'Jackson Heights, Elmhurst',
       'city_council-26': 'Sunnyside, Woodside, Maspeth',
       'city_council-27': 'East Elmhurst, Jackson Heights, Corona',
       'city_council-28': 'Jamaica, South Jamaica',
-      'city_council-29': 'Forest Hills, Rego Park, Kew Gardens',
+      'city_council-29': 'Forest Hills, Rego Park, Kew Gardens, Jackson Heights',
       'city_council-30': 'Ridgewood, Middle Village, Glendale',
       'city_council-31': 'Far Rockaway, Arverne, Laurelton',
-      'city_council-32': 'Howard Beach, Ozone Park, Woodhaven',
+      'city_council-32': 'Howard Beach, Ozone Park, Woodhaven, Ridgewood',
       'city_council-33': 'Crown Heights, Brownsville',
       'city_council-34': 'Sunset Park, Red Hook, Greenwood',
       'city_council-35': 'Prospect Lefferts, East Flatbush',
@@ -304,11 +310,12 @@
       'city_council-46': 'Canarsie, Flatlands, Georgetown',
       'city_council-47': 'Coney Island, Brighton Beach, Sheepshead Bay',
       'city_council-48': 'Sheepshead Bay, Marine Park, Manhattan Beach',
-      'city_council-49': 'North Shore Staten Island, West Brighton',
-      'city_council-50': 'Mid-Island Staten Island, Todt Hill',
-      'city_council-51': 'South Shore Staten Island, Great Kills',
+      'city_council-49': 'North Shore Staten Island, West Brighton, Staten Island',
+      'city_council-50': 'Mid-Island Staten Island, Todt Hill, Staten Island',
+      'city_council-51': 'South Shore Staten Island, Great Kills, Staten Island',
       'assembly-36': 'Woodside, Corona',
       'assembly-37': 'Sunset Park, Windsor Terrace',
+      'assembly-38': 'South Ozone Park, Richmond Hill, Jamaica',
       'assembly-39': 'Jackson Heights, Woodside',
       'assembly-41': 'Borough Park, Kensington',
       'assembly-42': 'Flatbush, East Flatbush',
@@ -333,7 +340,7 @@
       'assembly-68': 'Harlem, Morningside Heights',
       'assembly-69': 'Upper East Side, Yorkville',
       'assembly-70': 'East Harlem',
-      'assembly-73': 'East Side Manhattan',
+      'assembly-73': 'East Side Manhattan, Upper East Side',
       'assembly-74': 'Hells Kitchen, Chelsea',
       'assembly-75': 'West Village, Chelsea',
       'assembly-76': 'Upper East Side, Lenox Hill',
@@ -364,7 +371,7 @@
       'us_house-11': 'Staten Island, Southern Brooklyn',
       'us_house-12': 'Upper West Side, Midtown, Lower Manhattan',
       'us_house-13': 'Washington Heights, South Bronx',
-      'us_house-14': 'Bronx, NE Queens',
+      'us_house-14': 'Bronx, NE Queens, Bayside',
       'us_house-15': 'South Bronx, Central Bronx',
     };
 
@@ -418,8 +425,55 @@
       }
     }
 
+    function renderActionsStats() {
+      const grid = document.getElementById('actions-grid');
+      if (!grid) return;
+
+      function buildActionCard(title, direction, scoreColor) {
+        const actionMap = {};
+        for (const c of allCriteria) {
+          if (c.criteria?.direction !== direction) continue;
+          const label = c.criteria?.label || 'Unknown';
+          if (!actionMap[label]) actionMap[label] = [];
+          actionMap[label].push(c);
+        }
+        const sorted = Object.entries(actionMap).sort((a, b) => b[1].length - a[1].length);
+
+        const card = document.createElement('div'); card.className = 'leader-card';
+        let rows = '';
+        let idx = 0;
+        for (const [label, entries] of sorted) {
+          const expandId = 'action-' + direction + '-' + (idx++);
+          const seen = new Set();
+          const legs = [];
+          for (const e of entries) {
+            if (seen.has(e.person_id)) continue;
+            seen.add(e.person_id);
+            const leg = allLegislators.find(l => l.person_id === e.person_id);
+            if (leg) legs.push(leg);
+          }
+          legs.sort((a, b) => direction === 'pro' ? b.score - a.score : a.score - b.score);
+
+          const legsHtml = legs.map(l => {
+            const sc = l.score > 0 ? '+' + l.score : l.score;
+            const color = l.score >= 0 ? '#15803d' : '#c2410c';
+            const ps = (l.party||'').includes('Democrat') ? 'D' : 'R';
+            return `<div style="display:flex;align-items:center;padding:5px 0;gap:8px;cursor:pointer;" onclick="event.stopPropagation();openDetailPanel(${l.person_id})"><span style="display:inline-flex;align-items:center;justify-content:center;width:20px;height:20px;border-radius:50%;font-size:10px;font-weight:700;color:white;background:${partyColor(l.party)}">${ps}</span><span style="flex:1;font-size:13px;font-weight:600;color:#0f172a;">${l.name}</span><span style="font-size:11px;color:#94a3b8;">${CHAMBER_SHORT[l.chamber]} D${l.district}</span><span style="font-size:13px;font-weight:700;color:${color};min-width:32px;text-align:right;">${sc}</span></div>`;
+          }).join('');
+
+          rows += `<div class="leader-row" style="flex-wrap:wrap;" onclick="var el=document.getElementById('${expandId}');el.style.display=el.style.display==='none'?'block':'none'"><span class="leader-name">${label}</span><span class="leader-score" style="color:${scoreColor}">${legs.length}</span><div id="${expandId}" style="display:none;width:100%;padding:8px 0 4px 0;border-top:1px solid #f1f5f9;margin-top:8px;" onclick="event.stopPropagation()">${legsHtml}</div></div>`;
+        }
+        card.innerHTML = `<div class="leader-card-header"><h3>${title}</h3><span class="col-label">COUNT</span></div>${rows}`;
+        grid.appendChild(card);
+      }
+
+      buildActionCard('Most Common Pro-Israel Actions', 'pro', '#15803d');
+      buildActionCard('Most Common Anti-Israel Actions', 'anti', '#c2410c');
+    }
+
     fetchData().then(() => {
       renderDistrictStats();
+      renderActionsStats();
       const hash = window.location.hash;
       if (hash && hash.startsWith('#person-')) {
         const pid = parseInt(hash.replace('#person-', ''));
