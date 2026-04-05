@@ -197,6 +197,10 @@
         <div class="area-grade">
           <h1>Your Representatives</h1>
           <div class="subtitle">${address}</div>
+          <button onclick="copyShareLink()" id="share-btn" style="margin-top:12px;padding:8px 20px;background:#2563eb;color:white;border:none;border-radius:8px;font-size:13px;font-weight:600;cursor:pointer;display:inline-flex;align-items:center;gap:6px;">
+            <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M10 13a5 5 0 007.54.54l3-3a5 5 0 00-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 00-7.54-.54l-3 3a5 5 0 007.07 7.07l1.71-1.71"/></svg>
+            Share this report
+          </button>
         </div>`;
 
       const sections = [
@@ -255,6 +259,16 @@
 
       document.getElementById('content').innerHTML = html;
     }
+    function copyShareLink() {
+      const url = window.location.href;
+      navigator.clipboard.writeText(url).then(() => {
+        const btn = document.getElementById('share-btn');
+        btn.textContent = 'Link copied!';
+        btn.style.background = '#15803d';
+        setTimeout(() => { btn.innerHTML = '<svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M10 13a5 5 0 007.54.54l3-3a5 5 0 00-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 00-7.54-.54l-3 3a5 5 0 007.07 7.07l1.71-1.71"/></svg> Share this report'; btn.style.background = '#2563eb'; }, 2000);
+      });
+    }
+
     init();
   </script>
 
