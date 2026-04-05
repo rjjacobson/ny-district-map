@@ -783,7 +783,9 @@
           return { fillColor: color, weight: 1, color: '#fff', fillOpacity: 0.6 };
         }
       }).addTo(miniMap);
-      setTimeout(() => miniMap.invalidateSize(), 100);
+      setTimeout(() => miniMap.invalidateSize(), 300);
+      setTimeout(() => miniMap.invalidateSize(), 1000);
+      new ResizeObserver(() => miniMap.invalidateSize()).observe(document.getElementById('mini-map'));
     });
 
     init();
