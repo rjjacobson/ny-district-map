@@ -400,12 +400,13 @@
       let hoodId = 0;
       for (const [hood, data] of worstHoods) {
         const id = 'hood-w-' + (hoodId++);
+        const slug = 'hood-' + hood.toLowerCase().replace(/[^a-z0-9]+/g, '-');
         const repsHtml = data.reps.map(r => {
           const sc = r.score > 0 ? '+' + r.score : r.score;
           const color = r.score >= 0 ? '#15803d' : '#c2410c';
           return `<div style="display:flex;align-items:center;padding:6px 0;gap:8px;cursor:pointer;" onclick="event.stopPropagation();openDetailPanel(r.person_id)"><span style="display:inline-flex;align-items:center;justify-content:center;width:22px;height:22px;border-radius:50%;font-size:11px;font-weight:700;color:white;background:${partyColor(r.party)}">${(r.party||'').includes('Democrat')?'D':'R'}</span><span style="flex:1;font-size:13px;font-weight:600;color:#0f172a;">${r.name}</span><span style="font-size:12px;color:#64748b;">${CHAMBER_LABELS[r.chamber]} D${r.district}</span><span style="font-size:13px;font-weight:700;color:${color};min-width:36px;text-align:right;">${sc}</span></div>`;
         }).join('');
-        html += `<li style="cursor:pointer;" onclick="var el=document.getElementById('${id}');el.style.display=el.style.display==='none'?'block':'none';"><span class="name">${hood} <span style="color:#94a3b8;font-weight:400;font-size:12px;">${data.count} reps, ${data.anti} anti-Israel</span></span><span class="score" style="color:#c2410c">${data.total > 0 ? '+' : ''}${data.total}</span><div id="${id}" style="display:none;margin-top:8px;padding-top:8px;border-top:1px solid #e2e8f0;">${repsHtml}</div></li>`;
+        html += `<li id="${slug}" style="cursor:pointer;" onclick="var el=document.getElementById('${id}');el.style.display=el.style.display==='none'?'block':'none';"><span class="name">${hood} <span style="color:#94a3b8;font-weight:400;font-size:12px;">${data.count} reps, ${data.anti} anti-Israel</span></span><span class="score" style="color:#c2410c">${data.total > 0 ? '+' : ''}${data.total}</span><div id="${id}" style="display:none;margin-top:8px;padding-top:8px;border-top:1px solid #e2e8f0;">${repsHtml}</div></li>`;
       }
       html += `</ul>
         <div class="finding alert">These neighborhoods form a corridor through <strong>northern Brooklyn</strong> (Bushwick, Williamsburg, Sunset Park), the <strong>South Bronx</strong> (Mott Haven, Morrisania), and <strong>Jackson Heights/Elmhurst</strong> in Queens — areas with high DSA/progressive caucus alignment and significant immigrant and POC populations where anti-Israel sentiment has been channeled through left-progressive organizing.</div>
@@ -419,12 +420,13 @@
           <ul class="hotspot-list">`;
         for (const [hood, data] of bestHoods) {
           const id = 'hood-b-' + (hoodId++);
+          const slug = 'hood-' + hood.toLowerCase().replace(/[^a-z0-9]+/g, '-');
           const repsHtml = data.reps.map(r => {
             const sc = r.score > 0 ? '+' + r.score : r.score;
             const color = r.score >= 0 ? '#15803d' : '#c2410c';
             return `<div style="display:flex;align-items:center;padding:6px 0;gap:8px;cursor:pointer;" onclick="event.stopPropagation();openDetailPanel(r.person_id)"><span style="display:inline-flex;align-items:center;justify-content:center;width:22px;height:22px;border-radius:50%;font-size:11px;font-weight:700;color:white;background:${partyColor(r.party)}">${(r.party||'').includes('Democrat')?'D':'R'}</span><span style="flex:1;font-size:13px;font-weight:600;color:#0f172a;">${r.name}</span><span style="font-size:12px;color:#64748b;">${CHAMBER_LABELS[r.chamber]} D${r.district}</span><span style="font-size:13px;font-weight:700;color:${color};min-width:36px;text-align:right;">${sc}</span></div>`;
           }).join('');
-          html += `<li style="cursor:pointer;" onclick="var el=document.getElementById('${id}');el.style.display=el.style.display==='none'?'block':'none';"><span class="name">${hood} <span style="color:#94a3b8;font-weight:400;font-size:12px;">${data.count} reps, ${data.pro} pro-Israel</span></span><span class="score" style="color:#15803d">+${data.total}</span><div id="${id}" style="display:none;margin-top:8px;padding-top:8px;border-top:1px solid #e2e8f0;">${repsHtml}</div></li>`;
+          html += `<li id="${slug}" style="cursor:pointer;" onclick="var el=document.getElementById('${id}');el.style.display=el.style.display==='none'?'block':'none';"><span class="name">${hood} <span style="color:#94a3b8;font-weight:400;font-size:12px;">${data.count} reps, ${data.pro} pro-Israel</span></span><span class="score" style="color:#15803d">+${data.total}</span><div id="${id}" style="display:none;margin-top:8px;padding-top:8px;border-top:1px solid #e2e8f0;">${repsHtml}</div></li>`;
         }
         html += `</ul>
           <div class="finding positive">Pro-Israel strength in NYC is concentrated in areas with significant <strong>Orthodox Jewish communities</strong> (Borough Park, Crown Heights) and <strong>moderate Democratic or Republican-leaning</strong> districts in southern Brooklyn and parts of Queens.</div>
@@ -473,6 +475,20 @@
       </div>`;
 
       document.getElementById('insights-content').innerHTML = html;
+
+      // Auto-expand neighborhood from hash (e.g. #hood-south-bronx)
+      const hash = window.location.hash.slice(1);
+      if (hash.startsWith('hood-')) {
+        const li = document.getElementById(hash);
+        if (li) {
+          // Find the inner expandable div and show it
+          const inner = li.querySelector('div[id^="hood-"]');
+          if (inner) inner.style.display = 'block';
+          li.scrollIntoView({ behavior: 'smooth', block: 'center' });
+          li.style.background = '#fffbeb';
+          setTimeout(() => { li.style.background = ''; }, 2000);
+        }
+      }
     }
     init();
   </script>

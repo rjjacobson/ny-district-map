@@ -554,10 +554,12 @@
       const worstContainer = document.getElementById('worst-hoods');
 
       for (const [hood, data] of best5) {
-        bestContainer.innerHTML += `<div class="hood-row"><span class="hood-name">${hood}<span class="hood-meta">${data.count} reps, ${data.pro} pro-Israel</span></span><span class="hood-score" style="color:#15803d">+${data.total}</span></div>`;
+        const slug = hood.toLowerCase().replace(/[^a-z0-9]+/g, '-');
+        bestContainer.innerHTML += `<a href="insights.html#hood-${slug}" class="hood-row" style="text-decoration:none;color:inherit;"><span class="hood-name">${hood}<span class="hood-meta">${data.count} reps, ${data.pro} pro-Israel</span></span><span class="hood-score" style="color:#15803d">+${data.total}</span></a>`;
       }
       for (const [hood, data] of worst5) {
-        worstContainer.innerHTML += `<div class="hood-row"><span class="hood-name">${hood}<span class="hood-meta">${data.count} reps, ${data.anti} anti-Israel</span></span><span class="hood-score" style="color:#c2410c">${data.total}</span></div>`;
+        const slug = hood.toLowerCase().replace(/[^a-z0-9]+/g, '-');
+        worstContainer.innerHTML += `<a href="insights.html#hood-${slug}" class="hood-row" style="text-decoration:none;color:inherit;"><span class="hood-name">${hood}<span class="hood-meta">${data.count} reps, ${data.anti} anti-Israel</span></span><span class="hood-score" style="color:#c2410c">${data.total}</span></a>`;
       }
     }
 
