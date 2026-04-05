@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Legislator Profile - ShalomNY</title>
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: #f8fafc; min-height: 100vh; }
+    .top-nav { display: flex; align-items: center; background: #1e293b; padding: 0 20px; height: 44px; position: sticky; top: 0; z-index: 1000; }
+    .top-nav .site-title { font-size: 15px; font-weight: 700; color: white; margin-right: 24px; white-space: nowrap; text-decoration: none; }
+    .top-nav .nav-link { color: #94a3b8; text-decoration: none; font-size: 14px; font-weight: 500; padding: 10px 16px; border-bottom: 3px solid transparent; }
+    .top-nav .nav-link:hover { color: #e2e8f0; }
+    .top-nav .nav-link.active { color: white; border-bottom-color: #3b82f6; }
+    .nav-search { display: flex; gap: 4px; } .nav-search input { padding: 6px 12px; border: none; border-radius: 6px; font-size: 13px; width: 240px; outline: none; } .nav-search button { padding: 6px 14px; background: #2563eb; color: white; border: none; border-radius: 6px; font-size: 13px; font-weight: 600; cursor: pointer; }
+    @media (max-width: 768px) { .nav-search { display: none !important; } .top-nav .nav-link { font-size: 13px; padding: 10px 8px; } .profile-grid { grid-template-columns: 1fr !important; } .profile-map { height: 250px !important; } }
+    @media (max-width: 480px) { .top-nav .nav-link { font-size: 11px; padding: 6px 6px; } .top-nav .site-title { font-size: 13px; margin-right: 8px; } }
+
+    .container { max-width: 900px; margin: 0 auto; padding: 24px 20px; }
+    .back-link { display: inline-block; margin-bottom: 16px; font-size: 13px; color: #2563eb; text-decoration: none; font-weight: 600; }
+
+    .profile-header {
+      background: white; border-radius: 14px; box-shadow: 0 1px 3px rgba(0,0,0,0.06);
+      padding: 28px; margin-bottom: 20px;
+    }
+    .profile-top { display: flex; align-items: center; gap: 16px; margin-bottom: 16px; }
+    .profile-avatar { width: 64px; height: 64px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 24px; font-weight: 800; color: white; flex-shrink: 0; }
+    .profile-name { font-size: 28px; font-weight: 800; color: #0f172a; }
+    .profile-subtitle { font-size: 15px; color: #64748b; margin-top: 2px; }
+    .profile-party { display: inline-block; padding: 3px 12px; border-radius: 12px; font-size: 12px; font-weight: 700; color: white; margin-left: 8px; }
+
+    .profile-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-bottom: 20px; }
+    .profile-card { background: white; border-radius: 14px; box-shadow: 0 1px 3px rgba(0,0,0,0.06); padding: 20px; }
+    .profile-card h3 { font-size: 14px; font-weight: 700; color: #64748b; text-transform: uppercase; margin-bottom: 12px; letter-spacing: 0.5px; }
+
+    .stance-badge { display: inline-block; padding: 6px 16px; border-radius: 20px; font-size: 14px; font-weight: 700; color: white; }
+    .score-big { font-size: 36px; font-weight: 800; margin: 8px 0; }
+    .score-label { font-size: 13px; color: #64748b; }
+
+    .contact-row { display: flex; align-items: center; gap: 8px; padding: 8px 0; font-size: 14px; color: #334155; border-bottom: 1px solid #f1f5f9; }
+    .contact-row:last-child { border-bottom: none; }
+    .contact-row a { color: #2563eb; text-decoration: none; }
+    .contact-row a:hover { text-decoration: underline; }
+
+    .profile-map { height: 300px; border-radius: 10px; border: 1px solid #e2e8f0; margin-top: 8px; }
+
+    .evidence-section { background: white; border-radius: 14px; box-shadow: 0 1px 3px rgba(0,0,0,0.06); padding: 20px; margin-bottom: 20px; }
+    .evidence-section h3 { font-size: 14px; font-weight: 700; color: #64748b; text-transform: uppercase; margin-bottom: 16px; letter-spacing: 0.5px; }
+
+    .ev-item { padding: 16px; margin-bottom: 12px; border-radius: 10px; border-left: 4px solid #d1d5db; background: #f8fafc; }
+    .ev-item.pro { border-left-color: #15803d; }
+    .ev-item.anti { border-left-color: #c2410c; }
+    .ev-header { display: flex; align-items: center; gap: 8px; margin-bottom: 6px; }
+    .ev-cat { font-size: 11px; font-weight: 700; text-transform: uppercase; color: #64748b; }
+    .ev-date { font-size: 11px; color: #94a3b8; }
+    .ev-label { font-size: 15px; font-weight: 700; color: #0f172a; margin-bottom: 6px; }
+    .ev-text { font-size: 14px; color: #475569; line-height: 1.6; }
+    .ev-source { display: inline-block; margin-top: 8px; font-size: 13px; font-weight: 600; color: #2563eb; text-decoration: none; }
+    .ev-source:hover { text-decoration: underline; }
+
+    .loading { padding: 60px; text-align: center; color: #94a3b8; font-size: 15px; }
+  </style>
+</head>
+<body>
+  <nav class="top-nav">
+    <a href="index.html" class="site-title">ShalomNY</a>
+    <a href="stats.html" class="nav-link">Feed</a>
+    <a href="map.html" class="nav-link">Map</a>
+    <a href="rankings.html" class="nav-link">Stats</a>
+    <a href="insights.html" class="nav-link">Insights</a>
+    <a href="about.html" class="nav-link">About</a>
+    <div style="flex:1;"></div>
+    <div class="nav-search"><input type="text" id="nav-address" placeholder="Enter your address" onkeydown="if(event.key==='Enter')navLookup()" /><button onclick="navLookup()">Grade my reps</button></div>
+  </nav>
+
+  <div class="container">
+    <a href="javascript:history.back()" class="back-link">&larr; Back</a>
+    <div id="profile-content"><div class="loading">Loading profile...</div></div>
+  </div>
+
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+  <script>
+    const SUPABASE_URL = 'https://xeknqkxhfxvveeyddokl.supabase.co';
+    const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inhla25xa3hoZnh2dmVleWRkb2tsIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzUyMjc1MzksImV4cCI6MjA5MDgwMzUzOX0.-CO0RkDBljPTRBO5x5JIAIZ23WfhR0A8bLJV3iE_xS0';
+    const CHAMBER_LABELS = { us_senate: 'US Senate', us_house: 'US House', senate: 'State Senate', assembly: 'State Assembly', city_council: 'City Council', nyc_mayor: 'NYC Mayor' };
+    const STANCE_COLORS = { strongly_support: '#15803d', support: '#4ade80', neutral: '#a1a1aa', oppose: '#fb923c', strongly_oppose: '#c2410c' };
+    const STANCE_LABELS = { strongly_support: 'Strongly Pro-Israel', support: 'Pro-Israel', neutral: 'Neutral', oppose: 'Anti-Israel', strongly_oppose: 'Strongly Anti-Israel' };
+
+    function partyColor(p) { if (!p) return '#9ca3af'; p = p.toLowerCase(); return p.includes('democrat') ? '#3b82f6' : p.includes('republican') ? '#ef4444' : '#9ca3af'; }
+    function initials(n) { return n.split(' ').map(w => w[0]).filter(Boolean).slice(0, 2).join('').toUpperCase(); }
+
+    const GEO_FILES = { senate: 'geo/senate.geojson', assembly: 'geo/assembly.geojson', us_house: 'geo/us_house.geojson', city_council: 'geo/city_council.geojson' };
+
+    async function init() {
+      const params = new URLSearchParams(window.location.search);
+      const personId = parseInt(params.get('id'));
+      if (!personId) { document.getElementById('profile-content').innerHTML = '<div class="loading">No legislator specified.</div>'; return; }
+
+      const [legR, posR, critR] = await Promise.all([
+        fetch(`${SUPABASE_URL}/rest/v1/current_legislators?select=person_id,name,party,chamber,district,phone_albany,phone_district,email,website,start_date,end_date&person_id=eq.${personId}`, { headers: { apikey: SUPABASE_ANON_KEY } }),
+        fetch(`${SUPABASE_URL}/rest/v1/positions?select=person_id,stance,confidence,rationale&assessment_type=eq.ai&topic_id=eq.1&person_id=eq.${personId}`, { headers: { apikey: SUPABASE_ANON_KEY } }),
+        fetch(`${SUPABASE_URL}/rest/v1/person_criteria?select=person_id,criterion_id,evidence,source_url,source_date,criteria(label,direction,category,weight)&person_id=eq.${personId}&order=source_date.desc.nullslast,id.desc`, { headers: { apikey: SUPABASE_ANON_KEY } }),
+      ]);
+
+      const legs = await legR.json();
+      const positions = await posR.json();
+      const criteria = await critR.json();
+
+      if (!legs.length) { document.getElementById('profile-content').innerHTML = '<div class="loading">Legislator not found.</div>'; return; }
+
+      const leg = legs[0];
+      const pos = positions[0];
+      const hasStance = pos && pos.confidence !== 'unknown';
+      const sColor = hasStance ? (STANCE_COLORS[pos.stance] || '#9ca3af') : '#d1d5db';
+      const sLabel = hasStance ? (STANCE_LABELS[pos.stance] || 'Unknown') : 'Unknown';
+
+      // Compute score
+      let score = 0;
+      for (const c of criteria) { const w = c.criteria?.weight || 1; score += c.criteria?.direction === 'pro' ? w : -w; }
+      const scoreColor = score > 0 ? '#15803d' : score < 0 ? '#c2410c' : '#64748b';
+
+      const chamberLabel = leg.chamber === 'nyc_mayor' ? 'NYC Mayor' : `${CHAMBER_LABELS[leg.chamber]} District ${leg.district}`;
+
+      // Update page title
+      document.title = `${leg.name} - ShalomNY`;
+
+      // Contact info
+      let contactRows = '';
+      if (leg.phone_district) contactRows += `<div class="contact-row"><strong>District Office:</strong> ${leg.phone_district}</div>`;
+      if (leg.phone_albany) contactRows += `<div class="contact-row"><strong>Albany Office:</strong> ${leg.phone_albany}</div>`;
+      if (leg.email) contactRows += `<div class="contact-row"><strong>Email:</strong> <a href="mailto:${leg.email}">${leg.email}</a></div>`;
+      if (leg.website) contactRows += `<div class="contact-row"><strong>Website:</strong> <a href="${leg.website}" target="_blank">${leg.website.replace(/^https?:\/\//, '')}</a></div>`;
+      if (leg.start_date) contactRows += `<div class="contact-row"><strong>Term:</strong> ${leg.start_date} — ${leg.end_date || 'present'}</div>`;
+
+      // Pro/anti evidence counts
+      const proCount = criteria.filter(c => c.criteria?.direction === 'pro').length;
+      const antiCount = criteria.filter(c => c.criteria?.direction === 'anti').length;
+
+      // Evidence items
+      let evidenceHTML = '';
+      for (const c of criteria) {
+        const dir = c.criteria?.direction || 'unknown';
+        const isAnti = dir === 'anti';
+        const catLabel = (c.criteria?.category || 'action').replace('_', ' ').toUpperCase();
+        const dateStr = c.source_date || '';
+        const url = c.source_url || (c.evidence ? (c.evidence.match(/https?:\/\/[^\s),'"]+/) || [])[0] : null);
+        const sourceLink = url ? `<a href="${url}" target="_blank" class="ev-source">View source &rarr;</a>` : '';
+        const cleanEvidence = (c.evidence || '').replace(/https?:\/\/[^\s),'"]+/g, '').replace(/Sources?:\s*,?\s*$/i, '').trim();
+        evidenceHTML += `
+          <div class="ev-item ${isAnti ? 'anti' : 'pro'}">
+            <div class="ev-header"><span class="ev-cat">${catLabel}</span><span class="ev-date">${dateStr}</span></div>
+            <div class="ev-label">${c.criteria?.label || ''}</div>
+            ${cleanEvidence ? `<div class="ev-text">${cleanEvidence}</div>` : ''}
+            ${sourceLink}
+          </div>`;
+      }
+
+      let html = `
+        <div class="profile-header">
+          <div class="profile-top">
+            <div class="profile-avatar" style="background:${partyColor(leg.party)}">${initials(leg.name)}</div>
+            <div>
+              <div class="profile-name">${leg.name}</div>
+              <div class="profile-subtitle">${chamberLabel}<span class="profile-party" style="background:${partyColor(leg.party)}">${leg.party || 'Unknown'}</span></div>
+            </div>
+          </div>
+          <div style="display:flex;align-items:center;gap:16px;flex-wrap:wrap;">
+            <span class="stance-badge" style="background:${sColor}">${sLabel}</span>
+            <div>
+              <div class="score-big" style="color:${scoreColor}">${score > 0 ? '+' : ''}${score}</div>
+              <div class="score-label">Israel Score &bull; ${proCount} pro-Israel &bull; ${antiCount} anti-Israel evidence items</div>
+            </div>
+          </div>
+          ${pos?.rationale ? `<div style="margin-top:16px;padding:14px;background:#f8fafc;border-radius:10px;border-left:4px solid ${sColor};font-size:14px;color:#475569;line-height:1.6;"><strong>AI Assessment:</strong> ${pos.rationale}</div>` : ''}
+        </div>
+
+        <div class="profile-grid">
+          <div class="profile-card">
+            <h3>Contact Information</h3>
+            ${contactRows || '<div style="color:#94a3b8;font-size:14px;">No contact information available.</div>'}
+          </div>
+          <div class="profile-card">
+            <h3>District Map</h3>
+            <div id="district-map" class="profile-map"></div>
+          </div>
+        </div>
+
+        <div class="evidence-section">
+          <h3>Evidence Timeline (${criteria.length} items)</h3>
+          ${evidenceHTML || '<div style="color:#94a3b8;font-size:14px;">No evidence recorded yet.</div>'}
+        </div>`;
+
+      document.getElementById('profile-content').innerHTML = html;
+
+      // Render district map
+      if (leg.chamber !== 'nyc_mayor' && leg.chamber !== 'us_senate' && GEO_FILES[leg.chamber]) {
+        const map = L.map('district-map', { zoomControl: true, scrollWheelZoom: false });
+        L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png', { maxZoom: 18 }).addTo(map);
+
+        const geoResp = await fetch(GEO_FILES[leg.chamber]);
+        const geoData = await geoResp.json();
+
+        for (const feature of geoData.features) {
+          const dist = parseInt(feature.properties.DISTRICT || feature.properties.BASENAME || feature.properties.coundist || feature.properties.CounDist);
+          const isThis = dist === leg.district;
+          const layer = L.geoJSON(feature, {
+            style: { fillColor: isThis ? '#2563eb' : '#e2e8f0', weight: isThis ? 2.5 : 1, color: isThis ? '#1d4ed8' : '#cbd5e1', fillOpacity: isThis ? 0.35 : 0.1 }
+          }).addTo(map);
+          if (isThis) {
+            map.fitBounds(layer.getBounds(), { padding: [20, 20] });
+          }
+        }
+      }
+    }
+
+    init();
+  </script>
+  <script src="nav-lookup.js"></script>
+</body>
+</html>

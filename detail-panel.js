@@ -99,6 +99,7 @@ async function openDetailPanel(personId) {
       <button class="dp-close" onclick="closeDetailPanel()">&times;</button>
       <h2>${leg.name}</h2>
       <div class="dp-subtitle">${chamberLabel} <span class="dp-party-pill" style="background:${_dpPartyColor(leg.party)}">${leg.party || 'Unknown'}</span></div>
+      <a href="legislator.html?id=${personId}" style="display:inline-block;margin-top:8px;font-size:13px;font-weight:600;color:#2563eb;text-decoration:none;">View full profile &rarr;</a>
     </div>
     <div class="dp-body">
       ${contactHTML ? `

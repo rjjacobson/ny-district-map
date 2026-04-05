@@ -273,8 +273,10 @@
       document.getElementById('full-rankings').style.display = 'block';
       document.getElementById('district-stats').style.display = 'none';
       document.getElementById('actions-stats').style.display = 'none';
+      document.getElementById('district-rankings-section').style.display = 'none';
       let f = getFiltered().filter(l => l.stance !== 'unknown').sort((a,b) => b.score - a.score);
       renderRankingsTable(f);
+      window.scrollTo(0, 0);
     }
 
     function renderRankingsTable(data) {
@@ -301,7 +303,7 @@
       const th = document.getElementById('th-'+key); if (th) { th.classList.add('sorted'); if (!currentSort.desc) th.classList.add('asc'); }
     }
 
-    function showOverview() { document.getElementById('overview-mode').style.display='block'; document.getElementById('full-rankings').style.display='none'; document.getElementById('district-stats').style.display=''; document.getElementById('actions-stats').style.display=''; if(document.getElementById('full-neighborhoods')) document.getElementById('full-neighborhoods').style.display='none'; }
+    function showOverview() { document.getElementById('overview-mode').style.display='block'; document.getElementById('full-rankings').style.display='none'; document.getElementById('district-stats').style.display=''; document.getElementById('actions-stats').style.display=''; document.getElementById('district-rankings-section').style.display=''; if(document.getElementById('full-neighborhoods')) document.getElementById('full-neighborhoods').style.display='none'; window.scrollTo(0, 0); }
     function applyFilters() { if (document.getElementById('full-rankings').style.display==='block') showFullRankings(currentRankingsTitle); else renderOverview(); }
 
     const DISTRICT_NEIGHBORHOODS = {
@@ -535,8 +537,10 @@
       document.getElementById('overview-mode').style.display = 'none';
       document.getElementById('district-stats').style.display = 'none';
       document.getElementById('actions-stats').style.display = 'none';
+      document.getElementById('district-rankings-section').style.display = 'none';
       document.getElementById('full-neighborhoods').style.display = 'block';
       renderHoodTable();
+      window.scrollTo(0, 0);
     }
 
     function renderHoodTable() {
