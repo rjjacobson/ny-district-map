@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Your Representatives - Shalom NY</title>
+  <title>Your Representatives - ShalomNY</title>
   <style>
     * { margin: 0; padding: 0; box-sizing: border-box; }
     body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: #f8fafc; min-height: 100vh; }
@@ -38,14 +38,16 @@
 
     .rep-card {
       background: white;
-      border-radius: 14px;
-      padding: 20px;
-      margin-bottom: 12px;
-      box-shadow: 0 1px 3px rgba(0,0,0,0.06);
+      border-radius: 0;
+      padding: 16px 20px;
+      margin-bottom: 0;
+      box-shadow: none;
       cursor: pointer;
-      transition: box-shadow 0.15s;
+      transition: background 0.15s;
+      border-bottom: 1px solid #f1f5f9;
     }
-    .rep-card:hover { box-shadow: 0 3px 12px rgba(0,0,0,0.1); }
+    .rep-card:last-child { border-bottom: none; }
+    .rep-card:hover { background: #f8fafc; }
 
     .rep-header { display: flex; align-items: center; gap: 14px; margin-bottom: 12px; }
     .rep-avatar { width: 48px; height: 48px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 16px; font-weight: 700; color: white; flex-shrink: 0; }
@@ -69,20 +71,23 @@
     .no-data { text-align: center; padding: 60px 20px; color: #94a3b8; }
     .no-data a { color: #2563eb; }
 
-    @media (max-width: 768px) {
+    @media (max-width: 768px) { .nav-search { display: none !important; }
       .grade-breakdown { gap: 16px; }
       .top-nav .nav-link { font-size: 13px; padding: 10px 8px; }
     }
+    .nav-search { display: flex; gap: 4px; } .nav-search input { padding: 6px 12px; border: none; border-radius: 6px; font-size: 13px; width: 240px; outline: none; } .nav-search button { padding: 6px 14px; background: #2563eb; color: white; border: none; border-radius: 6px; font-size: 13px; font-weight: 600; cursor: pointer; }
+    @media (max-width: 480px) { .top-nav .nav-link { font-size: 11px; padding: 6px 6px; } .top-nav .site-title { font-size: 13px; margin-right: 8px; } }
   </style>
 </head>
 <body>
   <nav class="top-nav">
-    <a href="index.html" class="site-title">Shalom NY</a>
+    <a href="index.html" class="site-title">ShalomNY</a>
     <a href="stats.html" class="nav-link">Feed</a>
     <a href="map.html" class="nav-link">Map</a>
     <a href="rankings.html" class="nav-link">Rankings</a>
     <a href="insights.html" class="nav-link">Insights</a>
-  </nav>
+    <div style="flex:1;"></div>
+    <div class="nav-search"><input type="text" id="nav-address" placeholder="Enter your address" onkeydown="if(event.key==='Enter')navLookup()" /><button onclick="navLookup()">Grade my reps</button></div>  </nav>
 
   <div class="container">
     <a href="index.html" class="back-link">&larr; Back to search</a>
@@ -125,9 +130,10 @@
         return { ...r, score, stance, criteria: crit, rationale: posMap[r.person_id]?.rationale };
       });
 
-      // Split into federal/state vs local
-      const federalState = repData.filter(r => ['us_senate', 'us_house', 'senate', 'assembly'].includes(r.chamber));
-      const local = repData.filter(r => ['city_council', 'nyc_mayor'].includes(r.chamber));
+      // Split into 3 groups
+      const federal = repData.filter(r => ['us_senate', 'us_house'].includes(r.chamber));
+      const nyState = repData.filter(r => ['senate', 'assembly'].includes(r.chamber));
+      const nyc = repData.filter(r => ['city_council', 'nyc_mayor'].includes(r.chamber));
 
       function computeGrade(group) {
         if (group.length === 0) return { grade: 'N/A', color: '#d1d5db', score: 0, pro: 0, anti: 0 };
@@ -149,32 +155,48 @@
         return { grade, color, score: totalScore, pro, anti };
       }
 
-      const fsGrade = computeGrade(federalState);
-      const localGrade = computeGrade(local);
+      const fedGrade = computeGrade(federal);
+      const stateGrade = computeGrade(nyState);
+      const nycGrade = computeGrade(nyc);
+      const allPro = fedGrade.pro + stateGrade.pro + nycGrade.pro;
+      const allAnti = fedGrade.anti + stateGrade.anti + nycGrade.anti;
+      const allScore = fedGrade.score + stateGrade.score + nycGrade.score;
+
+      function gradeExplain(grade, group) {
+        if (group.length === 0) return '';
+        const antiNames = group.filter(r => r.stance.includes('oppose')).map(r => r.name);
+        if (antiNames.length > 0 && grade.grade === 'F' || grade.grade === 'D') {
+          return `<div style="font-size:12px;color:#94a3b8;margin-top:4px;">Dragged down by ${antiNames.join(', ')}</div>`;
+        }
+        if (grade.pro === group.length) return `<div style="font-size:12px;color:#94a3b8;margin-top:4px;">All ${group.length} reps are pro-Israel</div>`;
+        return `<div style="font-size:12px;color:#94a3b8;margin-top:4px;">${grade.pro} pro, ${grade.anti} anti of ${group.length} reps</div>`;
+      }
 
       let html = `
         <div class="area-grade">
           <h1>Your Representatives</h1>
           <div class="subtitle">${address}</div>
-          <div style="display:flex;justify-content:center;gap:40px;margin:20px 0 8px;">
-            <div style="text-align:center;">
-              <div class="grade-circle" style="background:${fsGrade.color};width:80px;height:80px;font-size:28px;line-height:80px;">${fsGrade.grade}</div>
-              <div class="grade-label" style="margin-top:8px;">Federal &amp; State</div>
-            </div>
-            <div style="text-align:center;">
-              <div class="grade-circle" style="background:${localGrade.color};width:80px;height:80px;font-size:28px;line-height:80px;">${localGrade.grade}</div>
-              <div class="grade-label" style="margin-top:8px;">Local</div>
-            </div>
-          </div>
-          <div class="grade-breakdown">
-            <div class="grade-stat"><div class="num">${repData.length}</div><div class="label">Representatives</div></div>
-            <div class="grade-stat"><div class="num">${fsGrade.pro + localGrade.pro}</div><div class="label">Pro-Israel</div></div>
-            <div class="grade-stat"><div class="num">${fsGrade.anti + localGrade.anti}</div><div class="label">Anti-Israel</div></div>
-            <div class="grade-stat"><div class="num">${fsGrade.score + localGrade.score > 0 ? '+' : ''}${fsGrade.score + localGrade.score}</div><div class="label">Total Score</div></div>
-          </div>
         </div>`;
 
-      for (const r of repData) {
+      const sections = [
+        { title: 'Federal', reps: federal, grade: fedGrade },
+        { title: 'New York State', reps: nyState, grade: stateGrade },
+        { title: 'New York City', reps: nyc, grade: nycGrade },
+      ];
+
+      for (const section of sections) {
+        if (section.reps.length === 0) continue;
+        const g = section.grade;
+        html += `<div style="margin:20px 0;background:white;border-radius:14px;box-shadow:0 1px 3px rgba(0,0,0,0.06);overflow:hidden;">
+          <div style="display:flex;align-items:center;gap:12px;padding:16px 20px;border-bottom:1px solid #f1f5f9;">
+            <div class="grade-circle" style="background:${g.color};width:48px;height:48px;font-size:20px;line-height:48px;">${g.grade}</div>
+            <div style="flex:1;">
+              <div style="font-size:16px;font-weight:700;color:#0f172a;">${section.title}</div>
+              ${gradeExplain(g, section.reps)}
+            </div>
+            <div style="text-align:right;font-size:13px;color:#64748b;">${section.reps.length} rep${section.reps.length !== 1 ? 's' : ''}</div>
+          </div>`;
+        for (const r of section.reps) {
         const sc = STANCE_COLORS[r.stance] || '#d1d5db';
         const sl = STANCE_LABELS[r.stance] || 'Unknown';
         const maxScore = 20;
@@ -206,11 +228,14 @@
             </div>
             ${evSummary}
           </div>`;
+        }
+        html += `</div>`;
       }
 
       document.getElementById('content').innerHTML = html;
     }
     init();
   </script>
+<script src="nav-lookup.js"></script>
 </body>
 </html>

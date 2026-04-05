@@ -37,7 +37,8 @@
     .leader-row:hover { background: #f8fafc; }
     .leader-rank { width: 24px; font-size: 14px; font-weight: 600; color: #94a3b8; }
     .leader-dot { width: 10px; height: 10px; border-radius: 50%; margin-right: 10px; flex-shrink: 0; }
-    .leader-name { font-size: 14px; font-weight: 600; color: #2563eb; flex: 1; }
+    .party-pill { display: inline-flex; align-items: center; justify-content: center; min-width: 24px; height: 24px; border-radius: 12px; font-size: 12px; font-weight: 700; color: white; margin-right: 10px; flex-shrink: 0; padding: 0 4px; }
+    .leader-name { font-size: 14px; font-weight: 600; color: #0f172a; flex: 1; }
     .leader-chamber { font-size: 12px; color: #94a3b8; margin-left: 6px; font-weight: 400; }
     .leader-score { font-size: 14px; font-weight: 700; color: #0f172a; min-width: 40px; text-align: right; }
     .complete-link { display: block; text-align: center; padding: 12px; font-size: 13px; font-weight: 600; color: #2563eb; cursor: pointer; border-top: 1px solid #f1f5f9; }
@@ -54,7 +55,7 @@
     .rankings-table th.sorted.asc::after { content: ' \u25B4'; }
     .rankings-table td { padding: 10px 16px; font-size: 14px; color: #334155; border-bottom: 1px solid #f1f5f9; }
     .rankings-table tr:hover { background: #f8fafc; }
-    .rankings-table .name-cell { font-weight: 600; color: #2563eb; cursor: pointer; }
+    .rankings-table .name-cell { font-weight: 600; color: #0f172a; cursor: pointer; }
     .rankings-table .score-cell { font-weight: 700; }
     .stance-badge { display: inline-block; padding: 2px 10px; border-radius: 12px; font-size: 12px; font-weight: 600; color: white; }
     .party-dot-inline { width: 8px; height: 8px; border-radius: 50%; display: inline-block; margin-right: 6px; vertical-align: middle; }
@@ -70,23 +71,28 @@
     .d-evidence-item.anti { border-left-color: #c2410c; }
 
     /* Mobile */
-    @media (max-width: 768px) {
+    @media (max-width: 768px) { .nav-search { display: none !important; }
       .leaders-grid { grid-template-columns: 1fr; }
       .stats-header { flex-direction: column; align-items: flex-start; }
       .detail-overlay { width: 100%; }
       .rankings-table { font-size: 13px; }
       .rankings-table th, .rankings-table td { padding: 8px 10px; }
     }
+    .nav-search { display: flex; gap: 4px; } .nav-search input { padding: 6px 12px; border: none; border-radius: 6px; font-size: 13px; width: 240px; outline: none; } .nav-search button { padding: 6px 14px; background: #2563eb; color: white; border: none; border-radius: 6px; font-size: 13px; font-weight: 600; cursor: pointer; }
+    @media (max-width: 480px) { .top-nav .nav-link { font-size: 11px; padding: 6px 6px; } .top-nav .site-title { font-size: 13px; margin-right: 8px; } }
   </style>
+  <link rel="stylesheet" href="detail-panel.css">
 </head>
 <body>
   <nav class="top-nav">
-    <a href="index.html" class="site-title">Shalom NY</a>
+    <a href="index.html" class="site-title">ShalomNY</a>
     <a href="stats.html" class="nav-link">Feed</a>
     <a href="map.html" class="nav-link">Map</a>
     <a href="rankings.html" class="nav-link active">Rankings</a>
     <a href="insights.html" class="nav-link">Insights</a>
-  </nav>
+    <a href="about.html" class="nav-link">About</a>
+    <div style="flex:1;"></div>
+    <div class="nav-search"><input type="text" id="nav-address" placeholder="Enter your address" onkeydown="if(event.key==='Enter')navLookup()" /><button onclick="navLookup()">Grade my reps</button></div>  </nav>
 
   <div class="stats-container">
     <div class="stats-header">
@@ -129,11 +135,21 @@
         </table>
       </div>
     </div>
+
+    <div style="background:linear-gradient(135deg,#1e3a5f 0%,#1e293b 100%);border-radius:14px;padding:32px;color:white;text-align:center;margin-top:24px;">
+      <h3 style="font-size:20px;font-weight:700;margin-bottom:8px;">Stay Updated</h3>
+      <p style="font-size:14px;color:#94a3b8;margin-bottom:20px;">Get weekly updates on what your representatives are saying about Israel</p>
+      <div id="signup-form" style="display:flex;gap:8px;max-width:500px;margin:0 auto;">
+        <input type="email" id="signup-email" placeholder="Enter your email" style="flex:1;padding:12px 16px;border:none;border-radius:10px;font-size:14px;outline:none;" />
+        <button onclick="document.getElementById('signup-form').style.display='none';document.getElementById('signup-ok').style.display='block';localStorage.setItem('shalomny_subscription',JSON.stringify({email:document.getElementById('signup-email').value}))" style="padding:12px 24px;background:#2563eb;color:white;border:none;border-radius:10px;font-size:14px;font-weight:600;cursor:pointer;white-space:nowrap;">Subscribe</button>
+      </div>
+      <div id="signup-ok" style="display:none;font-size:15px;color:#4ade80;font-weight:600;">Thanks for subscribing!</div>
+    </div>
   </div>
 
-  <div class="detail-overlay" id="detail-overlay">
-    <button class="close-btn" onclick="closeDetail()">&times;</button>
-    <div class="detail-content" id="detail-content"></div>
+  <div id="detail-overlay" class="detail-overlay">
+    <button class="close-btn" onclick="closeDetailPanel()">&times;</button>
+    <div id="detail-panel-content"></div>
   </div>
 
   <script>
@@ -187,7 +203,8 @@
         let rows = '';
         for (let i = 0; i < top10.length; i++) {
           const l = top10[i];
-          rows += `<div class="leader-row" onclick="showPersonDetail(${l.person_id})"><span class="leader-rank">${i+1}</span><span class="leader-dot" style="background:${partyColor(l.party)}"></span><span class="leader-name">${l.name}<span class="leader-chamber">${CHAMBER_SHORT[l.chamber]} D${l.district}</span></span><span class="leader-score">${l.score > 0 ? '+' : ''}${l.score}</span></div>`;
+          const partyShort = (l.party || '').includes('Democrat') ? 'D' : (l.party || '').includes('Republican') ? 'R' : '?';
+          rows += `<div class="leader-row" onclick="openDetailPanel(${l.person_id})"><span class="leader-rank">${i+1}</span><span class="party-pill" style="background:${partyColor(l.party)}">${partyShort}</span><span class="leader-name">${l.name}<span class="leader-chamber">${CHAMBER_SHORT[l.chamber]} D${l.district}</span></span><span class="leader-score">${l.score > 0 ? '+' : ''}${l.score}</span></div>`;
         }
         card.innerHTML = `<div class="leader-card-header"><h3>${cat.title}</h3><span class="col-label">SCORE</span></div>${rows}${matching.length > 10 ? `<div class="complete-link" onclick="showFullRankings('${cat.title}')">Complete Rankings (${matching.length})</div>` : ''}`;
         grid.appendChild(card);
@@ -209,7 +226,7 @@
       for (let i = 0; i < data.length; i++) {
         const l = data[i], sc = STANCE_COLORS[l.stance] || '#d1d5db', sl = STANCE_LABELS[l.stance] || 'Unknown';
         const tr = document.createElement('tr');
-        tr.innerHTML = `<td>${i+1}</td><td class="name-cell" onclick="showPersonDetail(${l.person_id})"><span class="party-dot-inline" style="background:${partyColor(l.party)}"></span>${l.name}</td><td>${CHAMBER_SHORT[l.chamber]} D${l.district}</td><td>${l.party||'Unknown'}</td><td class="score-cell">${l.score>0?'+':''}${l.score}</td><td>${l.evidenceCount}</td><td><span class="stance-badge" style="background:${sc}">${sl}</span></td>`;
+        tr.innerHTML = `<td>${i+1}</td><td class="name-cell" onclick="openDetailPanel(${l.person_id})"><span class="party-dot-inline" style="background:${partyColor(l.party)}"></span>${l.name}</td><td>${CHAMBER_SHORT[l.chamber]} D${l.district}</td><td>${l.party||'Unknown'}</td><td class="score-cell">${l.score>0?'+':''}${l.score}</td><td>${l.evidenceCount}</td><td><span class="stance-badge" style="background:${sc}">${sl}</span></td>`;
         tbody.appendChild(tr);
       }
     }
@@ -233,23 +250,15 @@
     function showOverview() { document.getElementById('overview-mode').style.display='block'; document.getElementById('full-rankings').style.display='none'; }
     function applyFilters() { if (document.getElementById('full-rankings').style.display==='block') showFullRankings(currentRankingsTitle); else renderOverview(); }
 
-    function showPersonDetail(pid) {
-      const leg = allLegislators.find(l => l.person_id === pid); if (!leg) return;
-      const pos = allPositions[pid], crit = allCriteria.filter(c => c.person_id === pid);
-      const sc = pos ? (STANCE_COLORS[pos.stance]||'#d1d5db') : '#d1d5db', sl = pos ? (STANCE_LABELS[pos.stance]||'Unknown') : 'Unknown';
-      let evHTML = '';
-      for (const c of crit) {
-        const dir = c.criteria?.direction||'', cat = (c.criteria?.category||'').replace('_',' ').toUpperCase();
-        const src = c.source_url ? `<a href="${c.source_url}" target="_blank" style="display:inline-block;margin-top:6px;font-size:12px;color:#2563eb;">View source &rarr;</a>` : '';
-        evHTML += `<div class="d-evidence-item ${dir}"><div style="font-size:11px;font-weight:600;text-transform:uppercase;color:#64748b;margin-bottom:4px;">${cat}<span style="color:#94a3b8;margin-left:8px;">${c.source_date||''}</span></div><strong>${c.criteria?.label||''}</strong><br>${c.evidence||''}${src}</div>`;
+    fetchData().then(() => {
+      const hash = window.location.hash;
+      if (hash && hash.startsWith('#person-')) {
+        const pid = parseInt(hash.replace('#person-', ''));
+        if (pid) openDetailPanel(pid);
       }
-      document.getElementById('detail-content').innerHTML = `<h2>${leg.name}</h2><div class="meta"><span class="party-dot-inline" style="background:${partyColor(leg.party)}"></span>${leg.party||''} &middot; ${CHAMBER_SHORT[leg.chamber]} D${leg.district}</div><div style="margin-bottom:16px;"><span class="stance-badge" style="background:${sc}">${sl}</span><span style="margin-left:12px;font-size:14px;font-weight:600;">Score: ${leg.score>0?'+':''}${leg.score}</span><span style="margin-left:12px;font-size:13px;color:#64748b;">${crit.length} items</span></div>${pos?.rationale?`<div style="font-size:13px;color:#555;line-height:1.5;padding:12px;background:#f8fafc;border-radius:8px;margin-bottom:16px;">${pos.rationale}</div>`:''}${evHTML||'<p style="color:#94a3b8;">No evidence.</p>'}`;
-      document.getElementById('detail-overlay').classList.add('open');
-    }
-
-    function closeDetail() { document.getElementById('detail-overlay').classList.remove('open'); }
-    document.addEventListener('keydown', e => { if (e.key === 'Escape') closeDetail(); });
-    fetchData();
+    });
   </script>
+<script src="nav-lookup.js"></script>
+<script src="detail-panel.js"></script>
 </body>
 </html>

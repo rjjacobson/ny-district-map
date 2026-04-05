@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>About - ShalomNY</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: #f8fafc; min-height: 100vh; }
+    .top-nav { display: flex; align-items: center; background: #1e293b; padding: 0 20px; height: 44px; position: sticky; top: 0; z-index: 1000; }
+    .top-nav .site-title { font-size: 15px; font-weight: 700; color: white; margin-right: 24px; white-space: nowrap; text-decoration: none; }
+    .top-nav .nav-link { color: #94a3b8; text-decoration: none; font-size: 14px; font-weight: 500; padding: 10px 16px; border-bottom: 3px solid transparent; }
+    .top-nav .nav-link:hover { color: #e2e8f0; }
+    .top-nav .nav-link.active { color: white; border-bottom-color: #3b82f6; }
+    .nav-search { display: flex; gap: 4px; } .nav-search input { padding: 6px 12px; border: none; border-radius: 6px; font-size: 13px; width: 240px; outline: none; } .nav-search button { padding: 6px 14px; background: #2563eb; color: white; border: none; border-radius: 6px; font-size: 13px; font-weight: 600; cursor: pointer; }
+
+    .container { max-width: 720px; margin: 0 auto; padding: 40px 20px; }
+    h1 { font-size: 32px; font-weight: 800; color: #0f172a; margin-bottom: 8px; }
+    .tagline { font-size: 18px; color: #64748b; margin-bottom: 32px; line-height: 1.5; }
+
+    .section { margin-bottom: 32px; }
+    .section h2 { font-size: 20px; font-weight: 700; color: #0f172a; margin-bottom: 12px; }
+    .section p { font-size: 15px; color: #475569; line-height: 1.7; margin-bottom: 12px; }
+
+    .values-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-top: 16px; }
+    .value-card {
+      background: white; border-radius: 12px; padding: 20px;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.06);
+    }
+    .value-card h3 { font-size: 15px; font-weight: 700; color: #0f172a; margin-bottom: 6px; }
+    .value-card p { font-size: 14px; color: #64748b; line-height: 1.5; margin: 0; }
+
+    .stat-row {
+      display: flex; gap: 16px; margin: 20px 0;
+    }
+    .stat-box {
+      flex: 1; background: white; border-radius: 12px; padding: 20px; text-align: center;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.06);
+    }
+    .stat-box .big { font-size: 28px; font-weight: 800; color: #0f172a; }
+    .stat-box .label { font-size: 13px; color: #64748b; margin-top: 4px; }
+
+    .cta {
+      background: #1e293b; border-radius: 14px; padding: 32px; text-align: center;
+      color: white; margin-top: 32px;
+    }
+    .cta h2 { font-size: 22px; font-weight: 700; margin-bottom: 8px; }
+    .cta p { font-size: 15px; color: #94a3b8; margin-bottom: 16px; }
+    .cta a {
+      display: inline-block; padding: 12px 28px; background: #2563eb; color: white;
+      border-radius: 10px; font-size: 15px; font-weight: 600; text-decoration: none;
+    }
+    .cta a:hover { background: #1d4ed8; }
+
+    @media (max-width: 768px) { .nav-search { display: none !important; }
+      .values-grid { grid-template-columns: 1fr; }
+      .stat-row { flex-direction: column; }
+      .top-nav .nav-link { font-size: 13px; padding: 10px 8px; }
+      .container { padding-bottom: 20px; }
+      body { min-height: auto; }
+      .about-signup { flex-direction: column !important; }
+      .about-signup button { width: 100% !important; }
+    }
+    @media (max-width: 480px) { .top-nav .nav-link { font-size: 11px; padding: 6px 6px; } .top-nav .site-title { font-size: 13px; margin-right: 8px; } }
+  </style>
+</head>
+<body>
+  <nav class="top-nav">
+    <a href="index.html" class="site-title">ShalomNY</a>
+    <a href="stats.html" class="nav-link">Feed</a>
+    <a href="map.html" class="nav-link">Map</a>
+    <a href="rankings.html" class="nav-link">Rankings</a>
+    <a href="insights.html" class="nav-link">Insights</a>
+    <a href="about.html" class="nav-link active">About</a>
+    <div style="flex:1;"></div>
+    <div class="nav-search"><input type="text" id="nav-address" placeholder="Enter your address" onkeydown="if(event.key==='Enter')navLookup()" /><button onclick="navLookup()">Grade my reps</button></div>
+  </nav>
+
+  <div class="container">
+    <h1>About ShalomNY</h1>
+    <p class="tagline">Bringing transparency to how New York's elected officials stand on Israel — because the Jewish community deserves to know where their representatives stand.</p>
+
+    <div class="stat-row">
+      <div class="stat-box"><div class="big">~1.7M</div><div class="label">Jews in New York</div></div>
+      <div class="stat-box"><div class="big">292</div><div class="label">Legislators Tracked</div></div>
+      <div class="stat-box"><div class="big">5</div><div class="label">Legislative Bodies</div></div>
+    </div>
+
+    <div class="section">
+      <h2>Why ShalomNY Exists</h2>
+      <p>New York is home to the largest Jewish population outside of Israel. From the halls of Congress to the New York City Council, hundreds of elected officials make decisions that directly impact the Jewish community — on Israel policy, antisemitism protections, BDS legislation, and more.</p>
+      <p>Yet there has been no single place to see, at a glance, where all of these officials stand. ShalomNY changes that.</p>
+      <p>We track public statements, legislative actions, rally attendance, voting records, and social media posts across five legislative bodies — the US Senate, US House, NY State Senate, NY Assembly, and NYC City Council — to build a comprehensive, evidence-based picture of each representative's position on Israel.</p>
+    </div>
+
+    <div class="section">
+      <h2>What We Track</h2>
+      <p>Every piece of evidence in our database is sourced from public records: official statements, press releases, legislative votes, news coverage, and verified social media posts. We track 16 specific criteria including:</p>
+      <div class="values-grid">
+        <div class="value-card">
+          <h3>Legislation</h3>
+          <p>Anti-BDS bills, antisemitism protection acts, settlement-related legislation, and aid policy</p>
+        </div>
+        <div class="value-card">
+          <h3>Rhetoric</h3>
+          <p>Use of terms like "genocide" or "apartheid," condemnation of Hamas and Oct 7, ceasefire positions</p>
+        </div>
+        <div class="value-card">
+          <h3>Actions</h3>
+          <p>Rally attendance, protest participation, solidarity missions to Israel, letter co-signatures</p>
+        </div>
+        <div class="value-card">
+          <h3>Policy</h3>
+          <p>Positions on Iron Dome funding, conditioning US aid, and diplomatic stances</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="section">
+      <h2>Our Principles</h2>
+      <p><strong>Evidence-based.</strong> Every score is derived from documented, sourced public actions — not opinion or hearsay. Each evidence item links to its original source so you can verify it yourself.</p>
+      <p><strong>Comprehensive.</strong> We don't cherry-pick. If a legislator condemned Hamas but also called for a ceasefire, both are recorded. The full picture matters more than any single data point.</p>
+      <p><strong>Non-partisan.</strong> We track Democrats, Republicans, and independents equally. Support for Israel is not a partisan issue — our data shows pro-Israel and anti-Israel voices exist across the political spectrum.</p>
+      <p><strong>Transparent.</strong> Our scoring methodology is open. Each criterion has a weight, a direction (pro or anti), and every evidence item is individually viewable with its source link.</p>
+    </div>
+
+    <div class="section">
+      <h2>How Scores Work</h2>
+      <p>Each legislator's score is computed from their evidence items. Pro-Israel actions add positive points and anti-Israel actions subtract points, with weights based on significance (e.g., sponsoring legislation weighs more than attending an event). The score reflects the overall direction and intensity of their public record.</p>
+      <p>Legislators with no public position on Israel receive no score — absence of evidence is not evidence of opposition.</p>
+    </div>
+
+    <div style="background:linear-gradient(135deg,#1e3a5f 0%,#1e293b 100%);border-radius:14px;padding:32px;color:white;text-align:center;margin-top:24px;">
+      <h3 style="font-size:20px;font-weight:700;margin-bottom:8px;">Stay Updated</h3>
+      <p style="font-size:14px;color:#94a3b8;margin-bottom:20px;">Get weekly updates on what your representatives are saying about Israel</p>
+      <div id="signup-form" class="about-signup" style="display:flex;gap:8px;max-width:500px;margin:0 auto;">
+        <input type="email" id="signup-email" placeholder="Enter your email" style="flex:1;min-width:0;padding:12px 16px;border:none;border-radius:10px;font-size:14px;outline:none;" />
+        <button onclick="document.getElementById('signup-form').style.display='none';document.getElementById('signup-ok').style.display='block';localStorage.setItem('shalomny_subscription',JSON.stringify({email:document.getElementById('signup-email').value}))" style="padding:12px 24px;background:#2563eb;color:white;border:none;border-radius:10px;font-size:14px;font-weight:600;cursor:pointer;white-space:nowrap;">Subscribe</button>
+      </div>
+      <div id="signup-ok" style="display:none;font-size:15px;color:#4ade80;font-weight:600;">Thanks for subscribing!</div>
+    </div>
+  </div>
+  <script src="nav-lookup.js"></script>
+</body>
+</html>

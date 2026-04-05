@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Insights - Shalom NY</title>
+  <title>Insights - ShalomNY</title>
   <style>
     * { margin: 0; padding: 0; box-sizing: border-box; }
     body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: #f8fafc; min-height: 100vh; }
@@ -46,32 +46,50 @@
     .finding.positive { border-left-color: #15803d; background: #f0fdf4; }
     .finding.info { border-left-color: #2563eb; background: #eff6ff; }
 
-    @media (max-width: 768px) {
+    @media (max-width: 768px) { .nav-search { display: none !important; }
       .stat-grid { grid-template-columns: repeat(2, 1fr); }
       .bar-label { width: 100px; font-size: 12px; }
       .top-nav .nav-link { font-size: 13px; padding: 10px 8px; }
     }
+    .nav-search { display: flex; gap: 4px; } .nav-search input { padding: 6px 12px; border: none; border-radius: 6px; font-size: 13px; width: 240px; outline: none; } .nav-search button { padding: 6px 14px; background: #2563eb; color: white; border: none; border-radius: 6px; font-size: 13px; font-weight: 600; cursor: pointer; }
+    @media (max-width: 480px) { .top-nav .nav-link { font-size: 11px; padding: 6px 6px; } .top-nav .site-title { font-size: 13px; margin-right: 8px; } }
   </style>
+  <link rel="stylesheet" href="detail-panel.css">
 </head>
 <body>
   <nav class="top-nav">
-    <a href="index.html" class="site-title">Shalom NY</a>
+    <a href="index.html" class="site-title">ShalomNY</a>
     <a href="stats.html" class="nav-link">Feed</a>
     <a href="map.html" class="nav-link">Map</a>
     <a href="rankings.html" class="nav-link">Rankings</a>
     <a href="insights.html" class="nav-link active">Insights</a>
-  </nav>
+    <a href="about.html" class="nav-link">About</a>
+    <div style="flex:1;"></div>
+    <div class="nav-search"><input type="text" id="nav-address" placeholder="Enter your address" onkeydown="if(event.key==='Enter')navLookup()" /><button onclick="navLookup()">Grade my reps</button></div>  </nav>
 
   <div class="container">
     <h1>Insights &amp; Analysis</h1>
     <div class="subtitle">Auto-generated analysis of 794 evidence items across 292 NY legislators</div>
     <div id="insights-content"><div style="text-align:center;padding:40px;color:#94a3b8;">Loading analysis...</div></div>
+
+    <div style="background:linear-gradient(135deg,#1e3a5f 0%,#1e293b 100%);border-radius:14px;padding:32px;color:white;text-align:center;margin-top:24px;">
+      <h3 style="font-size:20px;font-weight:700;margin-bottom:8px;">Stay Updated</h3>
+      <p style="font-size:14px;color:#94a3b8;margin-bottom:20px;">Get weekly updates on what your representatives are saying about Israel</p>
+      <div id="signup-form" style="display:flex;gap:8px;max-width:500px;margin:0 auto;">
+        <input type="email" id="signup-email" placeholder="Enter your email" style="flex:1;padding:12px 16px;border:none;border-radius:10px;font-size:14px;outline:none;" />
+        <button onclick="document.getElementById('signup-form').style.display='none';document.getElementById('signup-ok').style.display='block';localStorage.setItem('shalomny_subscription',JSON.stringify({email:document.getElementById('signup-email').value}))" style="padding:12px 24px;background:#2563eb;color:white;border:none;border-radius:10px;font-size:14px;font-weight:600;cursor:pointer;white-space:nowrap;">Subscribe</button>
+      </div>
+      <div id="signup-ok" style="display:none;font-size:15px;color:#4ade80;font-weight:600;">Thanks for subscribing!</div>
+    </div>
   </div>
 
+  <div id="detail-overlay" class="detail-overlay"><div id="detail-panel-content"></div></div>
   <script>
     const SUPABASE_URL = 'https://xeknqkxhfxvveeyddokl.supabase.co';
     const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inhla25xa3hoZnh2dmVleWRkb2tsIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzUyMjc1MzksImV4cCI6MjA5MDgwMzUzOX0.-CO0RkDBljPTRBO5x5JIAIZ23WfhR0A8bLJV3iE_xS0';
     const CHAMBER_LABELS = { us_senate: 'US Senate', us_house: 'US House', senate: 'State Senate', assembly: 'Assembly', city_council: 'City Council', nyc_mayor: 'NYC Mayor' };
+
+    function partyColor(p) { if (!p) return '#9ca3af'; p = p.toLowerCase(); return p.includes('democrat') ? '#3b82f6' : p.includes('republican') ? '#ef4444' : '#9ca3af'; }
 
     async function init() {
       const [legR, posR, critR] = await Promise.all([
@@ -127,13 +145,15 @@
       const antiAssembly = legs.filter(l => l.chamber === 'assembly' && (l.stance === 'strongly_oppose' || l.stance === 'oppose'))
         .sort((a, b) => a.score - b.score);
 
-      // Criteria frequency
+      // Criteria frequency with direction
       const critCounts = {};
+      const critDir = {};
       for (const c of criteria) {
         const label = c.criteria?.label || 'Unknown';
         critCounts[label] = (critCounts[label] || 0) + 1;
+        critDir[label] = c.criteria?.direction || 'unknown';
       }
-      const topCriteria = Object.entries(critCounts).sort((a, b) => b[1] - a[1]).slice(0, 8);
+      const topCriteria = Object.entries(critCounts).sort((a, b) => b[1] - a[1]).slice(0, 12);
 
       // DSA / progressive caucus members
       const stronglyAnti = legs.filter(l => l.stance === 'strongly_oppose').sort((a, b) => a.score - b.score);
@@ -226,31 +246,124 @@
 
       // Neighborhood mapping — district to neighborhoods
       const DISTRICT_NEIGHBORHOODS = {
-        // City Council
-        'city_council-33': 'Crown Heights, Brownsville',
-        'city_council-34': 'Sunset Park, Red Hook, Borough Park',
-        'city_council-35': 'Prospect Lefferts, East Flatbush',
-        'city_council-36': 'Williamsburg, Greenpoint',
-        'city_council-37': 'Bushwick, Cypress Hills',
-        'city_council-38': 'Sunset Park, Red Hook',
-        'city_council-39': 'Kensington, Borough Park',
-        'city_council-25': 'Jackson Heights, Elmhurst',
-        'city_council-26': 'Sunnyside, Astoria',
-        'city_council-27': 'East Elmhurst, Jackson Heights',
+        // City Council — all 51 districts
+        'city_council-1': 'Chinatown, Lower East Side, FiDi',
+        'city_council-2': 'East Village, Gramercy, Stuyvesant Town',
+        'city_council-3': 'Lower Manhattan (Vacant)',
+        'city_council-4': 'Chelsea, Hells Kitchen, Times Square',
+        'city_council-5': 'Upper East Side, Roosevelt Island',
+        'city_council-6': 'Upper West Side, Lincoln Square',
+        'city_council-7': 'Morningside Heights, Manhattanville, Hamilton Heights',
+        'city_council-8': 'East Harlem, Randalls Island',
+        'city_council-9': 'Central Harlem',
         'city_council-10': 'Washington Heights, Inwood',
-        'city_council-14': 'Jackson Heights, Corona',
-        'city_council-16': 'Morrisania, Highbridge',
-        // Assembly
-        'assembly-51': 'Sunset Park, Red Hook',
+        'city_council-11': 'Riverdale, Kingsbridge, Norwood',
+        'city_council-12': 'Wakefield, Williamsbridge, Eastchester',
+        'city_council-13': 'Pelham Bay, Morris Park, Co-op City',
+        'city_council-14': 'Soundview, Parkchester, Castle Hill',
+        'city_council-15': 'Melrose, Mott Haven, Port Morris',
+        'city_council-16': 'Morrisania, Highbridge, Concourse',
+        'city_council-17': 'University Heights, Fordham, Tremont',
+        'city_council-18': 'Throgs Neck, Country Club, City Island',
+        'city_council-19': 'Bayside, Whitestone, College Point',
+        'city_council-20': 'Flushing, Mitchell-Linden',
+        'city_council-21': 'Hollis, Jamaica, St. Albans',
+        'city_council-22': 'Astoria, Woodside, Long Island City',
+        'city_council-23': 'Fresh Meadows, Oakland Gardens, Bayside Hills',
+        'city_council-24': 'Briarwood, Jamaica Hills, Hillcrest',
+        'city_council-25': 'Jackson Heights, Elmhurst',
+        'city_council-26': 'Sunnyside, Woodside, Maspeth',
+        'city_council-27': 'East Elmhurst, Jackson Heights, Corona',
+        'city_council-28': 'Jamaica, South Jamaica',
+        'city_council-29': 'Forest Hills, Rego Park, Kew Gardens',
+        'city_council-30': 'Ridgewood, Middle Village, Glendale',
+        'city_council-31': 'Far Rockaway, Arverne, Laurelton',
+        'city_council-32': 'Howard Beach, Ozone Park, Woodhaven',
+        'city_council-33': 'Crown Heights, Brownsville',
+        'city_council-34': 'Sunset Park, Red Hook, Greenwood',
+        'city_council-35': 'Prospect Lefferts, East Flatbush',
+        'city_council-36': 'Williamsburg, Greenpoint, Bushwick',
+        'city_council-37': 'Bushwick, Cypress Hills, East New York',
+        'city_council-38': 'Sunset Park, Red Hook, Park Slope',
+        'city_council-39': 'Kensington, Borough Park, Midwood',
+        'city_council-40': 'Flatbush, East Flatbush',
+        'city_council-41': 'Brownsville, East New York, Canarsie',
+        'city_council-42': 'Flatlands, Canarsie, Mill Basin',
+        'city_council-43': 'Bensonhurst, Bath Beach, Gravesend',
+        'city_council-44': 'Borough Park, Midwood, Flatbush',
+        'city_council-45': 'Flatbush, East Flatbush',
+        'city_council-46': 'Canarsie, Flatlands, Georgetown',
+        'city_council-47': 'Coney Island, Brighton Beach, Sheepshead Bay',
+        'city_council-48': 'Sheepshead Bay, Marine Park, Manhattan Beach',
+        'city_council-49': 'North Shore Staten Island, West Brighton',
+        'city_council-50': 'Mid-Island Staten Island, Todt Hill',
+        'city_council-51': 'South Shore Staten Island, Great Kills',
+        // Assembly — key NYC districts
+        'assembly-36': 'Woodside, Corona',
+        'assembly-37': 'Sunset Park, Windsor Terrace',
+        'assembly-38': 'South Ozone Park, Richmond Hill',
+        'assembly-39': 'Jackson Heights, Woodside',
+        'assembly-40': 'Flushing, Murray Hill',
+        'assembly-41': 'Borough Park, Kensington',
+        'assembly-42': 'Flatbush, East Flatbush',
+        'assembly-43': 'Crown Heights, Prospect Heights',
+        'assembly-44': 'Park Slope, Carroll Gardens',
+        'assembly-45': 'Fort Greene, Clinton Hill',
+        'assembly-46': 'Bay Ridge, Dyker Heights',
+        'assembly-47': 'Bensonhurst, Gravesend',
+        'assembly-48': 'Borough Park, Midwood',
+        'assembly-49': 'Sunset Park, Bay Ridge',
         'assembly-50': 'Williamsburg, Greenpoint',
-        'assembly-57': 'South Bronx, Mott Haven',
-        'assembly-56': 'Mott Haven, Hunts Point',
-        // State Senate
-        'senate-25': 'Crown Heights, Bed-Stuy',
-        'senate-18': 'Bushwick, Williamsburg',
+        'assembly-51': 'Sunset Park, Red Hook',
+        'assembly-52': 'Cobble Hill, Brooklyn Heights',
+        'assembly-53': 'Bushwick, Williamsburg',
+        'assembly-54': 'Bushwick, Ridgewood',
+        'assembly-55': 'Bed-Stuy, Ocean Hill',
+        'assembly-56': 'Brownsville, East New York',
+        'assembly-57': 'Crown Heights, Prospect Lefferts',
+        'assembly-65': 'Chinatown, Lower East Side',
+        'assembly-66': 'West Village, SoHo',
+        'assembly-67': 'Upper West Side',
+        'assembly-68': 'Harlem, Morningside Heights',
+        'assembly-69': 'Upper East Side, Yorkville',
+        'assembly-70': 'East Harlem',
+        'assembly-73': 'East Side Manhattan',
+        'assembly-74': 'Hells Kitchen, Chelsea',
+        'assembly-75': 'West Village, Chelsea',
+        'assembly-76': 'Upper East Side, Lenox Hill',
+        'assembly-77': 'Morningside Heights, Hamilton Heights',
+        'assembly-78': 'Washington Heights',
+        'assembly-79': 'Washington Heights, Inwood',
+        'assembly-80': 'Kingsbridge, Riverdale',
+        'assembly-84': 'South Bronx, Mott Haven',
+        'assembly-85': 'South Bronx, Hunts Point',
+        'assembly-86': 'University Heights, Morris Heights',
+        'assembly-87': 'Soundview, Parkchester',
+        'assembly-103': 'Kingston, Woodstock',
+        // State Senate — key NYC districts
+        'senate-18': 'Bushwick, Williamsburg, Bed-Stuy',
+        'senate-20': 'Crown Heights, Flatbush',
+        'senate-22': 'Bay Ridge, Bensonhurst',
+        'senate-25': 'Crown Heights, Brownsville, East New York',
+        'senate-26': 'Bay Ridge, Sunset Park',
+        'senate-27': 'Lower Manhattan, Brooklyn Heights',
+        'senate-28': 'Upper East Side',
+        'senate-29': 'East Harlem, South Bronx',
+        'senate-30': 'Central Harlem',
+        'senate-31': 'Washington Heights, Inwood',
+        'senate-47': 'Hells Kitchen, Chelsea, West Village',
         // US House
-        'us_house-14': 'Bronx, NE Queens (AOC)',
-        'us_house-7': 'Lower Manhattan, Brooklyn',
+        'us_house-5': 'SE Queens, Far Rockaway',
+        'us_house-6': 'Flushing, Bayside',
+        'us_house-7': 'Lower East Side, Bushwick, Sunset Park',
+        'us_house-8': 'Fort Greene, Brownsville, Crown Heights',
+        'us_house-9': 'Flatbush, East Flatbush, Canarsie',
+        'us_house-10': 'Park Slope, Lower Manhattan, Brooklyn Heights',
+        'us_house-11': 'Staten Island, Southern Brooklyn',
+        'us_house-12': 'Upper West Side, Midtown, Lower Manhattan',
+        'us_house-13': 'Washington Heights, South Bronx',
+        'us_house-14': 'Bronx, NE Queens',
+        'us_house-15': 'South Bronx, Central Bronx',
       };
 
       // NYC neighborhoods analysis
@@ -266,25 +379,33 @@
         if (!hood) continue;
         const hoods = hood.split(', ');
         for (const h of hoods) {
-          if (!neighborhoodScores[h]) neighborhoodScores[h] = { total: 0, count: 0, anti: 0, pro: 0 };
+          if (!neighborhoodScores[h]) neighborhoodScores[h] = { total: 0, count: 0, anti: 0, pro: 0, reps: [] };
           neighborhoodScores[h].total += l.score;
           neighborhoodScores[h].count++;
           if (l.stance === 'strongly_oppose' || l.stance === 'oppose') neighborhoodScores[h].anti++;
           if (l.stance === 'strongly_support' || l.stance === 'support') neighborhoodScores[h].pro++;
+          neighborhoodScores[h].reps.push(l);
         }
       }
 
       const sortedHoods = Object.entries(neighborhoodScores).sort((a, b) => a[1].total - b[1].total);
-      const worstHoods = sortedHoods.slice(0, 6);
-      const bestHoods = sortedHoods.filter(([_, v]) => v.total > 0).sort((a, b) => b[1].total - a[1].total).slice(0, 6);
+      const worstHoods = sortedHoods.slice(0, 8);
+      const bestHoods = sortedHoods.filter(([_, v]) => v.total > 0).sort((a, b) => b[1].total - a[1].total).slice(0, 10);
 
       // Worst neighborhoods
       html += `<div class="insight-card">
         <h2>Worst NYC Neighborhoods for Israel Support</h2>
         <p style="font-size:14px;color:#64748b;margin-bottom:12px;">Areas where local elected officials have the strongest anti-Israel records.</p>
         <ul class="hotspot-list">`;
+      let hoodId = 0;
       for (const [hood, data] of worstHoods) {
-        html += `<li><span class="name">${hood} <span style="color:#94a3b8;font-weight:400;font-size:12px;">${data.count} reps, ${data.anti} anti-Israel</span></span><span class="score" style="color:#c2410c">${data.total > 0 ? '+' : ''}${data.total}</span></li>`;
+        const id = 'hood-w-' + (hoodId++);
+        const repsHtml = data.reps.map(r => {
+          const sc = r.score > 0 ? '+' + r.score : r.score;
+          const color = r.score >= 0 ? '#15803d' : '#c2410c';
+          return `<div style="display:flex;align-items:center;padding:6px 0;gap:8px;cursor:pointer;" onclick="event.stopPropagation();openDetailPanel(r.person_id)"><span style="display:inline-flex;align-items:center;justify-content:center;width:22px;height:22px;border-radius:50%;font-size:11px;font-weight:700;color:white;background:${partyColor(r.party)}">${(r.party||'').includes('Democrat')?'D':'R'}</span><span style="flex:1;font-size:13px;font-weight:600;color:#0f172a;">${r.name}</span><span style="font-size:12px;color:#64748b;">${CHAMBER_LABELS[r.chamber]} D${r.district}</span><span style="font-size:13px;font-weight:700;color:${color};min-width:36px;text-align:right;">${sc}</span></div>`;
+        }).join('');
+        html += `<li style="cursor:pointer;" onclick="var el=document.getElementById('${id}');el.style.display=el.style.display==='none'?'block':'none';"><span class="name">${hood} <span style="color:#94a3b8;font-weight:400;font-size:12px;">${data.count} reps, ${data.anti} anti-Israel</span></span><span class="score" style="color:#c2410c">${data.total > 0 ? '+' : ''}${data.total}</span><div id="${id}" style="display:none;margin-top:8px;padding-top:8px;border-top:1px solid #e2e8f0;">${repsHtml}</div></li>`;
       }
       html += `</ul>
         <div class="finding alert">These neighborhoods form a corridor through <strong>northern Brooklyn</strong> (Bushwick, Williamsburg, Sunset Park), the <strong>South Bronx</strong> (Mott Haven, Morrisania), and <strong>Jackson Heights/Elmhurst</strong> in Queens — areas with high DSA/progressive caucus alignment and significant immigrant and POC populations where anti-Israel sentiment has been channeled through left-progressive organizing.</div>
@@ -297,7 +418,13 @@
           <p style="font-size:14px;color:#64748b;margin-bottom:12px;">Areas where local elected officials have the strongest pro-Israel records.</p>
           <ul class="hotspot-list">`;
         for (const [hood, data] of bestHoods) {
-          html += `<li><span class="name">${hood} <span style="color:#94a3b8;font-weight:400;font-size:12px;">${data.count} reps, ${data.pro} pro-Israel</span></span><span class="score" style="color:#15803d">+${data.total}</span></li>`;
+          const id = 'hood-b-' + (hoodId++);
+          const repsHtml = data.reps.map(r => {
+            const sc = r.score > 0 ? '+' + r.score : r.score;
+            const color = r.score >= 0 ? '#15803d' : '#c2410c';
+            return `<div style="display:flex;align-items:center;padding:6px 0;gap:8px;cursor:pointer;" onclick="event.stopPropagation();openDetailPanel(r.person_id)"><span style="display:inline-flex;align-items:center;justify-content:center;width:22px;height:22px;border-radius:50%;font-size:11px;font-weight:700;color:white;background:${partyColor(r.party)}">${(r.party||'').includes('Democrat')?'D':'R'}</span><span style="flex:1;font-size:13px;font-weight:600;color:#0f172a;">${r.name}</span><span style="font-size:12px;color:#64748b;">${CHAMBER_LABELS[r.chamber]} D${r.district}</span><span style="font-size:13px;font-weight:700;color:${color};min-width:36px;text-align:right;">${sc}</span></div>`;
+          }).join('');
+          html += `<li style="cursor:pointer;" onclick="var el=document.getElementById('${id}');el.style.display=el.style.display==='none'?'block':'none';"><span class="name">${hood} <span style="color:#94a3b8;font-weight:400;font-size:12px;">${data.count} reps, ${data.pro} pro-Israel</span></span><span class="score" style="color:#15803d">+${data.total}</span><div id="${id}" style="display:none;margin-top:8px;padding-top:8px;border-top:1px solid #e2e8f0;">${repsHtml}</div></li>`;
         }
         html += `</ul>
           <div class="finding positive">Pro-Israel strength in NYC is concentrated in areas with significant <strong>Orthodox Jewish communities</strong> (Borough Park, Crown Heights) and <strong>moderate Democratic or Republican-leaning</strong> districts in southern Brooklyn and parts of Queens.</div>
@@ -312,16 +439,29 @@
         <div class="finding positive">At the <strong>state level</strong>, NY is broadly pro-Israel. The State Senate and Assembly are both majority pro-Israel. Republican members are <strong>uniformly pro-Israel</strong> (${repPro} of ${reps.length}), and most moderate Democrats in suburban and upstate districts also support Israel. The anti-Israel bloc is concentrated in <strong>NYC's progressive left</strong>, not statewide.</div>
       </div>`;
 
-      // Most common actions
+      // Most common actions — split by direction
+      const proCriteria = topCriteria.filter(([l]) => critDir[l] === 'pro');
+      const antiCriteria = topCriteria.filter(([l]) => critDir[l] === 'anti');
+      const maxCrit = topCriteria[0]?.[1] || 1;
+
       html += `<div class="insight-card">
         <h2>Most Common Actions</h2>
         <p style="font-size:14px;color:#64748b;margin-bottom:12px;">What legislators are actually doing — the most frequently documented positions.</p>
+        <div style="font-size:12px;font-weight:700;color:#15803d;text-transform:uppercase;margin-bottom:8px;">Pro-Israel Actions</div>
         <div class="bar-chart">`;
-      const maxCrit = topCriteria[0]?.[1] || 1;
-      for (const [label, count] of topCriteria) {
+      for (const [label, count] of proCriteria) {
         html += `<div class="bar-row">
           <div class="bar-label" style="width:240px;font-size:12px;">${label}</div>
-          <div class="bar-track"><div class="bar-fill" style="width:${Math.round(count/maxCrit*100)}%;background:#475569">${count}</div></div>
+          <div class="bar-track"><div class="bar-fill" style="width:${Math.round(count/maxCrit*100)}%;background:#15803d">${count}</div></div>
+        </div>`;
+      }
+      html += `</div>
+        <div style="font-size:12px;font-weight:700;color:#c2410c;text-transform:uppercase;margin:16px 0 8px;">Anti-Israel Actions</div>
+        <div class="bar-chart">`;
+      for (const [label, count] of antiCriteria) {
+        html += `<div class="bar-row">
+          <div class="bar-label" style="width:240px;font-size:12px;">${label}</div>
+          <div class="bar-track"><div class="bar-fill" style="width:${Math.round(count/maxCrit*100)}%;background:#c2410c">${count}</div></div>
         </div>`;
       }
       html += `</div></div>`;
@@ -336,5 +476,7 @@
     }
     init();
   </script>
+<script src="nav-lookup.js"></script>
+<script src="detail-panel.js"></script>
 </body>
 </html>

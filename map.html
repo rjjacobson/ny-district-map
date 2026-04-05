@@ -45,6 +45,7 @@
     }
     .top-nav .nav-link:hover { color: #e2e8f0; }
     .top-nav .nav-link.active { color: white; border-bottom-color: #3b82f6; }
+    .nav-search { display: flex; gap: 4px; } .nav-search input { padding: 6px 12px; border: none; border-radius: 6px; font-size: 13px; width: 240px; outline: none; } .nav-search button { padding: 6px 14px; background: #2563eb; color: white; border: none; border-radius: 6px; font-size: 13px; font-weight: 600; cursor: pointer; }
 
     .main-content { display: flex; flex: 1; overflow: hidden; }
 
@@ -324,75 +325,153 @@
     }
     @keyframes spin { to { transform: rotate(360deg); } }
 
+    /* Hide mobile-only elements on desktop */
+    .mobile-close-filters { display: none; }
+
+    /* Mobile filter toggle button */
+    .mobile-filter-btn {
+      display: none;
+      position: fixed;
+      top: 54px; right: 10px;
+      z-index: 1000;
+      background: white;
+      border: none;
+      border-radius: 10px;
+      box-shadow: 0 2px 12px rgba(0,0,0,0.15);
+      padding: 8px 14px;
+      font-size: 13px;
+      font-weight: 600;
+      color: #334155;
+      cursor: pointer;
+    }
+
+    /* Mobile search bar at bottom */
+    .mobile-search {
+      display: none;
+      position: fixed;
+      bottom: 10px; left: 10px; right: 10px;
+      z-index: 1000;
+    }
+    .mobile-search input {
+      width: 100%;
+      padding: 12px 16px;
+      border: none;
+      border-radius: 10px;
+      box-shadow: 0 2px 12px rgba(0,0,0,0.15);
+      font-size: 14px;
+      outline: none;
+    }
+
     /* Mobile responsive */
     @media (max-width: 768px) {
-      .main-content { flex-direction: column; }
+      .nav-search { display: none !important; }
 
-      #map-container { height: 50vh; flex: none; }
+      /* Fixed nav bar */
+      .top-nav {
+        position: fixed !important;
+        top: 0; left: 0; right: 0;
+        z-index: 1002;
+      }
 
-      #sidebar { width: 100% !important; min-width: 100% !important; height: 50vh; border-left: none; border-top: 1px solid #e0e0e0; }
-      #sidebar.detail-open { width: 100% !important; min-width: 100% !important; }
-      #sidebar.detail-open #list-panel { display: none; }
-      #sidebar.detail-open #detail-panel { position: relative; width: 100%; }
+      /* Push content below fixed nav */
+      .main-content { flex-direction: column; margin-top: 44px; }
 
-      .controls {
-        left: 10px;
-        right: 10px;
-        top: 8px;
+      /* Map takes full remaining height */
+      #map-container { flex: 1; height: calc(100vh - 44px); }
+
+      /* Hide sidebar entirely on mobile */
+      #sidebar { display: none !important; }
+
+      /* Hide controls and legend by default */
+      .controls { display: none !important; }
+      .controls.mobile-open {
+        display: flex !important;
+        position: fixed;
+        top: 44px; left: 0; right: 0;
+        z-index: 1001;
+        background: rgba(255,255,255,0.97);
+        padding: 16px;
+        flex-direction: column;
+        gap: 10px;
+        box-shadow: 0 4px 20px rgba(0,0,0,0.15);
+      }
+      .controls.mobile-open .mobile-close-filters {
+        display: block;
+        text-align: center;
+        padding: 10px;
+        font-size: 14px;
+        font-weight: 600;
+        color: #2563eb;
+        cursor: pointer;
+        border-top: 1px solid #e2e8f0;
+        margin-top: 4px;
+        background: none;
+        border-left: none;
+        border-right: none;
+        border-bottom: none;
+        width: 100%;
+      }
+      .controls.mobile-open .control-group {
+        box-shadow: none;
+        padding: 8px 0;
+      }
+      .controls.mobile-open .control-group-buttons {
         flex-wrap: wrap;
-        gap: 6px;
+      }
+      .controls.mobile-open .toggle-btn {
+        padding: 10px 16px;
+        font-size: 14px;
+        min-width: auto;
       }
 
-      .control-group {
-        padding: 6px 10px 8px;
-      }
+      .legend { display: none !important; }
 
-      .control-group-label { font-size: 9px; margin-bottom: 4px; }
-
-      .toggle-btn {
-        padding: 5px 10px;
-        font-size: 11px;
-        min-width: 60px;
-      }
-
-      .control-group-buttons { gap: 4px; }
-
-      .legend { bottom: auto; top: auto; right: 8px; left: 8px; bottom: 8px; font-size: 11px; }
+      /* Show mobile-only elements */
+      .mobile-filter-btn { display: block; }
+      .mobile-search { display: block; }
 
       .top-nav .site-title { font-size: 13px; margin-right: 12px; }
       .top-nav .nav-link { font-size: 13px; padding: 10px 10px; }
 
-      /* Leaflet zoom on mobile */
       .leaflet-top.leaflet-left { top: 8px; left: 4px; }
       .leaflet-control-zoom a { width: 30px !important; height: 30px !important; line-height: 30px !important; font-size: 16px !important; }
     }
 
     @media (max-width: 480px) {
-      .controls { flex-direction: column; }
-      .control-group-buttons { flex-wrap: wrap; }
+      .top-nav .nav-link { font-size: 11px; padding: 6px 6px; }
+      .top-nav .site-title { font-size: 13px; margin-right: 8px; }
     }
+    @media (max-width: 480px) { .top-nav .nav-link { font-size: 11px; padding: 6px 6px; } .top-nav .site-title { font-size: 13px; margin-right: 8px; } }
   </style>
+  <link rel="stylesheet" href="detail-panel.css">
 </head>
 <body>
   <nav class="top-nav">
-    <a href="index.html" class="site-title">Shalom NY</a>
+    <a href="index.html" class="site-title">ShalomNY</a>
     <a href="stats.html" class="nav-link">Feed</a>
     <a href="map.html" class="nav-link active">Map</a>
     <a href="rankings.html" class="nav-link">Rankings</a>
     <a href="insights.html" class="nav-link">Insights</a>
+    <a href="about.html" class="nav-link">About</a>
+    <div style="flex:1;"></div>
+    <div class="nav-search"><input type="text" id="nav-address" placeholder="Enter your address" onkeydown="if(event.key==='Enter')navLookup()" /><button onclick="navLookup()">Grade my reps</button></div>
   </nav>
   <div class="main-content">
   <div id="map-container">
     <div id="map"></div>
+    <button class="mobile-filter-btn" onclick="toggleMobileFilters()">Filters</button>
+    <div class="mobile-search">
+      <input type="text" id="mobile-search-input" placeholder="Search by name..." oninput="mobileSearch(this.value)" />
+    </div>
     <div class="controls">
       <div class="control-group">
         <div class="control-group-label">Legislative Body</div>
         <div class="control-group-buttons">
           <button class="toggle-btn" id="btn-us_senate" onclick="showLayer('us_senate')">US Senate</button>
           <button class="toggle-btn" id="btn-us_house" onclick="showLayer('us_house')">US House</button>
-          <button class="toggle-btn active" id="btn-senate" onclick="showLayer('senate')">State Senate</button>
-          <button class="toggle-btn" id="btn-assembly" onclick="showLayer('assembly')">Assembly</button>
-          <button class="toggle-btn" id="btn-city_council" onclick="showLayer('city_council')">City Council</button>
+          <button class="toggle-btn" id="btn-senate" onclick="showLayer('senate')">State Senate</button>
+          <button class="toggle-btn" id="btn-assembly" onclick="showLayer('assembly')">State Assembly</button>
+          <button class="toggle-btn active" id="btn-city_council" onclick="showLayer('city_council')">City Council</button>
         </div>
       </div>
       <div class="control-group">
@@ -402,6 +481,7 @@
           <button class="toggle-btn active" id="btn-color-israel" onclick="setColorMode('israel')">Israel</button>
         </div>
       </div>
+      <button class="mobile-close-filters" onclick="closeMobileFilters()">Close</button>
     </div>
     <div class="legend" id="legend">
       <div class="legend-title">Israel Stance</div>
@@ -441,7 +521,7 @@
     let senateLegislators = [], assemblyLegislators = [], cityCouncilLegislators = [];
     let usHouseLegislators = [], usSenateLegislators = [];
     let nycMayorLegislators = [];
-    let activeLayer = 'senate';
+    let activeLayer = 'city_council';
     let selectedDistrict = null;
     let highlightedDistrict = null;
     let mapLayersByDistrict = { senate: {}, assembly: {}, city_council: {}, us_house: {}, us_senate: {} };
@@ -683,7 +763,13 @@
 
       const legs = getLegislators(ch);
       const leg = legs.find(l => l.district === district);
-      if (leg) showDetail(leg, ch);
+      if (leg) {
+        showDetail(leg, ch);
+        // On mobile, also open the shared detail panel overlay
+        if (window.innerWidth <= 768 && typeof openDetailPanel === 'function') {
+          openDetailPanel(leg.person_id);
+        }
+      }
 
       const row = document.querySelector(`.leg-row[data-chamber="${ch}"][data-district="${district}"]`);
       if (row) {
@@ -1197,9 +1283,10 @@
         // Step 2: Show sidebar immediately
         renderList();
 
-        // Step 3: Fetch only the default tab's GeoJSON
-        await ensureGeoLayer('senate');
-        senateLayer.addTo(map);
+        // Step 3: Fetch default tab's GeoJSON (City Council) and set NYC view
+        await ensureGeoLayer('city_council');
+        cityCouncilLayer.addTo(map);
+        map.setView([40.7128, -73.95], 11);
 
         document.getElementById('loading').style.display = 'none';
       } catch (err) {
@@ -1213,7 +1300,69 @@
     }
 
     init();
+
+    // Mobile filter toggle
+    function toggleMobileFilters() {
+      const controls = document.querySelector('.controls');
+      const btn = document.querySelector('.mobile-filter-btn');
+      controls.classList.toggle('mobile-open');
+      btn.textContent = controls.classList.contains('mobile-open') ? 'Close' : 'Filters';
+    }
+    function closeMobileFilters() {
+      const controls = document.querySelector('.controls');
+      const btn = document.querySelector('.mobile-filter-btn');
+      controls.classList.remove('mobile-open');
+      btn.textContent = 'Filters';
+    }
+
+    // Mobile search — search across all chambers, select the first match
+    function mobileSearch(query) {
+      if (!query || query.length < 2) return;
+      query = query.toLowerCase();
+      const allLegs = [
+        ...usSenateLegislators.map(l => ({...l, _ch: 'us_senate'})),
+        ...usHouseLegislators.map(l => ({...l, _ch: 'us_house'})),
+        ...senateLegislators.map(l => ({...l, _ch: 'senate'})),
+        ...assemblyLegislators.map(l => ({...l, _ch: 'assembly'})),
+        ...cityCouncilLegislators.map(l => ({...l, _ch: 'city_council'})),
+      ];
+      const results = allLegs.filter(l => l.name.toLowerCase().includes(query));
+
+      // Show results as a dropdown
+      let dropdown = document.getElementById('mobile-search-results');
+      if (!dropdown) {
+        dropdown = document.createElement('div');
+        dropdown.id = 'mobile-search-results';
+        dropdown.style.cssText = 'position:absolute;bottom:52px;left:0;right:0;background:white;border-radius:10px;box-shadow:0 2px 12px rgba(0,0,0,0.15);max-height:240px;overflow-y:auto;';
+        document.querySelector('.mobile-search').appendChild(dropdown);
+      }
+      if (results.length === 0) { dropdown.innerHTML = '<div style="padding:12px;color:#94a3b8;font-size:14px;">No results</div>'; return; }
+      dropdown.innerHTML = results.slice(0, 8).map(l => {
+        const ch = CHAMBER_LABELS[l._ch] || l._ch;
+        return `<div style="padding:10px 16px;cursor:pointer;border-bottom:1px solid #f1f5f9;font-size:14px;" onclick="mobileSelectLeg('${l._ch}',${l.district})">${l.name} <span style="color:#94a3b8;font-size:12px;">${ch} D${l.district}</span></div>`;
+      }).join('');
+    }
+
+    function mobileSelectLeg(chamber, district) {
+      // Close search results
+      const dropdown = document.getElementById('mobile-search-results');
+      if (dropdown) dropdown.remove();
+      document.getElementById('mobile-search-input').value = '';
+      // Switch to that chamber and select the district
+      if (chamber !== activeLayer) {
+        showLayer(chamber, true);
+      }
+      selectDistrict(district, false, chamber);
+    }
+
+    // Close mobile filters when clicking a filter button
+    document.querySelectorAll('.toggle-btn').forEach(btn => {
+      btn.addEventListener('click', () => closeMobileFilters());
+    });
   </script>
+  <div id="detail-overlay" class="detail-overlay"><div id="detail-panel-content"></div></div>
+  <script src="nav-lookup.js"></script>
+  <script src="detail-panel.js"></script>
   </div>
 </body>
 </html>

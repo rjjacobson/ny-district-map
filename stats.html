@@ -210,16 +210,22 @@
       width: 8px; height: 8px; border-radius: 50%;
       display: inline-block; margin-right: 6px; vertical-align: middle;
     }
+    .nav-search { display: flex; gap: 4px; } .nav-search input { padding: 6px 12px; border: none; border-radius: 6px; font-size: 13px; width: 240px; outline: none; } .nav-search button { padding: 6px 14px; background: #2563eb; color: white; border: none; border-radius: 6px; font-size: 13px; font-weight: 600; cursor: pointer; }
+    @media (max-width: 768px) { .nav-search { display: none !important; } .top-nav { flex-wrap: wrap; height: auto; padding: 8px 12px; gap: 0; } .top-nav .nav-link { font-size: 12px; padding: 6px 8px; } .top-nav .site-title { font-size: 14px; margin-right: 16px; } }
+    @media (max-width: 480px) { .top-nav .nav-link { font-size: 11px; padding: 6px 6px; } .top-nav .site-title { font-size: 13px; margin-right: 8px; } }
   </style>
+  <link rel="stylesheet" href="detail-panel.css">
 </head>
 <body>
   <nav class="top-nav">
-    <a href="index.html" class="site-title">Shalom NY</a>
+    <a href="index.html" class="site-title">ShalomNY</a>
     <a href="stats.html" class="nav-link active">Feed</a>
     <a href="map.html" class="nav-link">Map</a>
     <a href="rankings.html" class="nav-link">Rankings</a>
     <a href="insights.html" class="nav-link">Insights</a>
-  </nav>
+    <a href="about.html" class="nav-link">About</a>
+    <div style="flex:1;"></div>
+    <div class="nav-search"><input type="text" id="nav-address" placeholder="Enter your address" onkeydown="if(event.key==='Enter')navLookup()" /><button onclick="navLookup()">Grade my reps</button></div>  </nav>
 
   <div class="page-container">
     <div class="page-header">
@@ -247,9 +253,9 @@
   </div>
 
   <!-- Detail panel -->
-  <div class="detail-overlay" id="detail-overlay">
-    <button class="close-btn" onclick="closeDetail()">&times;</button>
-    <div class="detail-content" id="detail-content"></div>
+  <div id="detail-overlay" class="detail-overlay">
+    
+    <div id="detail-panel-content"></div>
   </div>
 
   <script>
@@ -307,7 +313,7 @@
       const [legResp, posResp, critResp] = await Promise.all([
         fetch(`${SUPABASE_URL}/rest/v1/current_legislators?select=person_id,name,party,chamber,district&order=name`, { headers: { apikey: SUPABASE_ANON_KEY } }),
         fetch(`${SUPABASE_URL}/rest/v1/positions?select=person_id,stance&assessment_type=eq.ai&topic_id=eq.1`, { headers: { apikey: SUPABASE_ANON_KEY } }),
-        fetch(`${SUPABASE_URL}/rest/v1/person_criteria?select=person_id,criterion_id,evidence,source_url,source_date,criteria(label,direction,category)&order=source_date.desc.nullslast`, { headers: { apikey: SUPABASE_ANON_KEY } }),
+        fetch(`${SUPABASE_URL}/rest/v1/person_criteria?select=person_id,criterion_id,evidence,source_url,source_date,criteria(label,direction,category)&order=source_date.desc.nullslast,id.desc`, { headers: { apikey: SUPABASE_ANON_KEY } }),
       ]);
       const legislators = await legResp.json();
       for (const l of legislators) legLookup[l.person_id] = l;
@@ -351,7 +357,7 @@
 
         const item = document.createElement('div');
         item.className = 'feed-item ' + dir;
-        item.onclick = () => showPersonDetail(c.person_id);
+        item.onclick = () => openDetailPanel(c.person_id);
 
         const sourceLink = c.source_url
           ? `<a href="${c.source_url}" target="_blank" class="feed-source" onclick="event.stopPropagation()">View source &rarr;</a>`
@@ -390,56 +396,9 @@
       renderFeed();
     }
 
-    function showPersonDetail(personId) {
-      const leg = legLookup[personId];
-      if (!leg) return;
-      const pos = posLookup[personId];
-      const criteria = allCriteria.filter(c => c.person_id === personId);
-      const stanceColor = pos ? (STANCE_COLORS[pos.stance] || '#d1d5db') : '#d1d5db';
-      const stanceLabel = pos ? (STANCE_LABELS[pos.stance] || 'Unknown') : 'Unknown';
-
-      let score = 0;
-      for (const c of criteria) {
-        const w = c.criteria?.weight || 1;
-        if (c.criteria?.direction === 'pro') score += w; else score -= w;
-      }
-
-      let evidenceHTML = '';
-      for (const c of criteria) {
-        const dir = c.criteria?.direction || 'unknown';
-        const label = c.criteria?.label || '';
-        const cat = (c.criteria?.category || '').replace('_', ' ').toUpperCase();
-        const sourceLink = c.source_url ? `<a href="${c.source_url}" target="_blank" style="display:inline-block;margin-top:6px;font-size:12px;color:#2563eb;text-decoration:none;">View source &rarr;</a>` : '';
-        evidenceHTML += `
-          <div class="d-evidence-item ${dir}">
-            <div style="font-size:11px;font-weight:600;text-transform:uppercase;color:#64748b;margin-bottom:4px;">${cat}<span style="color:#94a3b8;margin-left:8px;">${c.source_date || ''}</span></div>
-            <strong>${label}</strong><br>
-            ${c.evidence || ''}
-            ${sourceLink}
-          </div>`;
-      }
-
-      const content = document.getElementById('detail-content');
-      content.innerHTML = `
-        <h2>${leg.name}</h2>
-        <div class="d-meta">
-          <span class="party-dot-inline" style="background:${partyColor(leg.party)}"></span>
-          ${leg.party || 'Unknown'} &middot; ${CHAMBER_SHORT[leg.chamber]} District ${leg.district}
-        </div>
-        <div style="margin-bottom:16px;">
-          <span class="stance-badge" style="background:${stanceColor}">${stanceLabel}</span>
-          <span style="margin-left:12px;font-size:14px;font-weight:600;">Score: ${score > 0 ? '+' : ''}${score}</span>
-          <span style="margin-left:12px;font-size:13px;color:#64748b;">${criteria.length} evidence items</span>
-        </div>
-        <div>${evidenceHTML || '<p style="color:#94a3b8;font-size:14px;">No evidence on record.</p>'}</div>
-      `;
-      document.getElementById('detail-overlay').classList.add('open');
-    }
-
-    function closeDetail() { document.getElementById('detail-overlay').classList.remove('open'); }
-    document.addEventListener('keydown', e => { if (e.key === 'Escape') closeDetail(); });
-
     fetchData();
   </script>
+<script src="nav-lookup.js"></script>
+<script src="detail-panel.js"></script>
 </body>
 </html>
