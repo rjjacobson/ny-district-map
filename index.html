@@ -165,6 +165,33 @@
     .hood-meta { font-size: 11px; color: #94a3b8; font-weight: 400; margin-left: 6px; }
     .hood-score { font-size: 14px; font-weight: 700; min-width: 40px; text-align: right; }
 
+    /* Anti-Israel actions */
+    .action-row {
+      padding: 10px 20px;
+      border-bottom: 1px solid #f8fafc;
+      cursor: pointer;
+    }
+    .action-row:hover { background: #fef2f2; }
+    .action-header {
+      display: flex; align-items: center; gap: 10px;
+    }
+    .action-label { flex: 1; font-size: 14px; font-weight: 600; color: #0f172a; }
+    .action-count {
+      font-size: 13px; font-weight: 700; color: #c2410c;
+      background: #fff7ed; padding: 2px 8px; border-radius: 10px;
+    }
+    .action-chevron { font-size: 12px; color: #94a3b8; transition: transform 0.15s; }
+    .action-chevron.open { transform: rotate(90deg); }
+    .action-legs {
+      display: none; margin-top: 8px; padding-top: 8px;
+      border-top: 1px solid #f1f5f9;
+    }
+    .action-leg {
+      display: flex; align-items: center; padding: 5px 0; gap: 8px; font-size: 13px;
+      cursor: pointer;
+    }
+    .action-leg:hover { color: #2563eb; }
+
     /* Signup section */
     .signup-section {
       grid-column: 1 / -1;
@@ -324,19 +351,13 @@
       <div id="mini-map" style="height:260px;cursor:pointer;" onclick="window.location='map.html'"></div>
     </div>
 
-    <!-- Insights -->
-    <div class="dash-card desktop-only" style="cursor:pointer;" onclick="window.location='insights.html'">
+    <!-- Anti-Israel Actions -->
+    <div class="dash-card desktop-only">
       <div class="dash-card-header">
-        <h3>Insights &amp; Analysis</h3>
-        <a href="insights.html">View all &rarr;</a>
+        <h3>Most Common Anti-Israel Actions</h3>
+        <a href="insights.html">Full insights &rarr;</a>
       </div>
-      <div style="padding:20px;">
-        <div style="font-size:14px;color:#475569;line-height:1.6;" id="insight-preview">
-          <div style="margin-bottom:12px;padding:12px;background:#fff7ed;border-left:4px solid #c2410c;border-radius:6px;"><strong>Zero Republicans</strong> in the NY legislature have an anti-Israel position. All anti-Israel legislators are Democrats.</div>
-          <div style="margin-bottom:12px;padding:12px;background:#eff6ff;border-left:4px solid #2563eb;border-radius:6px;">The <strong>NYC City Council</strong> has the highest concentration of anti-Israel members, concentrated in northern Brooklyn and parts of Queens.</div>
-          <div style="padding:12px;background:#fef2f2;border-left:4px solid #991b1b;border-radius:6px;"><strong>NYC Mayor Zohran Mamdani</strong> has the worst Israel score of any NY official (-47). He revoked the city's IHRA antisemitism definition, revoked anti-BDS protections, used "genocide" and "apartheid" labels, and was arrested at anti-Israel protests.</div>
-        </div>
-      </div>
+      <div id="anti-actions"></div>
     </div>
 
     <!-- Signup -->
@@ -392,6 +413,7 @@
 
       renderRankingsPreview();
       renderNeighborhoodPreview();
+      renderAntiActions();
     }
 
     const DISTRICT_NEIGHBORHOODS = {
@@ -536,6 +558,53 @@
       }
       for (const [hood, data] of worst5) {
         worstContainer.innerHTML += `<div class="hood-row"><span class="hood-name">${hood}<span class="hood-meta">${data.count} reps, ${data.anti} anti-Israel</span></span><span class="hood-score" style="color:#c2410c">${data.total}</span></div>`;
+      }
+    }
+
+    function renderAntiActions() {
+      const container = document.getElementById('anti-actions');
+      if (!container) return;
+
+      // Group criteria by label, anti-direction only
+      const actionMap = {};
+      for (const c of allCriteria) {
+        if (c.criteria?.direction !== 'anti') continue;
+        const label = c.criteria?.label || 'Unknown';
+        if (!actionMap[label]) actionMap[label] = [];
+        actionMap[label].push(c);
+      }
+
+      // Sort by count descending, take top actions
+      const sorted = Object.entries(actionMap).sort((a, b) => b[1].length - a[1].length);
+
+      let idx = 0;
+      for (const [label, entries] of sorted) {
+        const id = 'anti-action-' + (idx++);
+        // Dedupe legislators per action
+        const seen = new Set();
+        const legs = [];
+        for (const e of entries) {
+          if (seen.has(e.person_id)) continue;
+          seen.add(e.person_id);
+          const leg = allLegislators.find(l => l.person_id === e.person_id);
+          if (leg) legs.push(leg);
+        }
+        legs.sort((a, b) => a.score - b.score);
+
+        const legsHtml = legs.map(l => {
+          const sc = l.score > 0 ? '+' + l.score : l.score;
+          const color = l.score >= 0 ? '#15803d' : '#c2410c';
+          return `<div class="action-leg" onclick="event.stopPropagation();openDetailPanel(${l.person_id})"><span style="display:inline-flex;align-items:center;justify-content:center;width:20px;height:20px;border-radius:50%;font-size:10px;font-weight:700;color:white;background:${partyColor(l.party)}">${(l.party||'').includes('Democrat')?'D':'R'}</span><span style="flex:1;font-weight:600;color:#0f172a;">${l.name}</span><span style="font-size:12px;color:#64748b;">${CHAMBER_LABELS[l.chamber]} D${l.district}</span><span style="font-size:13px;font-weight:700;color:${color};min-width:32px;text-align:right;">${sc}</span></div>`;
+        }).join('');
+
+        container.innerHTML += `<div class="action-row" onclick="var el=document.getElementById('${id}');var ch=this.querySelector('.action-chevron');if(el.style.display==='none'){el.style.display='block';ch.classList.add('open')}else{el.style.display='none';ch.classList.remove('open')}">
+          <div class="action-header">
+            <span class="action-label">${label}</span>
+            <span class="action-count">${legs.length}</span>
+            <span class="action-chevron">&#9654;</span>
+          </div>
+          <div class="action-legs" id="${id}">${legsHtml}</div>
+        </div>`;
       }
     }
 
