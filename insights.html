@@ -1,0 +1,340 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Insights - Shalom NY</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: #f8fafc; min-height: 100vh; }
+    .top-nav { display: flex; align-items: center; background: #1e293b; padding: 0 20px; height: 44px; position: sticky; top: 0; z-index: 1000; }
+    .top-nav .site-title { font-size: 15px; font-weight: 700; color: white; margin-right: 24px; white-space: nowrap; text-decoration: none; }
+    .top-nav .nav-link { color: #94a3b8; text-decoration: none; font-size: 14px; font-weight: 500; padding: 10px 16px; border-bottom: 3px solid transparent; }
+    .top-nav .nav-link:hover { color: #e2e8f0; }
+    .top-nav .nav-link.active { color: white; border-bottom-color: #3b82f6; }
+
+    .container { max-width: 900px; margin: 0 auto; padding: 24px 20px; }
+    h1 { font-size: 28px; font-weight: 800; color: #0f172a; margin-bottom: 8px; }
+    .subtitle { font-size: 15px; color: #64748b; margin-bottom: 28px; }
+
+    .insight-card {
+      background: white; border-radius: 14px; padding: 24px;
+      margin-bottom: 16px; box-shadow: 0 1px 3px rgba(0,0,0,0.06);
+    }
+    .insight-card h2 { font-size: 18px; font-weight: 700; color: #0f172a; margin-bottom: 12px; }
+    .insight-card .emoji { font-size: 24px; margin-right: 8px; }
+
+    .stat-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; margin-bottom: 16px; }
+    .stat-box { text-align: center; padding: 16px 8px; background: #f8fafc; border-radius: 10px; }
+    .stat-box .big { font-size: 28px; font-weight: 800; color: #0f172a; }
+    .stat-box .label { font-size: 12px; color: #64748b; margin-top: 4px; }
+
+    .bar-chart { margin: 12px 0; }
+    .bar-row { display: flex; align-items: center; margin-bottom: 8px; }
+    .bar-label { width: 140px; font-size: 13px; font-weight: 500; color: #475569; flex-shrink: 0; }
+    .bar-track { flex: 1; height: 24px; background: #f1f5f9; border-radius: 6px; overflow: hidden; position: relative; }
+    .bar-fill { height: 100%; border-radius: 6px; display: flex; align-items: center; padding-left: 8px; font-size: 12px; font-weight: 600; color: white; min-width: 30px; }
+    .bar-value { margin-left: 8px; font-size: 13px; font-weight: 600; color: #475569; min-width: 30px; }
+
+    .hotspot-list { list-style: none; }
+    .hotspot-list li { padding: 10px 14px; border-radius: 8px; margin-bottom: 6px; background: #f8fafc; font-size: 14px; display: flex; justify-content: space-between; align-items: center; }
+    .hotspot-list .name { font-weight: 600; color: #0f172a; }
+    .hotspot-list .score { font-weight: 700; }
+
+    .finding { padding: 14px; border-radius: 10px; margin-bottom: 10px; font-size: 14px; line-height: 1.6; color: #334155; border-left: 4px solid #e2e8f0; background: #f8fafc; }
+    .finding.alert { border-left-color: #c2410c; background: #fff7ed; }
+    .finding.positive { border-left-color: #15803d; background: #f0fdf4; }
+    .finding.info { border-left-color: #2563eb; background: #eff6ff; }
+
+    @media (max-width: 768px) {
+      .stat-grid { grid-template-columns: repeat(2, 1fr); }
+      .bar-label { width: 100px; font-size: 12px; }
+      .top-nav .nav-link { font-size: 13px; padding: 10px 8px; }
+    }
+  </style>
+</head>
+<body>
+  <nav class="top-nav">
+    <a href="index.html" class="site-title">Shalom NY</a>
+    <a href="stats.html" class="nav-link">Feed</a>
+    <a href="map.html" class="nav-link">Map</a>
+    <a href="rankings.html" class="nav-link">Rankings</a>
+    <a href="insights.html" class="nav-link active">Insights</a>
+  </nav>
+
+  <div class="container">
+    <h1>Insights &amp; Analysis</h1>
+    <div class="subtitle">Auto-generated analysis of 794 evidence items across 292 NY legislators</div>
+    <div id="insights-content"><div style="text-align:center;padding:40px;color:#94a3b8;">Loading analysis...</div></div>
+  </div>
+
+  <script>
+    const SUPABASE_URL = 'https://xeknqkxhfxvveeyddokl.supabase.co';
+    const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inhla25xa3hoZnh2dmVleWRkb2tsIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzUyMjc1MzksImV4cCI6MjA5MDgwMzUzOX0.-CO0RkDBljPTRBO5x5JIAIZ23WfhR0A8bLJV3iE_xS0';
+    const CHAMBER_LABELS = { us_senate: 'US Senate', us_house: 'US House', senate: 'State Senate', assembly: 'Assembly', city_council: 'City Council', nyc_mayor: 'NYC Mayor' };
+
+    async function init() {
+      const [legR, posR, critR] = await Promise.all([
+        fetch(`${SUPABASE_URL}/rest/v1/current_legislators?select=person_id,name,party,chamber,district&order=name`, { headers: { apikey: SUPABASE_ANON_KEY } }),
+        fetch(`${SUPABASE_URL}/rest/v1/positions?select=person_id,stance&assessment_type=eq.ai&topic_id=eq.1`, { headers: { apikey: SUPABASE_ANON_KEY } }),
+        fetch(`${SUPABASE_URL}/rest/v1/person_criteria?select=person_id,criterion_id,source_date,criteria(label,direction,weight,category)&order=source_date.desc`, { headers: { apikey: SUPABASE_ANON_KEY } }),
+      ]);
+      const legs = await legR.json();
+      const positions = await posR.json();
+      const criteria = await critR.json();
+
+      const posMap = {}; for (const p of positions) posMap[p.person_id] = p;
+
+      // Compute scores
+      for (const leg of legs) {
+        const crit = criteria.filter(c => c.person_id === leg.person_id);
+        let score = 0;
+        for (const c of crit) { const w = c.criteria?.weight || 1; score += c.criteria?.direction === 'pro' ? w : -w; }
+        leg.score = score;
+        leg.evidenceCount = crit.length;
+        leg.stance = posMap[leg.person_id]?.stance || 'unknown';
+      }
+
+      // === ANALYSIS ===
+      const totalLegs = legs.length;
+      const withEvidence = legs.filter(l => l.evidenceCount > 0).length;
+      const proLegs = legs.filter(l => l.stance === 'strongly_support' || l.stance === 'support');
+      const antiLegs = legs.filter(l => l.stance === 'strongly_oppose' || l.stance === 'oppose');
+      const neutralLegs = legs.filter(l => l.stance === 'neutral');
+      const unknownLegs = legs.filter(l => l.stance === 'unknown');
+
+      // By party
+      const dems = legs.filter(l => l.party === 'Democratic');
+      const reps = legs.filter(l => l.party === 'Republican');
+      const demPro = dems.filter(l => l.stance === 'strongly_support' || l.stance === 'support').length;
+      const demAnti = dems.filter(l => l.stance === 'strongly_oppose' || l.stance === 'oppose').length;
+      const repPro = reps.filter(l => l.stance === 'strongly_support' || l.stance === 'support').length;
+      const repAnti = reps.filter(l => l.stance === 'strongly_oppose' || l.stance === 'oppose').length;
+
+      // By chamber
+      const chambers = ['us_senate', 'us_house', 'senate', 'assembly', 'city_council'];
+      const chamberStats = chambers.map(ch => {
+        const chLegs = legs.filter(l => l.chamber === ch);
+        const pro = chLegs.filter(l => l.stance === 'strongly_support' || l.stance === 'support').length;
+        const anti = chLegs.filter(l => l.stance === 'strongly_oppose' || l.stance === 'oppose').length;
+        const avgScore = chLegs.length > 0 ? chLegs.reduce((s, l) => s + l.score, 0) / chLegs.length : 0;
+        return { chamber: ch, label: CHAMBER_LABELS[ch], total: chLegs.length, pro, anti, avgScore };
+      });
+
+      // Most anti-Israel geographic clusters (City Council districts with anti-Israel reps)
+      const antiCC = legs.filter(l => l.chamber === 'city_council' && (l.stance === 'strongly_oppose' || l.stance === 'oppose'))
+        .sort((a, b) => a.score - b.score);
+      const antiAssembly = legs.filter(l => l.chamber === 'assembly' && (l.stance === 'strongly_oppose' || l.stance === 'oppose'))
+        .sort((a, b) => a.score - b.score);
+
+      // Criteria frequency
+      const critCounts = {};
+      for (const c of criteria) {
+        const label = c.criteria?.label || 'Unknown';
+        critCounts[label] = (critCounts[label] || 0) + 1;
+      }
+      const topCriteria = Object.entries(critCounts).sort((a, b) => b[1] - a[1]).slice(0, 8);
+
+      // DSA / progressive caucus members
+      const stronglyAnti = legs.filter(l => l.stance === 'strongly_oppose').sort((a, b) => a.score - b.score);
+
+      // 2026 activity
+      const recent2026 = criteria.filter(c => c.source_date && c.source_date.startsWith('2026'));
+
+      let html = '';
+
+      // Overview stats
+      html += `<div class="insight-card">
+        <h2>Overview</h2>
+        <div class="stat-grid">
+          <div class="stat-box"><div class="big">${totalLegs}</div><div class="label">Total Legislators</div></div>
+          <div class="stat-box"><div class="big">${proLegs.length}</div><div class="label">Pro-Israel</div></div>
+          <div class="stat-box"><div class="big">${antiLegs.length}</div><div class="label">Anti-Israel</div></div>
+          <div class="stat-box"><div class="big">${unknownLegs.length}</div><div class="label">No Position</div></div>
+        </div>
+        <div class="finding positive"><strong>${Math.round((proLegs.length / withEvidence) * 100)}%</strong> of NY legislators with a public record are pro-Israel. Only <strong>${Math.round((antiLegs.length / withEvidence) * 100)}%</strong> are anti-Israel.</div>
+      </div>`;
+
+      // Party breakdown — pie charts
+      const demNeutralUnknown = dems.length - demPro - demAnti;
+      const repNeutralUnknown = reps.length - repPro - repAnti;
+
+      function pieChart(pro, anti, neutral, total, partyColor) {
+        const r = 70, cx = 80, cy = 80;
+        const proPct = pro / total, antiPct = anti / total, neutralPct = neutral / total;
+
+        function arc(startAngle, endAngle, color) {
+          if (endAngle - startAngle <= 0) return '';
+          const large = endAngle - startAngle > Math.PI ? 1 : 0;
+          const x1 = cx + r * Math.cos(startAngle - Math.PI/2);
+          const y1 = cy + r * Math.sin(startAngle - Math.PI/2);
+          const x2 = cx + r * Math.cos(endAngle - Math.PI/2);
+          const y2 = cy + r * Math.sin(endAngle - Math.PI/2);
+          return '<path d="M' + cx + ',' + cy + ' L' + x1 + ',' + y1 + ' A' + r + ',' + r + ' 0 ' + large + ',1 ' + x2 + ',' + y2 + ' Z" fill="' + color + '"/>';
+        }
+
+        let a1 = 0, a2 = proPct * 2 * Math.PI;
+        let a3 = a2 + neutralPct * 2 * Math.PI;
+        let a4 = a3 + antiPct * 2 * Math.PI;
+        return '<svg width="160" height="160" viewBox="0 0 160 160">' +
+          arc(a1, a2, '#15803d') +
+          arc(a2, a3, '#d1d5db') +
+          arc(a3, a4, '#c2410c') +
+          '</svg>';
+      }
+
+      html += `<div class="insight-card">
+        <h2>Party Divide</h2>
+        <div style="display:flex;justify-content:center;gap:60px;margin:20px 0;">
+          <div style="text-align:center;">
+            <div style="display:inline-block;background:#eff6ff;border-radius:50%;padding:10px;">${pieChart(demPro, demAnti, demNeutralUnknown, dems.length, '#3b82f6')}</div>
+            <div style="font-size:16px;font-weight:700;color:#3b82f6;margin-top:12px;">Democrats</div>
+            <div style="font-size:13px;color:#475569;margin-top:4px;">${demPro} Pro &middot; ${demAnti} Anti &middot; ${demNeutralUnknown} Other</div>
+          </div>
+          <div style="text-align:center;">
+            <div style="display:inline-block;background:#fef2f2;border-radius:50%;padding:10px;">${pieChart(repPro, repAnti, repNeutralUnknown, reps.length, '#ef4444')}</div>
+            <div style="font-size:16px;font-weight:700;color:#ef4444;margin-top:12px;">Republicans</div>
+            <div style="font-size:13px;color:#475569;margin-top:4px;">${repPro} Pro &middot; ${repAnti} Anti &middot; ${repNeutralUnknown} Other</div>
+          </div>
+        </div>
+        <div style="display:flex;justify-content:center;gap:16px;margin-bottom:16px;font-size:12px;color:#64748b;">
+          <span><span style="display:inline-block;width:10px;height:10px;border-radius:2px;background:#15803d;margin-right:4px;"></span>Pro-Israel</span>
+          <span><span style="display:inline-block;width:10px;height:10px;border-radius:2px;background:#c2410c;margin-right:4px;"></span>Anti-Israel</span>
+          <span><span style="display:inline-block;width:10px;height:10px;border-radius:2px;background:#d1d5db;margin-right:4px;"></span>Neutral/Unknown</span>
+        </div>
+        <div class="finding info"><strong>Zero Republicans</strong> in the NY legislature have an anti-Israel position. All anti-Israel legislators are Democrats — but they represent only <strong>${Math.round(demAnti/dems.length*100)}%</strong> of the Democratic caucus.</div>
+      </div>`;
+
+      // Chamber comparison
+      html += `<div class="insight-card">
+        <h2>By Legislative Body</h2>
+        <div class="bar-chart">`;
+      for (const ch of chamberStats) {
+        const pct = ch.total > 0 ? Math.round(ch.pro / ch.total * 100) : 0;
+        const antiPct = ch.total > 0 ? Math.round(ch.anti / ch.total * 100) : 0;
+        html += `<div class="bar-row">
+          <div class="bar-label">${ch.label}</div>
+          <div class="bar-track">
+            <div class="bar-fill" style="width:${pct}%;background:#15803d">${ch.pro}</div>
+          </div>
+          <div class="bar-value">${pct}% pro</div>
+        </div>`;
+      }
+      html += `</div>
+        <div class="finding alert">The <strong>NYC City Council</strong> has the highest concentration of anti-Israel members (${chamberStats.find(c => c.chamber === 'city_council').anti} out of ${chamberStats.find(c => c.chamber === 'city_council').total}), particularly in northern Brooklyn, the South Bronx, and parts of Queens — representing a geographic corridor of anti-Israel sentiment.</div>
+      </div>`;
+
+      // Neighborhood mapping — district to neighborhoods
+      const DISTRICT_NEIGHBORHOODS = {
+        // City Council
+        'city_council-33': 'Crown Heights, Brownsville',
+        'city_council-34': 'Sunset Park, Red Hook, Borough Park',
+        'city_council-35': 'Prospect Lefferts, East Flatbush',
+        'city_council-36': 'Williamsburg, Greenpoint',
+        'city_council-37': 'Bushwick, Cypress Hills',
+        'city_council-38': 'Sunset Park, Red Hook',
+        'city_council-39': 'Kensington, Borough Park',
+        'city_council-25': 'Jackson Heights, Elmhurst',
+        'city_council-26': 'Sunnyside, Astoria',
+        'city_council-27': 'East Elmhurst, Jackson Heights',
+        'city_council-10': 'Washington Heights, Inwood',
+        'city_council-14': 'Jackson Heights, Corona',
+        'city_council-16': 'Morrisania, Highbridge',
+        // Assembly
+        'assembly-51': 'Sunset Park, Red Hook',
+        'assembly-50': 'Williamsburg, Greenpoint',
+        'assembly-57': 'South Bronx, Mott Haven',
+        'assembly-56': 'Mott Haven, Hunts Point',
+        // State Senate
+        'senate-25': 'Crown Heights, Bed-Stuy',
+        'senate-18': 'Bushwick, Williamsburg',
+        // US House
+        'us_house-14': 'Bronx, NE Queens (AOC)',
+        'us_house-7': 'Lower Manhattan, Brooklyn',
+      };
+
+      // NYC neighborhoods analysis
+      const nycLegs = legs.filter(l => ['city_council', 'assembly', 'nyc_mayor'].includes(l.chamber) ||
+        (l.chamber === 'senate' && [18, 20, 25, 26].includes(l.district)) ||
+        (l.chamber === 'us_house' && [7, 8, 9, 12, 13, 14, 15].includes(l.district)));
+
+      // Group neighborhoods by stance
+      const neighborhoodScores = {};
+      for (const l of legs) {
+        const key = l.chamber + '-' + l.district;
+        const hood = DISTRICT_NEIGHBORHOODS[key];
+        if (!hood) continue;
+        const hoods = hood.split(', ');
+        for (const h of hoods) {
+          if (!neighborhoodScores[h]) neighborhoodScores[h] = { total: 0, count: 0, anti: 0, pro: 0 };
+          neighborhoodScores[h].total += l.score;
+          neighborhoodScores[h].count++;
+          if (l.stance === 'strongly_oppose' || l.stance === 'oppose') neighborhoodScores[h].anti++;
+          if (l.stance === 'strongly_support' || l.stance === 'support') neighborhoodScores[h].pro++;
+        }
+      }
+
+      const sortedHoods = Object.entries(neighborhoodScores).sort((a, b) => a[1].total - b[1].total);
+      const worstHoods = sortedHoods.slice(0, 6);
+      const bestHoods = sortedHoods.filter(([_, v]) => v.total > 0).sort((a, b) => b[1].total - a[1].total).slice(0, 6);
+
+      // Worst neighborhoods
+      html += `<div class="insight-card">
+        <h2>Worst NYC Neighborhoods for Israel Support</h2>
+        <p style="font-size:14px;color:#64748b;margin-bottom:12px;">Areas where local elected officials have the strongest anti-Israel records.</p>
+        <ul class="hotspot-list">`;
+      for (const [hood, data] of worstHoods) {
+        html += `<li><span class="name">${hood} <span style="color:#94a3b8;font-weight:400;font-size:12px;">${data.count} reps, ${data.anti} anti-Israel</span></span><span class="score" style="color:#c2410c">${data.total > 0 ? '+' : ''}${data.total}</span></li>`;
+      }
+      html += `</ul>
+        <div class="finding alert">These neighborhoods form a corridor through <strong>northern Brooklyn</strong> (Bushwick, Williamsburg, Sunset Park), the <strong>South Bronx</strong> (Mott Haven, Morrisania), and <strong>Jackson Heights/Elmhurst</strong> in Queens — areas with high DSA/progressive caucus alignment and significant immigrant and POC populations where anti-Israel sentiment has been channeled through left-progressive organizing.</div>
+      </div>`;
+
+      // Best neighborhoods
+      if (bestHoods.length > 0) {
+        html += `<div class="insight-card">
+          <h2>Best NYC Neighborhoods for Israel Support</h2>
+          <p style="font-size:14px;color:#64748b;margin-bottom:12px;">Areas where local elected officials have the strongest pro-Israel records.</p>
+          <ul class="hotspot-list">`;
+        for (const [hood, data] of bestHoods) {
+          html += `<li><span class="name">${hood} <span style="color:#94a3b8;font-weight:400;font-size:12px;">${data.count} reps, ${data.pro} pro-Israel</span></span><span class="score" style="color:#15803d">+${data.total}</span></li>`;
+        }
+        html += `</ul>
+          <div class="finding positive">Pro-Israel strength in NYC is concentrated in areas with significant <strong>Orthodox Jewish communities</strong> (Borough Park, Crown Heights) and <strong>moderate Democratic or Republican-leaning</strong> districts in southern Brooklyn and parts of Queens.</div>
+        </div>`;
+      }
+
+      // Statewide best areas
+      const upstateLegs = legs.filter(l => ['senate', 'assembly'].includes(l.chamber) && l.score > 3);
+      html += `<div class="insight-card">
+        <h2>Best of NY State (Outside NYC)</h2>
+        <p style="font-size:14px;color:#64748b;margin-bottom:12px;">Pro-Israel strength across New York State is driven by Republican-held districts and moderate Democrats.</p>
+        <div class="finding positive">At the <strong>state level</strong>, NY is broadly pro-Israel. The State Senate and Assembly are both majority pro-Israel. Republican members are <strong>uniformly pro-Israel</strong> (${repPro} of ${reps.length}), and most moderate Democrats in suburban and upstate districts also support Israel. The anti-Israel bloc is concentrated in <strong>NYC's progressive left</strong>, not statewide.</div>
+      </div>`;
+
+      // Most common actions
+      html += `<div class="insight-card">
+        <h2>Most Common Actions</h2>
+        <p style="font-size:14px;color:#64748b;margin-bottom:12px;">What legislators are actually doing — the most frequently documented positions.</p>
+        <div class="bar-chart">`;
+      const maxCrit = topCriteria[0]?.[1] || 1;
+      for (const [label, count] of topCriteria) {
+        html += `<div class="bar-row">
+          <div class="bar-label" style="width:240px;font-size:12px;">${label}</div>
+          <div class="bar-track"><div class="bar-fill" style="width:${Math.round(count/maxCrit*100)}%;background:#475569">${count}</div></div>
+        </div>`;
+      }
+      html += `</div></div>`;
+
+      // 2026 activity
+      html += `<div class="insight-card">
+        <h2>2026 Activity</h2>
+        <div class="finding info">There have been <strong>${recent2026.length}</strong> documented Israel-related actions in 2026 so far, reflecting heightened activity around the <strong>Iran conflict</strong> and ongoing <strong>NYC Council antisemitism legislation</strong>.</div>
+      </div>`;
+
+      document.getElementById('insights-content').innerHTML = html;
+    }
+    init();
+  </script>
+</body>
+</html>

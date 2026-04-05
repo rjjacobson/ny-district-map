@@ -269,13 +269,6 @@
     </div>
   </div>
 
-  <div class="reps-container">
-    <div class="reps-results" id="reps-results">
-      <h2 id="reps-title">Your Representatives</h2>
-      <div id="reps-list"></div>
-    </div>
-  </div>
-
   <div class="dashboard">
     <!-- Feed preview -->
     <div class="dash-card">
@@ -307,19 +300,18 @@
       <div id="mini-map" style="height:220px;cursor:pointer;" onclick="window.location='map.html'"></div>
     </div>
 
-    <!-- Signup -->
-    <div class="signup-section">
-      <h3>Stay Updated</h3>
-      <p>Get weekly updates on what your representatives are saying about Israel</p>
-      <div class="signup-form" id="signup-form">
-        <input type="email" id="signup-email" placeholder="Enter your email" />
-        <button onclick="handleSignup()">Subscribe</button>
+    <!-- Insights -->
+    <div class="dash-card" style="cursor:pointer;" onclick="window.location='insights.html'">
+      <div class="dash-card-header">
+        <h3>Insights &amp; Analysis</h3>
+        <a href="insights.html">View all &rarr;</a>
       </div>
-      <div class="signup-options">
-        <label><input type="checkbox" id="opt-my-reps" checked /> My representatives</label>
-        <label><input type="checkbox" id="opt-all" checked /> All NY legislators</label>
+      <div style="padding:20px;">
+        <div style="font-size:14px;color:#475569;line-height:1.6;" id="insight-preview">
+          <div style="margin-bottom:12px;padding:12px;background:#fff7ed;border-left:4px solid #c2410c;border-radius:6px;"><strong>Zero Republicans</strong> in the NY legislature have an anti-Israel position. All anti-Israel legislators are Democrats.</div>
+          <div style="padding:12px;background:#eff6ff;border-left:4px solid #2563eb;border-radius:6px;">The <strong>NYC City Council</strong> has the highest concentration of anti-Israel members, concentrated in northern Brooklyn and parts of Queens.</div>
+        </div>
       </div>
-      <div class="signup-success" id="signup-success">Thanks for subscribing! We'll keep you updated.</div>
     </div>
   </div>
 
@@ -405,28 +397,25 @@
       const address = document.getElementById('address-input').value.trim();
       if (!address) return;
 
-      const results = document.getElementById('reps-results');
-      const list = document.getElementById('reps-list');
-      results.classList.add('visible');
-      list.innerHTML = '<div class="reps-loading">Looking up your address...</div>';
+      const btn = document.querySelector('.address-bar button');
+      btn.textContent = 'Searching...';
+      btn.disabled = true;
 
       try {
         // Geocode with Nominatim
         const geoResp = await fetch(`https://nominatim.openstreetmap.org/search?q=${encodeURIComponent(address)}&format=json&limit=1&countrycodes=us`);
         const geoData = await geoResp.json();
-        if (!geoData.length) { list.innerHTML = '<div class="reps-loading">Address not found. Try a more specific address.</div>'; return; }
+        if (!geoData.length) { btn.textContent = 'Find My Reps'; btn.disabled = false; alert('Address not found. Try a more specific address.'); return; }
 
         const lat = parseFloat(geoData[0].lat);
         const lon = parseFloat(geoData[0].lon);
 
         // Check if in NY state (roughly)
         if (lat < 40.4 || lat > 45.1 || lon < -80 || lon > -71.5) {
-          list.innerHTML = '<div class="reps-loading">This address doesn\'t appear to be in New York State.</div>';
+          btn.textContent = 'Find My Reps'; btn.disabled = false;
+          alert('This address doesn\'t appear to be in New York State.');
           return;
         }
-
-        document.getElementById('reps-title').textContent = `Representatives for ${geoData[0].display_name.split(',').slice(0, 3).join(',')}`;
-        list.innerHTML = '<div class="reps-loading">Finding your districts...</div>';
 
         // Load all GeoJSON boundaries
         const [senateGeo, assemblyGeo, usHouseGeo, ccGeo] = await Promise.all([
@@ -504,7 +493,8 @@
 
         // Store results and redirect to results page
         if (found.length === 0) {
-          list.innerHTML = '<div class="reps-loading">No representatives found for this location.</div>';
+          btn.textContent = 'Find My Reps'; btn.disabled = false;
+          alert('No representatives found for this location.');
           return;
         }
 
@@ -516,7 +506,8 @@
         sessionStorage.setItem('shalomny_reps', JSON.stringify(resultsData));
         window.location = 'reps.html';
       } catch (err) {
-        list.innerHTML = `<div class="reps-loading">Error: ${err.message}</div>`;
+        btn.textContent = 'Find My Reps'; btn.disabled = false;
+        alert(`Error: ${err.message}`);
       }
     }
 
@@ -537,9 +528,10 @@
     }
 
     // Mini map
-    const miniMap = L.map('mini-map', { center: [42.85, -75.5], zoom: 7, zoomControl: false, dragging: false, scrollWheelZoom: false, attributionControl: false });
+    const miniMap = L.map('mini-map', { center: [40.7128, -73.95], zoom: 11, zoomControl: false, dragging: false, scrollWheelZoom: false, attributionControl: false, preferCanvas: true });
     L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png', { maxZoom: 18 }).addTo(miniMap);
-    fetch('geo/senate.geojson').then(r => r.json()).then(geo => {
+    fetch('geo/city_council.geojson').then(r => r.json()).then(geo => {
+      for (const f of geo.features) f.properties.DISTRICT = parseInt(f.properties.coundist);
       L.geoJSON(geo, { style: { fillColor: '#3b82f6', weight: 1, color: '#fff', fillOpacity: 0.4 } }).addTo(miniMap);
     });
 

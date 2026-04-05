@@ -182,14 +182,14 @@
         { title: 'Most Anti-Israel', sort: (a,b) => a.score - b.score, filter: l => l.score < 0 },
       ];
       for (const cat of cats) {
-        const matching = filtered.filter(cat.filter).sort(cat.sort), top5 = matching.slice(0, 5);
+        const matching = filtered.filter(cat.filter).sort(cat.sort), top10 = matching.slice(0, 10);
         const card = document.createElement('div'); card.className = 'leader-card';
         let rows = '';
-        for (let i = 0; i < top5.length; i++) {
-          const l = top5[i];
+        for (let i = 0; i < top10.length; i++) {
+          const l = top10[i];
           rows += `<div class="leader-row" onclick="showPersonDetail(${l.person_id})"><span class="leader-rank">${i+1}</span><span class="leader-dot" style="background:${partyColor(l.party)}"></span><span class="leader-name">${l.name}<span class="leader-chamber">${CHAMBER_SHORT[l.chamber]} D${l.district}</span></span><span class="leader-score">${l.score > 0 ? '+' : ''}${l.score}</span></div>`;
         }
-        card.innerHTML = `<div class="leader-card-header"><h3>${cat.title}</h3><span class="col-label">SCORE</span></div>${rows}${matching.length > 5 ? `<div class="complete-link" onclick="showFullRankings('${cat.title}')">Complete Rankings (${matching.length})</div>` : ''}`;
+        card.innerHTML = `<div class="leader-card-header"><h3>${cat.title}</h3><span class="col-label">SCORE</span></div>${rows}${matching.length > 10 ? `<div class="complete-link" onclick="showFullRankings('${cat.title}')">Complete Rankings (${matching.length})</div>` : ''}`;
         grid.appendChild(card);
       }
     }

@@ -117,39 +117,60 @@
       const posMap = {}; for (const p of allPos) posMap[p.person_id] = p;
 
       // Compute scores and area grade
-      let totalScore = 0, proCount = 0, antiCount = 0;
       const repData = reps.map(r => {
         const crit = allCrit.filter(c => c.person_id === r.person_id);
         let score = 0;
         for (const c of crit) { const w = c.criteria?.weight || 1; score += c.criteria?.direction === 'pro' ? w : -w; }
         const stance = posMap[r.person_id]?.stance || 'unknown';
-        totalScore += score;
-        if (stance.includes('support')) proCount++;
-        if (stance.includes('oppose')) antiCount++;
         return { ...r, score, stance, criteria: crit, rationale: posMap[r.person_id]?.rationale };
       });
 
-      const avgScore = totalScore / reps.length;
-      let grade, gradeColor;
-      if (avgScore >= 8) { grade = 'A+'; gradeColor = '#15803d'; }
-      else if (avgScore >= 5) { grade = 'A'; gradeColor = '#16a34a'; }
-      else if (avgScore >= 3) { grade = 'B+'; gradeColor = '#4ade80'; }
-      else if (avgScore >= 1) { grade = 'B'; gradeColor = '#86efac'; }
-      else if (avgScore >= -1) { grade = 'C'; gradeColor = '#a1a1aa'; }
-      else if (avgScore >= -3) { grade = 'D'; gradeColor = '#fb923c'; }
-      else { grade = 'F'; gradeColor = '#c2410c'; }
+      // Split into federal/state vs local
+      const federalState = repData.filter(r => ['us_senate', 'us_house', 'senate', 'assembly'].includes(r.chamber));
+      const local = repData.filter(r => ['city_council', 'nyc_mayor'].includes(r.chamber));
+
+      function computeGrade(group) {
+        if (group.length === 0) return { grade: 'N/A', color: '#d1d5db', score: 0, pro: 0, anti: 0 };
+        let totalScore = 0, pro = 0, anti = 0;
+        for (const r of group) {
+          totalScore += r.score;
+          if (r.stance.includes('support')) pro++;
+          if (r.stance.includes('oppose')) anti++;
+        }
+        const avg = totalScore / group.length;
+        let grade, color;
+        if (avg >= 8) { grade = 'A+'; color = '#15803d'; }
+        else if (avg >= 5) { grade = 'A'; color = '#16a34a'; }
+        else if (avg >= 3) { grade = 'B+'; color = '#4ade80'; }
+        else if (avg >= 1) { grade = 'B'; color = '#86efac'; }
+        else if (avg >= -1) { grade = 'C'; color = '#a1a1aa'; }
+        else if (avg >= -3) { grade = 'D'; color = '#fb923c'; }
+        else { grade = 'F'; color = '#c2410c'; }
+        return { grade, color, score: totalScore, pro, anti };
+      }
+
+      const fsGrade = computeGrade(federalState);
+      const localGrade = computeGrade(local);
 
       let html = `
         <div class="area-grade">
           <h1>Your Representatives</h1>
           <div class="subtitle">${address}</div>
-          <div class="grade-circle" style="background:${gradeColor}">${grade}</div>
-          <div class="grade-label">Area Israel Support Grade</div>
+          <div style="display:flex;justify-content:center;gap:40px;margin:20px 0 8px;">
+            <div style="text-align:center;">
+              <div class="grade-circle" style="background:${fsGrade.color};width:80px;height:80px;font-size:28px;line-height:80px;">${fsGrade.grade}</div>
+              <div class="grade-label" style="margin-top:8px;">Federal &amp; State</div>
+            </div>
+            <div style="text-align:center;">
+              <div class="grade-circle" style="background:${localGrade.color};width:80px;height:80px;font-size:28px;line-height:80px;">${localGrade.grade}</div>
+              <div class="grade-label" style="margin-top:8px;">Local</div>
+            </div>
+          </div>
           <div class="grade-breakdown">
-            <div class="grade-stat"><div class="num">${reps.length}</div><div class="label">Representatives</div></div>
-            <div class="grade-stat"><div class="num">${proCount}</div><div class="label">Pro-Israel</div></div>
-            <div class="grade-stat"><div class="num">${antiCount}</div><div class="label">Anti-Israel</div></div>
-            <div class="grade-stat"><div class="num">${totalScore > 0 ? '+' : ''}${totalScore}</div><div class="label">Total Score</div></div>
+            <div class="grade-stat"><div class="num">${repData.length}</div><div class="label">Representatives</div></div>
+            <div class="grade-stat"><div class="num">${fsGrade.pro + localGrade.pro}</div><div class="label">Pro-Israel</div></div>
+            <div class="grade-stat"><div class="num">${fsGrade.anti + localGrade.anti}</div><div class="label">Anti-Israel</div></div>
+            <div class="grade-stat"><div class="num">${fsGrade.score + localGrade.score > 0 ? '+' : ''}${fsGrade.score + localGrade.score}</div><div class="label">Total Score</div></div>
           </div>
         </div>`;
 
