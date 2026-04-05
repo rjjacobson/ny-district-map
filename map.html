@@ -440,13 +440,14 @@
     let senateData = null, assemblyData = null, cityCouncilData = null, usHouseData = null, usSenateData = null;
     let senateLegislators = [], assemblyLegislators = [], cityCouncilLegislators = [];
     let usHouseLegislators = [], usSenateLegislators = [];
+    let nycMayorLegislators = [];
     let activeLayer = 'senate';
     let selectedDistrict = null;
     let highlightedDistrict = null;
     let mapLayersByDistrict = { senate: {}, assembly: {}, city_council: {}, us_house: {}, us_senate: {} };
 
-    const CHAMBER_LABELS = { senate: 'State Senate', assembly: 'Assembly', city_council: 'City Council', us_house: 'US House', us_senate: 'US Senate' };
-    const CHAMBER_MEMBER_LABELS = { senate: 'state senators', assembly: 'assembly members', city_council: 'council members', us_house: 'representatives', us_senate: 'senators' };
+    const CHAMBER_LABELS = { senate: 'State Senate', assembly: 'Assembly', city_council: 'City Council', us_house: 'US House', us_senate: 'US Senate', nyc_mayor: 'NYC Mayor' };
+    const CHAMBER_MEMBER_LABELS = { senate: 'state senators', assembly: 'assembly members', city_council: 'council members', us_house: 'representatives', us_senate: 'senators', nyc_mayor: 'mayor' };
     const ALL_CHAMBERS = ['us_senate', 'us_house', 'senate', 'assembly', 'city_council'];
     const NY_STATE_VIEW = { center: [42.85, -75.5], zoom: 7 };
     const NYC_VIEW = { center: [40.7128, -73.95], zoom: 11 };
@@ -557,6 +558,7 @@
       if (chamber === 'assembly') return assemblyLegislators;
       if (chamber === 'us_house') return usHouseLegislators;
       if (chamber === 'us_senate') return usSenateLegislators;
+      if (chamber === 'nyc_mayor') return nycMayorLegislators;
       return cityCouncilLegislators;
     }
 
@@ -622,7 +624,7 @@
         <div class="detail-header">
           <button class="close-btn" onclick="clearSelection()">&times;</button>
           <h2>${leg.name}</h2>
-          <div class="district-label">${CHAMBER_LABELS[ch]} District ${leg.district} <span class="party-pill" style="background:${partyColor(leg.party)}">${leg.party || 'Unknown'}</span></div>
+          <div class="district-label">${ch === 'nyc_mayor' ? 'NYC Mayor' : `${CHAMBER_LABELS[ch]} District ${leg.district}`} <span class="party-pill" style="background:${partyColor(leg.party)}">${leg.party || 'Unknown'}</span></div>
         </div>
         <div class="detail-body">
           ${contactHTML ? `
@@ -826,6 +828,7 @@
           { key: 'us_house', label: 'US House', legs: usHouseLegislators },
           { key: 'senate', label: 'State Senate', legs: senateLegislators },
           { key: 'assembly', label: 'Assembly', legs: assemblyLegislators },
+          { key: 'nyc_mayor', label: 'NYC Mayor', legs: nycMayorLegislators },
           { key: 'city_council', label: 'City Council', legs: cityCouncilLegislators },
         ];
         let totalResults = 0;
@@ -857,6 +860,21 @@
         // No search — show active chamber
         let legs = [...getLegislators(activeLayer)].map(l => ({ ...l, _chamber: activeLayer }));
         let label = CHAMBER_MEMBER_LABELS[activeLayer];
+
+        // Show NYC Mayor at top of city council view
+        if (activeLayer === 'city_council' && nycMayorLegislators.length > 0) {
+          const mayorHeader = document.createElement('div');
+          mayorHeader.style.cssText = 'padding:6px 16px;font-size:11px;font-weight:600;color:#888;background:#f0f0f0;text-transform:uppercase;letter-spacing:0.5px;';
+          mayorHeader.textContent = 'NYC Mayor';
+          container.appendChild(mayorHeader);
+          for (const m of nycMayorLegislators) {
+            container.appendChild(createRow(m, 'nyc_mayor'));
+          }
+          const ccHeader = document.createElement('div');
+          ccHeader.style.cssText = 'padding:6px 16px;font-size:11px;font-weight:600;color:#888;background:#f0f0f0;text-transform:uppercase;letter-spacing:0.5px;margin-top:4px;';
+          ccHeader.textContent = `Council Members (${legs.length})`;
+          container.appendChild(ccHeader);
+        }
 
         if (colorMode !== 'party') {
           // Sort by stance: strongly_support first → unknown last
@@ -911,18 +929,25 @@
       const dotColor = colorMode === 'israel' ? stanceColor(leg.person_id) : partyColor(leg.party);
       const tagText = colorMode === 'israel' ? stanceLabel(leg.person_id) : (leg.party || '');
       row.innerHTML = `
-        <span class="district-num">${leg.district}</span>
+        <span class="district-num">${chamber === 'nyc_mayor' ? '' : leg.district}</span>
         <span class="party-dot" style="background:${dotColor}"></span>
         <span class="leg-name">${leg.name}</span>
         <span class="leg-tag">${tagText}</span>
       `;
-      row.addEventListener('mouseenter', () => {
-        if (chamber === activeLayer) highlightOnMap(leg.district, chamber);
-      });
-      row.addEventListener('mouseleave', () => {
-        if (chamber === activeLayer) unhighlightOnMap(chamber);
-      });
+      if (chamber !== 'nyc_mayor') {
+        row.addEventListener('mouseenter', () => {
+          if (chamber === activeLayer) highlightOnMap(leg.district, chamber);
+        });
+        row.addEventListener('mouseleave', () => {
+          if (chamber === activeLayer) unhighlightOnMap(chamber);
+        });
+      }
       row.addEventListener('click', () => {
+        if (chamber === 'nyc_mayor') {
+          // Mayor has no map district — just show detail panel
+          showDetail(leg, 'nyc_mayor');
+          return;
+        }
         if (chamber !== activeLayer) {
           showLayer(chamber, true);
         }
@@ -1149,12 +1174,13 @@
     async function init() {
       try {
         // Step 1: Fetch lightweight Supabase data first (fast)
-        const [sLeg, aLeg, ccLeg, uhLeg, usLeg, positions, pCriteria] = await Promise.all([
+        const [sLeg, aLeg, ccLeg, uhLeg, usLeg, mayorLeg, positions, pCriteria] = await Promise.all([
           fetchLegislators('senate'),
           fetchLegislators('assembly'),
           fetchLegislators('city_council'),
           fetchLegislators('us_house'),
           fetchLegislators('us_senate'),
+          fetchLegislators('nyc_mayor'),
           fetchPositions(),
           fetchPersonCriteria(),
         ]);
@@ -1166,6 +1192,7 @@
         cityCouncilLegislators = ccLeg;
         usHouseLegislators = uhLeg;
         usSenateLegislators = usLeg;
+        nycMayorLegislators = mayorLeg;
 
         // Step 2: Show sidebar immediately
         renderList();

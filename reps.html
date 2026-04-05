@@ -92,7 +92,7 @@
   <script>
     const SUPABASE_URL = 'https://xeknqkxhfxvveeyddokl.supabase.co';
     const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inhla25xa3hoZnh2dmVleWRkb2tsIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzUyMjc1MzksImV4cCI6MjA5MDgwMzUzOX0.-CO0RkDBljPTRBO5x5JIAIZ23WfhR0A8bLJV3iE_xS0';
-    const CHAMBER_LABELS = { us_senate: 'US Senate', us_house: 'US House', senate: 'State Senate', assembly: 'Assembly', city_council: 'City Council' };
+    const CHAMBER_LABELS = { us_senate: 'US Senate', us_house: 'US House', senate: 'State Senate', assembly: 'Assembly', city_council: 'City Council', nyc_mayor: 'NYC Mayor' };
     const STANCE_COLORS = { strongly_support: '#15803d', support: '#4ade80', neutral: '#a1a1aa', oppose: '#fb923c', strongly_oppose: '#c2410c' };
     const STANCE_LABELS = { strongly_support: 'Strongly Pro-Israel', support: 'Pro-Israel', neutral: 'Neutral', oppose: 'Anti-Israel', strongly_oppose: 'Strongly Anti-Israel' };
 
@@ -174,7 +174,7 @@
               <div class="rep-avatar" style="background:${partyColor(r.party)}">${initials(r.name)}</div>
               <div class="rep-info">
                 <div class="rep-name">${r.name}</div>
-                <div class="rep-detail">${CHAMBER_LABELS[r.chamber]} District ${r.district} &middot; ${r.party || ''}</div>
+                <div class="rep-detail">${r.chamber === 'nyc_mayor' ? 'NYC Mayor' : `${CHAMBER_LABELS[r.chamber]} District ${r.district}`} &middot; ${r.party || ''}</div>
               </div>
               <span class="stance-badge" style="background:${sc}">${sl}</span>
             </div>
