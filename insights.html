@@ -393,7 +393,7 @@
       const bestHoods = sortedHoods.filter(([_, v]) => v.total > 0).sort((a, b) => b[1].total - a[1].total).slice(0, 10);
 
       // Worst neighborhoods
-      html += `<div class="insight-card">
+      html += `<div class="insight-card" id="worst-hoods">
         <h2>Worst NYC Neighborhoods for Israel Support</h2>
         <p style="font-size:14px;color:#64748b;margin-bottom:12px;">Areas where local elected officials have the strongest anti-Israel records.</p>
         <ul class="hotspot-list">`;
@@ -413,7 +413,7 @@
 
       // Best neighborhoods
       if (bestHoods.length > 0) {
-        html += `<div class="insight-card">
+        html += `<div class="insight-card" id="best-hoods">
           <h2>Best NYC Neighborhoods for Israel Support</h2>
           <p style="font-size:14px;color:#64748b;margin-bottom:12px;">Areas where local elected officials have the strongest pro-Israel records.</p>
           <ul class="hotspot-list">`;

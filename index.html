@@ -107,6 +107,8 @@
       padding: 24px 20px;
       display: grid;
       grid-template-columns: 1fr 1fr;
+      grid-auto-rows: auto;
+      align-items: stretch;
       gap: 20px;
     }
 
@@ -157,6 +159,7 @@
     .hood-row {
       display: flex; align-items: center; padding: 10px 20px;
       border-bottom: 1px solid #f8fafc;
+      min-height: 45px;
     }
     .hood-name { flex: 1; font-size: 14px; font-weight: 600; color: #0f172a; }
     .hood-meta { font-size: 11px; color: #94a3b8; font-weight: 400; margin-left: 6px; }
@@ -306,9 +309,9 @@
         <h3>Neighborhood Rankings</h3>
         <a href="insights.html">Full insights &rarr;</a>
       </div>
-      <div style="padding:14px 20px 6px;font-size:12px;font-weight:600;color:#15803d;text-transform:uppercase;">Best Neighborhoods</div>
+      <a href="insights.html#best-hoods" style="display:block;padding:14px 20px 6px;font-size:12px;font-weight:600;color:#15803d;text-transform:uppercase;text-decoration:none;">Best Neighborhoods</a>
       <div id="best-hoods"></div>
-      <div style="padding:14px 20px 6px;font-size:12px;font-weight:600;color:#c2410c;text-transform:uppercase;border-top:1px solid #f1f5f9;">Worst Neighborhoods</div>
+      <a href="insights.html#worst-hoods" style="display:block;padding:14px 20px 6px;font-size:12px;font-weight:600;color:#c2410c;text-transform:uppercase;border-top:1px solid #f1f5f9;text-decoration:none;">Worst Neighborhoods</a>
       <div id="worst-hoods"></div>
     </div>
 
