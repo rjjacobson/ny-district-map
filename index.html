@@ -300,7 +300,7 @@
     <a href="index.html" class="site-title">ShalomNY</a>
     <a href="stats.html" class="nav-link">Feed</a>
     <a href="map.html" class="nav-link">Map</a>
-    <a href="rankings.html" class="nav-link">Rankings</a>
+    <a href="rankings.html" class="nav-link">Stats</a>
     <a href="insights.html" class="nav-link">Insights</a>
     <a href="about.html" class="nav-link">About</a>
     <div style="flex:1;"></div>
@@ -546,20 +546,24 @@
         }
       }
 
-      const sorted = Object.entries(scores).sort((a, b) => a[1].total - b[1].total);
+      // Compute average and sort by avg
+      for (const [_, d] of Object.entries(scores)) d.avg = d.count ? d.total / d.count : 0;
+      const sorted = Object.entries(scores).sort((a, b) => a[1].avg - b[1].avg);
       const worst5 = sorted.slice(0, 5);
-      const best5 = sorted.filter(([_, v]) => v.total > 0).sort((a, b) => b[1].total - a[1].total).slice(0, 5);
+      const best5 = sorted.filter(([_, v]) => v.avg > 0).sort((a, b) => b[1].avg - a[1].avg).slice(0, 5);
 
       const bestContainer = document.getElementById('best-hoods');
       const worstContainer = document.getElementById('worst-hoods');
 
       for (const [hood, data] of best5) {
         const slug = hood.toLowerCase().replace(/[^a-z0-9]+/g, '-');
-        bestContainer.innerHTML += `<a href="insights.html#hood-${slug}" class="hood-row" style="text-decoration:none;color:inherit;"><span class="hood-name">${hood}<span class="hood-meta">${data.count} reps, ${data.pro} pro-Israel</span></span><span class="hood-score" style="color:#15803d">+${data.total}</span></a>`;
+        const avg = data.avg >= 0 ? '+' + data.avg.toFixed(1) : data.avg.toFixed(1);
+        bestContainer.innerHTML += `<a href="insights.html#hood-${slug}" class="hood-row" style="text-decoration:none;color:inherit;"><span class="hood-name">${hood}<span class="hood-meta">${data.count} reps, ${data.pro} pro-Israel</span></span><span class="hood-score" style="color:#15803d">${avg}</span></a>`;
       }
       for (const [hood, data] of worst5) {
         const slug = hood.toLowerCase().replace(/[^a-z0-9]+/g, '-');
-        worstContainer.innerHTML += `<a href="insights.html#hood-${slug}" class="hood-row" style="text-decoration:none;color:inherit;"><span class="hood-name">${hood}<span class="hood-meta">${data.count} reps, ${data.anti} anti-Israel</span></span><span class="hood-score" style="color:#c2410c">${data.total}</span></a>`;
+        const avg = data.avg.toFixed(1);
+        worstContainer.innerHTML += `<a href="insights.html#hood-${slug}" class="hood-row" style="text-decoration:none;color:inherit;"><span class="hood-name">${hood}<span class="hood-meta">${data.count} reps, ${data.anti} anti-Israel</span></span><span class="hood-score" style="color:#c2410c">${avg}</span></a>`;
       }
     }
 

@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Rankings - NY Legislature</title>
+  <title>Stats - ShalomNY</title>
   <style>
     * { margin: 0; padding: 0; box-sizing: border-box; }
     body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: #f8fafc; min-height: 100vh; }
@@ -88,7 +88,7 @@
     <a href="index.html" class="site-title">ShalomNY</a>
     <a href="stats.html" class="nav-link">Feed</a>
     <a href="map.html" class="nav-link">Map</a>
-    <a href="rankings.html" class="nav-link active">Rankings</a>
+    <a href="rankings.html" class="nav-link active">Stats</a>
     <a href="insights.html" class="nav-link">Insights</a>
     <a href="about.html" class="nav-link">About</a>
     <div style="flex:1;"></div>
@@ -96,7 +96,7 @@
 
   <div class="stats-container">
     <div class="stats-header">
-      <h1>Legislator Rankings</h1>
+      <h1>Stats</h1>
       <div class="filters">
         <select class="filter-select" id="filter-chamber" onchange="applyFilters()">
           <option value="all">All Chambers</option>
@@ -134,6 +134,12 @@
           <tbody id="rankings-body"></tbody>
         </table>
       </div>
+    </div>
+
+    <!-- District Stats -->
+    <div id="district-stats" style="margin-top:32px;">
+      <h2 style="font-size:22px;font-weight:800;color:#0f172a;margin-bottom:16px;">District Stats</h2>
+      <div class="leaders-grid" id="district-grid"></div>
     </div>
 
     <div style="background:linear-gradient(135deg,#1e3a5f 0%,#1e293b 100%);border-radius:14px;padding:32px;color:white;text-align:center;margin-top:24px;">
@@ -250,7 +256,169 @@
     function showOverview() { document.getElementById('overview-mode').style.display='block'; document.getElementById('full-rankings').style.display='none'; }
     function applyFilters() { if (document.getElementById('full-rankings').style.display==='block') showFullRankings(currentRankingsTitle); else renderOverview(); }
 
+    const DISTRICT_NEIGHBORHOODS = {
+      'city_council-1': 'Chinatown, Lower East Side, FiDi',
+      'city_council-2': 'East Village, Gramercy, Stuyvesant Town',
+      'city_council-4': 'Chelsea, Hells Kitchen, Times Square',
+      'city_council-5': 'Upper East Side, Roosevelt Island',
+      'city_council-6': 'Upper West Side, Lincoln Square',
+      'city_council-7': 'Morningside Heights, Manhattanville, Hamilton Heights',
+      'city_council-8': 'East Harlem, Randalls Island',
+      'city_council-9': 'Central Harlem',
+      'city_council-10': 'Washington Heights, Inwood',
+      'city_council-11': 'Riverdale, Kingsbridge, Norwood',
+      'city_council-12': 'Wakefield, Williamsbridge, Eastchester',
+      'city_council-13': 'Pelham Bay, Morris Park, Co-op City',
+      'city_council-14': 'Soundview, Parkchester, Castle Hill',
+      'city_council-15': 'Melrose, Mott Haven, Port Morris',
+      'city_council-16': 'Morrisania, Highbridge, Concourse',
+      'city_council-17': 'University Heights, Fordham, Tremont',
+      'city_council-18': 'Throgs Neck, Country Club, City Island',
+      'city_council-19': 'Bayside, Whitestone, College Point',
+      'city_council-20': 'Flushing, Mitchell-Linden',
+      'city_council-21': 'Hollis, Jamaica, St. Albans',
+      'city_council-22': 'Astoria, Woodside, Long Island City',
+      'city_council-23': 'Fresh Meadows, Oakland Gardens, Bayside Hills',
+      'city_council-24': 'Briarwood, Jamaica Hills, Hillcrest',
+      'city_council-25': 'Jackson Heights, Elmhurst',
+      'city_council-26': 'Sunnyside, Woodside, Maspeth',
+      'city_council-27': 'East Elmhurst, Jackson Heights, Corona',
+      'city_council-28': 'Jamaica, South Jamaica',
+      'city_council-29': 'Forest Hills, Rego Park, Kew Gardens',
+      'city_council-30': 'Ridgewood, Middle Village, Glendale',
+      'city_council-31': 'Far Rockaway, Arverne, Laurelton',
+      'city_council-32': 'Howard Beach, Ozone Park, Woodhaven',
+      'city_council-33': 'Crown Heights, Brownsville',
+      'city_council-34': 'Sunset Park, Red Hook, Greenwood',
+      'city_council-35': 'Prospect Lefferts, East Flatbush',
+      'city_council-36': 'Williamsburg, Greenpoint, Bushwick',
+      'city_council-37': 'Bushwick, Cypress Hills, East New York',
+      'city_council-38': 'Sunset Park, Red Hook, Park Slope',
+      'city_council-39': 'Kensington, Borough Park, Midwood',
+      'city_council-40': 'Flatbush, East Flatbush',
+      'city_council-41': 'Brownsville, East New York, Canarsie',
+      'city_council-42': 'Flatlands, Canarsie, Mill Basin',
+      'city_council-43': 'Bensonhurst, Bath Beach, Gravesend',
+      'city_council-44': 'Borough Park, Midwood, Flatbush',
+      'city_council-45': 'Flatbush, East Flatbush',
+      'city_council-46': 'Canarsie, Flatlands, Georgetown',
+      'city_council-47': 'Coney Island, Brighton Beach, Sheepshead Bay',
+      'city_council-48': 'Sheepshead Bay, Marine Park, Manhattan Beach',
+      'city_council-49': 'North Shore Staten Island, West Brighton',
+      'city_council-50': 'Mid-Island Staten Island, Todt Hill',
+      'city_council-51': 'South Shore Staten Island, Great Kills',
+      'assembly-36': 'Woodside, Corona',
+      'assembly-37': 'Sunset Park, Windsor Terrace',
+      'assembly-39': 'Jackson Heights, Woodside',
+      'assembly-41': 'Borough Park, Kensington',
+      'assembly-42': 'Flatbush, East Flatbush',
+      'assembly-43': 'Crown Heights, Prospect Heights',
+      'assembly-44': 'Park Slope, Carroll Gardens',
+      'assembly-45': 'Fort Greene, Clinton Hill',
+      'assembly-46': 'Bay Ridge, Dyker Heights',
+      'assembly-47': 'Bensonhurst, Gravesend',
+      'assembly-48': 'Borough Park, Midwood',
+      'assembly-49': 'Sunset Park, Bay Ridge',
+      'assembly-50': 'Williamsburg, Greenpoint',
+      'assembly-51': 'Sunset Park, Red Hook',
+      'assembly-52': 'Cobble Hill, Brooklyn Heights',
+      'assembly-53': 'Bushwick, Williamsburg',
+      'assembly-54': 'Bushwick, Ridgewood',
+      'assembly-55': 'Bed-Stuy, Ocean Hill',
+      'assembly-56': 'Brownsville, East New York',
+      'assembly-57': 'Crown Heights, Prospect Lefferts',
+      'assembly-65': 'Chinatown, Lower East Side',
+      'assembly-66': 'West Village, SoHo',
+      'assembly-67': 'Upper West Side',
+      'assembly-68': 'Harlem, Morningside Heights',
+      'assembly-69': 'Upper East Side, Yorkville',
+      'assembly-70': 'East Harlem',
+      'assembly-73': 'East Side Manhattan',
+      'assembly-74': 'Hells Kitchen, Chelsea',
+      'assembly-75': 'West Village, Chelsea',
+      'assembly-76': 'Upper East Side, Lenox Hill',
+      'assembly-77': 'Morningside Heights, Hamilton Heights',
+      'assembly-78': 'Washington Heights',
+      'assembly-79': 'Washington Heights, Inwood',
+      'assembly-80': 'Kingsbridge, Riverdale',
+      'assembly-84': 'South Bronx, Mott Haven',
+      'assembly-85': 'South Bronx, Hunts Point',
+      'assembly-86': 'University Heights, Morris Heights',
+      'assembly-87': 'Soundview, Parkchester',
+      'senate-18': 'Bushwick, Williamsburg, Bed-Stuy',
+      'senate-20': 'Crown Heights, Flatbush',
+      'senate-22': 'Bay Ridge, Bensonhurst',
+      'senate-25': 'Crown Heights, Brownsville, East New York',
+      'senate-26': 'Bay Ridge, Sunset Park',
+      'senate-27': 'Lower Manhattan, Brooklyn Heights',
+      'senate-28': 'Upper East Side',
+      'senate-29': 'East Harlem, South Bronx',
+      'senate-30': 'Central Harlem',
+      'senate-31': 'Washington Heights, Inwood',
+      'senate-47': 'Hells Kitchen, Chelsea, West Village',
+      'us_house-5': 'SE Queens, Far Rockaway',
+      'us_house-7': 'Lower East Side, Bushwick, Sunset Park',
+      'us_house-8': 'Fort Greene, Brownsville, Crown Heights',
+      'us_house-9': 'Flatbush, East Flatbush, Canarsie',
+      'us_house-10': 'Park Slope, Lower Manhattan, Brooklyn Heights',
+      'us_house-11': 'Staten Island, Southern Brooklyn',
+      'us_house-12': 'Upper West Side, Midtown, Lower Manhattan',
+      'us_house-13': 'Washington Heights, South Bronx',
+      'us_house-14': 'Bronx, NE Queens',
+      'us_house-15': 'South Bronx, Central Bronx',
+    };
+
+    const CHAMBER_LABELS = { us_senate: 'US Senate', us_house: 'US House', senate: 'State Senate', assembly: 'Assembly', city_council: 'City Council', nyc_mayor: 'NYC Mayor' };
+
+    function renderDistrictStats() {
+      const scores = {};
+      for (const l of allLegislators) {
+        const key = l.chamber + '-' + l.district;
+        const hood = DISTRICT_NEIGHBORHOODS[key];
+        if (!hood) continue;
+        for (const h of hood.split(', ')) {
+          if (!scores[h]) scores[h] = { total: 0, count: 0, pro: 0, anti: 0, reps: [] };
+          scores[h].total += l.score;
+          scores[h].count++;
+          if (l.stance === 'strongly_support' || l.stance === 'support') scores[h].pro++;
+          if (l.stance === 'strongly_oppose' || l.stance === 'oppose') scores[h].anti++;
+          scores[h].reps.push(l);
+        }
+      }
+      for (const [_, d] of Object.entries(scores)) d.avg = d.count ? d.total / d.count : 0;
+
+      const grid = document.getElementById('district-grid');
+      const sorted = Object.entries(scores).sort((a, b) => a[1].avg - b[1].avg);
+      const worst = sorted.filter(([_, v]) => v.avg < 0).slice(0, 10);
+      const best = sorted.filter(([_, v]) => v.avg > 0).sort((a, b) => b[1].avg - a[1].avg).slice(0, 10);
+
+      const cats = [
+        { title: 'Best Neighborhoods', data: best, scoreColor: '#15803d', metaKey: 'pro', metaLabel: 'pro-Israel' },
+        { title: 'Worst Neighborhoods', data: worst, scoreColor: '#c2410c', metaKey: 'anti', metaLabel: 'anti-Israel' },
+      ];
+
+      for (const cat of cats) {
+        const card = document.createElement('div'); card.className = 'leader-card';
+        let rows = '';
+        for (let i = 0; i < cat.data.length; i++) {
+          const [hood, data] = cat.data[i];
+          const avg = data.avg >= 0 ? '+' + data.avg.toFixed(1) : data.avg.toFixed(1);
+          const repsHtml = data.reps.map(r => {
+            const sc = r.score > 0 ? '+' + r.score : r.score;
+            const color = r.score >= 0 ? '#15803d' : '#c2410c';
+            const ps = (r.party||'').includes('Democrat') ? 'D' : 'R';
+            return `<div style="display:flex;align-items:center;padding:5px 0;gap:8px;cursor:pointer;" onclick="event.stopPropagation();openDetailPanel(${r.person_id})"><span style="display:inline-flex;align-items:center;justify-content:center;width:20px;height:20px;border-radius:50%;font-size:10px;font-weight:700;color:white;background:${partyColor(r.party)}">${ps}</span><span style="flex:1;font-size:13px;font-weight:600;color:#0f172a;">${r.name}</span><span style="font-size:11px;color:#94a3b8;">${CHAMBER_LABELS[r.chamber]} D${r.district}</span><span style="font-size:13px;font-weight:700;color:${color};min-width:32px;text-align:right;">${sc}</span></div>`;
+          }).join('');
+          const expandId = 'dist-' + i + '-' + cat.title.replace(/\s/g, '');
+          rows += `<div class="leader-row" style="flex-wrap:wrap;" onclick="var el=document.getElementById('${expandId}');el.style.display=el.style.display==='none'?'block':'none'"><span class="leader-rank">${i+1}</span><span class="leader-name">${hood}<span class="leader-chamber">${data.count} reps, ${data[cat.metaKey]} ${cat.metaLabel}</span></span><span class="leader-score" style="color:${cat.scoreColor}">${avg}</span><div id="${expandId}" style="display:none;width:100%;padding:8px 0 4px 34px;border-top:1px solid #f1f5f9;margin-top:8px;" onclick="event.stopPropagation()">${repsHtml}</div></div>`;
+        }
+        card.innerHTML = `<div class="leader-card-header"><h3>${cat.title}</h3><span class="col-label">AVG SCORE</span></div>${rows}`;
+        grid.appendChild(card);
+      }
+    }
+
     fetchData().then(() => {
+      renderDistrictStats();
       const hash = window.location.hash;
       if (hash && hash.startsWith('#person-')) {
         const pid = parseInt(hash.replace('#person-', ''));

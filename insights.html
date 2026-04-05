@@ -61,7 +61,7 @@
     <a href="index.html" class="site-title">ShalomNY</a>
     <a href="stats.html" class="nav-link">Feed</a>
     <a href="map.html" class="nav-link">Map</a>
-    <a href="rankings.html" class="nav-link">Rankings</a>
+    <a href="rankings.html" class="nav-link">Stats</a>
     <a href="insights.html" class="nav-link active">Insights</a>
     <a href="about.html" class="nav-link">About</a>
     <div style="flex:1;"></div>
@@ -388,9 +388,11 @@
         }
       }
 
-      const sortedHoods = Object.entries(neighborhoodScores).sort((a, b) => a[1].total - b[1].total);
+      // Compute average score per rep
+      for (const [_, d] of Object.entries(neighborhoodScores)) d.avg = d.count ? d.total / d.count : 0;
+      const sortedHoods = Object.entries(neighborhoodScores).sort((a, b) => a[1].avg - b[1].avg);
       const worstHoods = sortedHoods.slice(0, 8);
-      const bestHoods = sortedHoods.filter(([_, v]) => v.total > 0).sort((a, b) => b[1].total - a[1].total).slice(0, 10);
+      const bestHoods = sortedHoods.filter(([_, v]) => v.avg > 0).sort((a, b) => b[1].avg - a[1].avg).slice(0, 10);
 
       // Worst neighborhoods
       html += `<div class="insight-card" id="worst-hoods">
@@ -406,7 +408,8 @@
           const color = r.score >= 0 ? '#15803d' : '#c2410c';
           return `<div style="display:flex;align-items:center;padding:6px 0;gap:8px;cursor:pointer;" onclick="event.stopPropagation();openDetailPanel(r.person_id)"><span style="display:inline-flex;align-items:center;justify-content:center;width:22px;height:22px;border-radius:50%;font-size:11px;font-weight:700;color:white;background:${partyColor(r.party)}">${(r.party||'').includes('Democrat')?'D':'R'}</span><span style="flex:1;font-size:13px;font-weight:600;color:#0f172a;">${r.name}</span><span style="font-size:12px;color:#64748b;">${CHAMBER_LABELS[r.chamber]} D${r.district}</span><span style="font-size:13px;font-weight:700;color:${color};min-width:36px;text-align:right;">${sc}</span></div>`;
         }).join('');
-        html += `<li id="${slug}" style="cursor:pointer;" onclick="var el=document.getElementById('${id}');el.style.display=el.style.display==='none'?'block':'none';"><span class="name">${hood} <span style="color:#94a3b8;font-weight:400;font-size:12px;">${data.count} reps, ${data.anti} anti-Israel</span></span><span class="score" style="color:#c2410c">${data.total > 0 ? '+' : ''}${data.total}</span><div id="${id}" style="display:none;margin-top:8px;padding-top:8px;border-top:1px solid #e2e8f0;">${repsHtml}</div></li>`;
+        const avgW = data.avg.toFixed(1);
+        html += `<li id="${slug}" style="cursor:pointer;" onclick="var el=document.getElementById('${id}');el.style.display=el.style.display==='none'?'block':'none';"><span class="name">${hood} <span style="color:#94a3b8;font-weight:400;font-size:12px;">${data.count} reps, ${data.anti} anti-Israel</span></span><span class="score" style="color:#c2410c">${avgW}</span><div id="${id}" style="display:none;margin-top:8px;padding-top:8px;border-top:1px solid #e2e8f0;">${repsHtml}</div></li>`;
       }
       html += `</ul>
         <div class="finding alert">These neighborhoods form a corridor through <strong>northern Brooklyn</strong> (Bushwick, Williamsburg, Sunset Park), the <strong>South Bronx</strong> (Mott Haven, Morrisania), and <strong>Jackson Heights/Elmhurst</strong> in Queens — areas with high DSA/progressive caucus alignment and significant immigrant and POC populations where anti-Israel sentiment has been channeled through left-progressive organizing.</div>
@@ -426,7 +429,8 @@
             const color = r.score >= 0 ? '#15803d' : '#c2410c';
             return `<div style="display:flex;align-items:center;padding:6px 0;gap:8px;cursor:pointer;" onclick="event.stopPropagation();openDetailPanel(r.person_id)"><span style="display:inline-flex;align-items:center;justify-content:center;width:22px;height:22px;border-radius:50%;font-size:11px;font-weight:700;color:white;background:${partyColor(r.party)}">${(r.party||'').includes('Democrat')?'D':'R'}</span><span style="flex:1;font-size:13px;font-weight:600;color:#0f172a;">${r.name}</span><span style="font-size:12px;color:#64748b;">${CHAMBER_LABELS[r.chamber]} D${r.district}</span><span style="font-size:13px;font-weight:700;color:${color};min-width:36px;text-align:right;">${sc}</span></div>`;
           }).join('');
-          html += `<li id="${slug}" style="cursor:pointer;" onclick="var el=document.getElementById('${id}');el.style.display=el.style.display==='none'?'block':'none';"><span class="name">${hood} <span style="color:#94a3b8;font-weight:400;font-size:12px;">${data.count} reps, ${data.pro} pro-Israel</span></span><span class="score" style="color:#15803d">+${data.total}</span><div id="${id}" style="display:none;margin-top:8px;padding-top:8px;border-top:1px solid #e2e8f0;">${repsHtml}</div></li>`;
+          const avgB = data.avg >= 0 ? '+' + data.avg.toFixed(1) : data.avg.toFixed(1);
+          html += `<li id="${slug}" style="cursor:pointer;" onclick="var el=document.getElementById('${id}');el.style.display=el.style.display==='none'?'block':'none';"><span class="name">${hood} <span style="color:#94a3b8;font-weight:400;font-size:12px;">${data.count} reps, ${data.pro} pro-Israel</span></span><span class="score" style="color:#15803d">${avgB}</span><div id="${id}" style="display:none;margin-top:8px;padding-top:8px;border-top:1px solid #e2e8f0;">${repsHtml}</div></li>`;
         }
         html += `</ul>
           <div class="finding positive">Pro-Israel strength in NYC is concentrated in areas with significant <strong>Orthodox Jewish communities</strong> (Borough Park, Crown Heights) and <strong>moderate Democratic or Republican-leaning</strong> districts in southern Brooklyn and parts of Queens.</div>
