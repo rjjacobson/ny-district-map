@@ -336,7 +336,6 @@
         <h3>Neighborhood Representation on Israel</h3>
         <a href="insights.html">Full insights &rarr;</a>
       </div>
-      <div style="padding:4px 20px 0;font-size:12px;color:#94a3b8;">Based on the positions of elected representatives serving each area</div>
       <a href="insights.html#best-hoods" style="display:block;padding:14px 20px 6px;font-size:12px;font-weight:600;color:#15803d;text-decoration:none;">Most Pro-Israel Neighborhoods</a>
       <div id="best-hoods"></div>
       <a href="insights.html#worst-hoods" style="display:block;padding:14px 20px 6px;font-size:12px;font-weight:600;color:#c2410c;border-top:1px solid #f1f5f9;text-decoration:none;">Most Anti-Israel Neighborhoods</a>
@@ -344,12 +343,12 @@
     </div>
 
     <!-- Map preview -->
-    <div class="dash-card desktop-only">
-      <div class="dash-card-header">
+    <div class="dash-card desktop-only" style="display:flex;flex-direction:column;">
+      <div class="dash-card-header" style="flex-shrink:0;">
         <h3>Interactive Map</h3>
         <a href="map.html">Open map &rarr;</a>
       </div>
-      <div id="mini-map" style="height:260px;cursor:pointer;" onclick="window.location='map.html'"></div>
+      <div id="mini-map" style="flex:1;min-height:260px;cursor:pointer;" onclick="window.location='map.html'"></div>
     </div>
 
     <!-- Latest Activity -->
@@ -766,6 +765,7 @@
           return { fillColor: color, weight: 1, color: '#fff', fillOpacity: 0.6 };
         }
       }).addTo(miniMap);
+      setTimeout(() => miniMap.invalidateSize(), 100);
     });
 
     init();
