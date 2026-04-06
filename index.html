@@ -289,8 +289,11 @@
       .top-nav .site-title { font-size: 13px; margin-right: 12px; }
       .top-nav a.nav-link { font-size: 13px; padding: 10px 10px; }
       .signup-options { flex-direction: column; align-items: center; gap: 8px; }
+      .dash-card-header { flex-wrap: wrap; gap: 4px; }
+      .dash-card-header h3 { font-size: 15px; flex: 1; min-width: 0; }
+      .dash-card-header a { white-space: nowrap; }
     }
-    @media (max-width: 480px) { .top-nav .nav-link { font-size: 11px; padding: 6px 6px; } .top-nav .site-title { font-size: 13px; margin-right: 8px; } }
+    @media (max-width: 480px) { .top-nav .nav-link { font-size: 11px; padding: 6px 4px; } .top-nav .site-title { font-size: 13px; margin-right: 8px; } }
   </style>
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
   <link rel="stylesheet" href="detail-panel.css">
@@ -322,7 +325,7 @@
     <!-- Rankings preview (left) -->
     <div class="dash-card">
       <div class="dash-card-header">
-        <h3>Where Legislators Stand on Israel</h3>
+        <h3>Legislator Rankings</h3>
         <a href="rankings.html">Full rankings &rarr;</a>
       </div>
       <div style="padding:14px 20px 6px;font-size:12px;font-weight:600;color:#64748b;">Most Pro-Israel Legislators</div>
@@ -334,7 +337,7 @@
     <!-- Neighborhood Rankings (right) -->
     <div class="dash-card">
       <div class="dash-card-header">
-        <h3>Neighborhood Representation on Israel</h3>
+        <h3>Neighborhood Rankings</h3>
         <a href="insights.html">Full insights &rarr;</a>
       </div>
       <a href="insights.html#best-hoods" style="display:block;padding:14px 20px 6px;font-size:12px;font-weight:600;color:#15803d;text-decoration:none;">Most Pro-Israel Neighborhoods</a>
