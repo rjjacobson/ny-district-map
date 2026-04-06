@@ -597,11 +597,12 @@
         const hood = DISTRICT_NEIGHBORHOODS[key];
         if (!hood) continue;
         for (const h of hood.split(', ')) {
-          if (!scores[h]) scores[h] = { total: 0, count: 0, pro: 0, anti: 0 };
+          if (!scores[h]) scores[h] = { total: 0, count: 0, pro: 0, anti: 0, reps: [] };
           scores[h].total += l.score;
           scores[h].count++;
           if (l.stance === 'strongly_support' || l.stance === 'support') scores[h].pro++;
           if (l.stance === 'strongly_oppose' || l.stance === 'oppose') scores[h].anti++;
+          scores[h].reps.push(l);
         }
       }
 
@@ -615,16 +616,63 @@
       const bestContainer = document.getElementById('best-hoods');
       const worstContainer = document.getElementById('worst-hoods');
 
+      // Store neighborhood data for sidebar
+      window._hoodData = {};
+      for (const [hood, data] of multiRep) {
+        window._hoodData[hood] = data;
+      }
+
       for (const [hood, data] of best5) {
-        const slug = hood.toLowerCase().replace(/[^a-z0-9]+/g, '-');
         const avg = data.avg >= 0 ? '+' + data.avg.toFixed(1) : data.avg.toFixed(1);
-        bestContainer.innerHTML += `<a href="rankings.html#hood-${slug}" class="hood-row" style="text-decoration:none;color:inherit;"><span class="hood-name">${hood}<span class="hood-meta">${data.count} representatives &bull; ${data.pro} Pro-Israel</span></span><span class="hood-score" style="color:#15803d">${avg}</span></a>`;
+        bestContainer.innerHTML += `<div class="hood-row" style="cursor:pointer;" onclick="openHoodPanel('${hood.replace(/'/g, "\\'")}')"><span class="hood-name">${hood}<span class="hood-meta">${data.count} representatives &bull; ${data.pro} Pro-Israel</span></span><span class="hood-score" style="color:#15803d">${avg}</span></div>`;
       }
       for (const [hood, data] of worst5) {
-        const slug = hood.toLowerCase().replace(/[^a-z0-9]+/g, '-');
         const avg = data.avg.toFixed(1);
-        worstContainer.innerHTML += `<a href="rankings.html#hood-${slug}" class="hood-row" style="text-decoration:none;color:inherit;"><span class="hood-name">${hood}<span class="hood-meta">${data.count} representatives &bull; ${data.anti} Anti-Israel</span></span><span class="hood-score" style="color:#c2410c">${avg}</span></a>`;
+        worstContainer.innerHTML += `<div class="hood-row" style="cursor:pointer;" onclick="openHoodPanel('${hood.replace(/'/g, "\\'")}')"><span class="hood-name">${hood}<span class="hood-meta">${data.count} representatives &bull; ${data.anti} Anti-Israel</span></span><span class="hood-score" style="color:#c2410c">${avg}</span></div>`;
       }
+    }
+
+    function openHoodPanel(hood) {
+      const data = window._hoodData[hood];
+      if (!data) return;
+      const overlay = document.getElementById('detail-overlay');
+      const content = document.getElementById('detail-panel-content');
+      if (!overlay || !content) return;
+      overlay.classList.add('open');
+      overlay.scrollTop = 0;
+
+      const avg = data.avg >= 0 ? '+' + data.avg.toFixed(1) : data.avg.toFixed(1);
+      const avgColor = data.avg >= 0 ? '#15803d' : '#c2410c';
+
+      let repsHtml = '';
+      const sortedReps = [...(data.reps || [])].sort((a, b) => (b.score || 0) - (a.score || 0));
+      for (const r of sortedReps) {
+        const sc = r.score > 0 ? '+' + r.score : r.score;
+        const color = r.score >= 0 ? '#15803d' : '#c2410c';
+        const ps = (r.party||'').includes('Democrat') ? 'D' : 'R';
+        repsHtml += `
+          <div style="display:flex;align-items:center;padding:10px 0;gap:10px;border-bottom:1px solid #f1f5f9;cursor:pointer;" onclick="openDetailPanel(${r.person_id})">
+            <span style="display:inline-flex;align-items:center;justify-content:center;width:28px;height:28px;border-radius:50%;font-size:12px;font-weight:700;color:white;background:${partyColor(r.party)}">${ps}</span>
+            <div style="flex:1;">
+              <div style="font-size:14px;font-weight:600;color:#0f172a;">${r.name}</div>
+              <div style="font-size:12px;color:#94a3b8;">${CHAMBER_LABELS[r.chamber]} District ${r.district}</div>
+            </div>
+            <span style="font-size:14px;font-weight:700;color:${color}">${sc}</span>
+          </div>`;
+      }
+
+      content.innerHTML = `
+        <div style="position:sticky;top:0;background:white;z-index:1;padding:20px 20px 12px;border-bottom:1px solid #e2e8f0;">
+          <button style="position:absolute;top:12px;right:12px;background:none;border:none;font-size:24px;cursor:pointer;color:#64748b;" onclick="closeDetailPanel()">&times;</button>
+          <h2 style="font-size:22px;font-weight:800;color:#0f172a;">${hood}</h2>
+          <div style="font-size:14px;color:#64748b;margin-top:4px;">${data.count} representatives &bull; ${data.pro} Pro-Israel &bull; ${data.anti} Anti-Israel</div>
+          <div style="margin-top:8px;"><span style="font-size:28px;font-weight:800;color:${avgColor}">${avg}</span><span style="font-size:13px;color:#64748b;margin-left:8px;">avg score per rep</span></div>
+          <a href="rankings.html#hood-${hood.toLowerCase().replace(/[^a-z0-9]+/g, '-')}" style="display:inline-block;margin-top:8px;font-size:13px;font-weight:600;color:#2563eb;text-decoration:none;">View full neighborhood stats &rarr;</a>
+        </div>
+        <div style="padding:12px 20px;">
+          <div style="font-size:12px;font-weight:700;color:#64748b;text-transform:uppercase;margin-bottom:8px;">Representatives</div>
+          ${repsHtml}
+        </div>`;
     }
 
     function renderFeedPreview() {
