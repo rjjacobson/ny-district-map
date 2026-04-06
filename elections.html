@@ -1,0 +1,296 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>2026 Election Scorecard - ShalomNY</title>
+  <meta property="og:title" content="2026 NYC Election Scorecard - ShalomNY">
+  <meta property="og:description" content="Where every candidate stands on Israel. June 23 primary voter guide.">
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: #f8fafc; min-height: 100vh; }
+    .top-nav { display: flex; align-items: center; background: #1e293b; padding: 0 20px; height: 44px; position: sticky; top: 0; z-index: 1000; }
+    .top-nav .site-title { font-size: 15px; font-weight: 700; color: white; margin-right: 24px; white-space: nowrap; text-decoration: none; }
+    .top-nav .nav-link { color: #94a3b8; text-decoration: none; font-size: 14px; font-weight: 500; padding: 10px 16px; border-bottom: 3px solid transparent; }
+    .top-nav .nav-link:hover { color: #e2e8f0; }
+    .top-nav .nav-link.active { color: white; border-bottom-color: #3b82f6; }
+    .nav-search { display: flex; gap: 4px; } .nav-search input { padding: 6px 12px; border: none; border-radius: 6px; font-size: 13px; width: 240px; outline: none; } .nav-search button { padding: 6px 14px; background: #2563eb; color: white; border: none; border-radius: 6px; font-size: 13px; font-weight: 600; cursor: pointer; }
+    @media (max-width: 768px) { .nav-search { display: none !important; } .top-nav .nav-link { font-size: 13px; padding: 10px 8px; } .race-grid { grid-template-columns: 1fr !important; } }
+    @media (max-width: 480px) { .top-nav .nav-link { font-size: 11px; padding: 6px 6px; } .top-nav .site-title { font-size: 13px; margin-right: 8px; } }
+
+    .container { max-width: 900px; margin: 0 auto; padding: 24px 20px; }
+
+    .hero-election { background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%); border-radius: 16px; padding: 40px 32px; color: white; text-align: center; margin-bottom: 32px; }
+    .hero-election h1 { font-size: 32px; font-weight: 800; margin-bottom: 8px; }
+    .hero-election .subtitle { font-size: 16px; color: #94a3b8; margin-bottom: 16px; }
+    .hero-election .date-badge { display: inline-block; background: #c2410c; color: white; padding: 8px 20px; border-radius: 20px; font-size: 14px; font-weight: 700; }
+    .hero-election .countdown { font-size: 13px; color: #64748b; margin-top: 12px; }
+
+    .tier-header { display: flex; align-items: center; gap: 10px; margin: 32px 0 16px; }
+    .tier-badge { display: inline-block; padding: 4px 12px; border-radius: 8px; font-size: 12px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; }
+    .tier-1 { background: #fef2f2; color: #991b1b; }
+    .tier-2 { background: #fff7ed; color: #9a3412; }
+    .tier-3 { background: #eff6ff; color: #1e40af; }
+    .tier-header h2 { font-size: 20px; font-weight: 800; color: #0f172a; }
+
+    .race-card { background: white; border-radius: 14px; box-shadow: 0 1px 3px rgba(0,0,0,0.06); margin-bottom: 20px; overflow: hidden; }
+    .race-header { padding: 16px 20px; border-bottom: 1px solid #f1f5f9; display: flex; align-items: center; justify-content: space-between; }
+    .race-district { font-size: 12px; font-weight: 700; color: #64748b; text-transform: uppercase; }
+    .race-title { font-size: 18px; font-weight: 700; color: #0f172a; }
+    .race-status { font-size: 12px; font-weight: 600; padding: 3px 10px; border-radius: 10px; }
+    .status-critical { background: #fef2f2; color: #991b1b; }
+    .status-watch { background: #fff7ed; color: #9a3412; }
+    .status-safe { background: #f0fdf4; color: #166534; }
+
+    .race-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 0; }
+    .candidate-col { padding: 16px 20px; }
+    .candidate-col:first-child { border-right: 1px solid #f1f5f9; }
+    .candidate-col.pro { border-top: 3px solid #15803d; }
+    .candidate-col.anti { border-top: 3px solid #c2410c; }
+    .candidate-col.mixed { border-top: 3px solid #fb923c; }
+
+    .candidate-name { font-size: 16px; font-weight: 700; color: #0f172a; }
+    .candidate-role { font-size: 12px; color: #64748b; margin-top: 2px; }
+    .candidate-stance { display: inline-block; margin-top: 8px; padding: 3px 10px; border-radius: 10px; font-size: 12px; font-weight: 600; color: white; }
+    .stance-pro { background: #15803d; }
+    .stance-anti { background: #c2410c; }
+    .stance-moderate { background: #fb923c; }
+    .stance-unknown { background: #a1a1aa; }
+
+    .candidate-details { margin-top: 10px; font-size: 13px; color: #475569; line-height: 1.6; }
+    .candidate-endorsements { margin-top: 8px; font-size: 12px; color: #64748b; }
+    .candidate-endorsements strong { color: #334155; }
+
+    .race-footer { padding: 12px 20px; background: #f8fafc; font-size: 13px; color: #475569; line-height: 1.6; border-top: 1px solid #f1f5f9; }
+
+    .dsa-section { background: #fef2f2; border-radius: 14px; padding: 24px; margin: 32px 0; }
+    .dsa-section h3 { font-size: 18px; font-weight: 700; color: #991b1b; margin-bottom: 12px; }
+    .dsa-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 10px; }
+    .dsa-card { background: white; border-radius: 10px; padding: 12px; border-left: 3px solid #c2410c; }
+    .dsa-card .name { font-size: 14px; font-weight: 600; color: #0f172a; }
+    .dsa-card .district { font-size: 12px; color: #64748b; }
+
+    .cta-section { background: linear-gradient(135deg, #1e3a5f 0%, #1e293b 100%); border-radius: 14px; padding: 32px; color: white; text-align: center; margin: 32px 0; }
+    .cta-section h3 { font-size: 20px; font-weight: 700; margin-bottom: 8px; }
+    .cta-section p { font-size: 14px; color: #94a3b8; margin-bottom: 16px; }
+    .cta-btn { display: inline-block; padding: 12px 28px; background: #2563eb; color: white; border-radius: 10px; font-size: 15px; font-weight: 600; text-decoration: none; border: none; cursor: pointer; }
+    .cta-btn:hover { background: #1d4ed8; }
+
+    .key-dates { background: white; border-radius: 14px; box-shadow: 0 1px 3px rgba(0,0,0,0.06); padding: 20px; margin-bottom: 24px; }
+    .key-dates h3 { font-size: 16px; font-weight: 700; color: #0f172a; margin-bottom: 12px; }
+    .date-row { display: flex; justify-content: space-between; padding: 8px 0; border-bottom: 1px solid #f1f5f9; font-size: 14px; }
+    .date-row:last-child { border-bottom: none; }
+    .date-row .label { color: #475569; }
+    .date-row .date { font-weight: 600; color: #0f172a; }
+  </style>
+</head>
+<body>
+  <nav class="top-nav">
+    <a href="index.html" class="site-title">ShalomNY</a>
+    <a href="stats.html" class="nav-link">Feed</a>
+    <a href="map.html" class="nav-link">Map</a>
+    <a href="rankings.html" class="nav-link">Stats</a>
+    <a href="elections.html" class="nav-link active">Elections</a>
+    <a href="insights.html" class="nav-link">Insights</a>
+    <a href="about.html" class="nav-link">About</a>
+    <div style="flex:1;"></div>
+    <div class="nav-search"><input type="text" id="nav-address" placeholder="Enter your address" onkeydown="if(event.key==='Enter')navLookup()" /><button onclick="navLookup()">Grade my reps</button></div>
+  </nav>
+
+  <div class="container">
+    <div class="hero-election">
+      <h1>2026 Primary Election Scorecard</h1>
+      <p class="subtitle">Where every candidate stands on Israel</p>
+      <div class="date-badge">Primary Day: June 23, 2026</div>
+      <div class="countdown" id="countdown"></div>
+    </div>
+
+    <div class="key-dates">
+      <h3>Key Dates</h3>
+      <div class="date-row"><span class="label">Voter Registration (mail)</span><span class="date">June 3</span></div>
+      <div class="date-row"><span class="label">In-Person Registration Deadline</span><span class="date">June 13</span></div>
+      <div class="date-row"><span class="label">Early Voting</span><span class="date">June 13 — 21</span></div>
+      <div class="date-row"><span class="label">Primary Election Day</span><span class="date">June 23</span></div>
+    </div>
+
+    <!-- TIER 1: MUST-WIN -->
+    <div class="tier-header"><span class="tier-badge tier-1">Critical</span><h2>Must-Win Races</h2></div>
+
+    <!-- NY-10 -->
+    <div class="race-card">
+      <div class="race-header">
+        <div><div class="race-district">US House — NY-10</div><div class="race-title">Lower Manhattan, Park Slope, Borough Park</div></div>
+        <span class="race-status status-critical">At Risk</span>
+      </div>
+      <div class="race-grid">
+        <div class="candidate-col pro">
+          <div class="candidate-name">Dan Goldman</div>
+          <div class="candidate-role">Incumbent</div>
+          <span class="candidate-stance stance-pro">Pro-Israel</span>
+          <div class="candidate-details">Strongly pro-Israel. Received $1.7M+ from pro-Israel sources. Endorsed by Hakeem Jeffries, Gov. Hochul.</div>
+          <div class="candidate-endorsements"><strong>Endorsed by:</strong> Jeffries, Hochul, J Street</div>
+        </div>
+        <div class="candidate-col anti">
+          <div class="candidate-name">Brad Lander</div>
+          <div class="candidate-role">Challenger — Former NYC Comptroller</div>
+          <span class="candidate-stance stance-anti">Anti-Israel</span>
+          <div class="candidate-details">Calls the war "genocide." Attends weekly anti-Israel rallies. Demands AIPAC-free race. Leads in polls 52-33.</div>
+          <div class="candidate-endorsements"><strong>Endorsed by:</strong> Mayor Mamdani, Jumaane Williams</div>
+        </div>
+      </div>
+      <div class="race-footer"><strong>Why it matters:</strong> The marquee pro-Israel vs anti-Israel race in NYC. If Goldman loses, it sends a message that pro-Israel Democrats are vulnerable everywhere. Goldman is outraising Lander ($2.2M vs $750K) but trails in polls.</div>
+    </div>
+
+    <!-- NY-15 -->
+    <div class="race-card">
+      <div class="race-header">
+        <div><div class="race-district">US House — NY-15</div><div class="race-title">South Bronx, Central Bronx</div></div>
+        <span class="race-status status-critical">At Risk</span>
+      </div>
+      <div class="race-grid">
+        <div class="candidate-col pro">
+          <div class="candidate-name">Ritchie Torres</div>
+          <div class="candidate-role">Incumbent</div>
+          <span class="candidate-stance stance-pro">Strongly Pro-Israel</span>
+          <div class="candidate-details">The most pro-Israel Democrat in NYC. Frequent defender of Israel in Congress. Strong AIPAC backing and fundraising.</div>
+          <div class="candidate-endorsements"><strong>Endorsed by:</strong> AIPAC, pro-Israel PACs</div>
+        </div>
+        <div class="candidate-col anti">
+          <div class="candidate-name">Michael Blake</div>
+          <div class="candidate-role">Challenger — Former Assemblyman, Obama WH alum</div>
+          <span class="candidate-stance stance-anti">Anti-Israel</span>
+          <div class="candidate-details">Making AIPAC donations the centerpiece of his campaign. Launch video directly attacks Torres's Israel support. Lost to Torres in 2020.</div>
+          <div class="candidate-endorsements"><strong>Also running:</strong> Dalourny Nemorin (DSA organizer)</div>
+        </div>
+      </div>
+      <div class="race-footer"><strong>Why it matters:</strong> Torres is the #1 pro-Israel target for the progressive left. A Torres loss would eliminate the most vocal pro-Israel Democrat in NYC. Mamdani's Bronx strength adds progressive energy to challengers.</div>
+    </div>
+
+    <!-- NY-13 -->
+    <div class="race-card">
+      <div class="race-header">
+        <div><div class="race-district">US House — NY-13</div><div class="race-title">Washington Heights, Harlem, South Bronx</div></div>
+        <span class="race-status status-critical">At Risk</span>
+      </div>
+      <div class="race-grid">
+        <div class="candidate-col pro">
+          <div class="candidate-name">Adriano Espaillat</div>
+          <div class="candidate-role">Incumbent</div>
+          <span class="candidate-stance stance-pro">Pro-Israel</span>
+          <div class="candidate-details">Co-chair of Latino-Jewish Congressional Caucus. $160K+ from AIPAC. Condemned Oct 7. Supports Israel aid.</div>
+          <div class="candidate-endorsements"><strong>Endorsed by:</strong> AIPAC</div>
+        </div>
+        <div class="candidate-col anti">
+          <div class="candidate-name">Darializa Avila Chevalier</div>
+          <div class="candidate-role">Challenger — Columbia Encampment Organizer</div>
+          <span class="candidate-stance stance-anti">Strongly Anti-Israel</span>
+          <div class="candidate-details">Lead organizer of Columbia pro-Gaza encampment. Supports divestment from Israel. Organized for Mamdani's mayoral campaign.</div>
+          <div class="candidate-endorsements"><strong>Endorsed by:</strong> NYC-DSA, Justice Democrats</div>
+        </div>
+      </div>
+      <div class="race-footer"><strong>Why it matters:</strong> A Chevalier win would flip a pro-Israel seat to a Columbia encampment organizer backed by DSA and Justice Democrats. Espaillat is vulnerable given the Mamdani wave.</div>
+    </div>
+
+    <!-- TIER 2: HIGH PRIORITY -->
+    <div class="tier-header"><span class="tier-badge tier-2">High Priority</span><h2>Races to Watch</h2></div>
+
+    <!-- NY-7 -->
+    <div class="race-card">
+      <div class="race-header">
+        <div><div class="race-district">US House — NY-7 (Open Seat)</div><div class="race-title">Williamsburg, Bushwick, Astoria, Sunnyside</div></div>
+        <span class="race-status status-watch">Open Seat</span>
+      </div>
+      <div class="race-grid">
+        <div class="candidate-col mixed">
+          <div class="candidate-name">Antonio Reynoso</div>
+          <div class="candidate-role">Brooklyn Borough President</div>
+          <span class="candidate-stance stance-moderate">Anti-Israel (moderate)</span>
+          <div class="candidate-details">Endorsed by Velazquez, AG James, Nadler. Called it "genocide" but more establishment-left.</div>
+          <div class="candidate-endorsements"><strong>Endorsed by:</strong> WFP, Velazquez, AG James</div>
+        </div>
+        <div class="candidate-col anti">
+          <div class="candidate-name">Claire Valdez</div>
+          <div class="candidate-role">DSA Assemblywoman</div>
+          <span class="candidate-stance stance-anti">Strongly Anti-Israel</span>
+          <div class="candidate-details">Supports BDS, calls for cutting ALL US military aid to Israel. Arrested protesting outside Schumer's office.</div>
+          <div class="candidate-endorsements"><strong>Endorsed by:</strong> NYC-DSA, Bernie Sanders, Mamdani, JVP Action</div>
+        </div>
+      </div>
+      <div class="race-footer"><strong>Why it matters:</strong> Seat will go anti-Israel regardless. The question is degree — Valdez (BDS, cut all aid) vs Reynoso (establishment-left). No pro-Israel candidate has a realistic path. 9 candidates total.</div>
+    </div>
+
+    <!-- SD-12 -->
+    <div class="race-card">
+      <div class="race-header">
+        <div><div class="race-district">State Senate — SD-12 (Open Seat)</div><div class="race-title">Astoria, Sunnyside, Woodside, Long Island City</div></div>
+        <span class="race-status status-watch">Open Seat</span>
+      </div>
+      <div class="race-grid">
+        <div class="candidate-col anti" style="grid-column: 1/-1;">
+          <div class="candidate-name">Aber Kawas</div>
+          <div class="candidate-role">Challenger — Palestinian-American Community Organizer</div>
+          <span class="candidate-stance stance-anti">Strongly Anti-Israel</span>
+          <div class="candidate-details">Anti-Zionist, supports BDS. Co-launched "Not On Our Dime" campaign with Mamdani to strip tax-exempt status from NY nonprofits funding Israel.</div>
+          <div class="candidate-endorsements"><strong>Endorsed by:</strong> NYC-DSA, WFP, Make the Road</div>
+          <div class="candidate-details" style="margin-top:8px;color:#991b1b;font-weight:600;">No known pro-Israel alternative candidate has entered this race.</div>
+        </div>
+      </div>
+      <div class="race-footer"><strong>Why it matters:</strong> Gianaris's retirement opens this seat to a DSA takeover. Kawas would expand the anti-Israel bloc in the State Senate.</div>
+    </div>
+
+    <!-- TIER 3: MONITOR -->
+    <div class="tier-header"><span class="tier-badge tier-3">Monitor</span><h2>Other Notable Races</h2></div>
+
+    <!-- NY-12 -->
+    <div class="race-card">
+      <div class="race-header">
+        <div><div class="race-district">US House — NY-12 (Open Seat)</div><div class="race-title">Upper East Side, Upper West Side, Midtown</div></div>
+        <span class="race-status status-safe">Likely Safe</span>
+      </div>
+      <div class="race-grid" style="grid-template-columns: 1fr;">
+        <div class="candidate-col" style="border-top: 3px solid #15803d;">
+          <div class="candidate-details">Nadler retiring. 9 Democrats running in heavily Jewish district. Leading candidates (Schlossberg, Lasher, Bores) all broadly support Israel/two-state solution. No strongly anti-Israel frontrunner. Likely to produce a pro-Israel winner.</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- DSA FULL SLATE -->
+    <div class="dsa-section">
+      <h3>NYC-DSA Full 2026 Slate — Every Candidate is Anti-Israel</h3>
+      <p style="font-size:14px;color:#64748b;margin-bottom:16px;">The Democratic Socialists of America are running their largest-ever slate in New York. All DSA candidates support BDS and oppose US aid to Israel.</p>
+      <div class="dsa-grid">
+        <div class="dsa-card"><div class="name">Claire Valdez</div><div class="district">US House NY-7</div></div>
+        <div class="dsa-card"><div class="name">Darializa Avila Chevalier</div><div class="district">US House NY-13</div></div>
+        <div class="dsa-card"><div class="name">Aber Kawas</div><div class="district">State Senate SD-12</div></div>
+        <div class="dsa-card"><div class="name">Diana Moreno</div><div class="district">Assembly AD-36 (incumbent)</div></div>
+        <div class="dsa-card"><div class="name">Samantha Kattan</div><div class="district">Assembly AD-37</div></div>
+        <div class="dsa-card"><div class="name">David Orkin</div><div class="district">Assembly AD-38</div></div>
+        <div class="dsa-card"><div class="name">Christian Celeste Tate</div><div class="district">Assembly AD-54</div></div>
+        <div class="dsa-card"><div class="name">Eon Huntley</div><div class="district">Assembly AD-56</div></div>
+        <div class="dsa-card"><div class="name">Illapa Sairitupac</div><div class="district">Assembly AD-65</div></div>
+        <div class="dsa-card"><div class="name">Conrad Blackburn</div><div class="district">Assembly AD-70</div></div>
+        <div class="dsa-card"><div class="name">Emily Gallagher</div><div class="district">Assembly AD-50 (incumbent)</div></div>
+        <div class="dsa-card"><div class="name">Phara Souffrant Forrest</div><div class="district">Assembly AD-57 (incumbent)</div></div>
+        <div class="dsa-card"><div class="name">Marcela Mitaynes</div><div class="district">Assembly AD-51 (incumbent)</div></div>
+        <div class="dsa-card"><div class="name">Sarahana Shrestha</div><div class="district">Assembly AD-103 (incumbent)</div></div>
+      </div>
+    </div>
+
+    <!-- CTA -->
+    <div class="cta-section">
+      <h3>Know Your Representatives</h3>
+      <p>Enter your address to see where your legislators stand on Israel — and who's running to replace them.</p>
+      <a href="index.html" class="cta-btn">Grade My Reps</a>
+    </div>
+  </div>
+
+  <script>
+    // Countdown
+    const primary = new Date('2026-06-23');
+    const now = new Date();
+    const diff = Math.ceil((primary - now) / (1000 * 60 * 60 * 24));
+    document.getElementById('countdown').textContent = diff + ' days until the primary';
+  </script>
+  <script src="nav-lookup.js"></script>
+</body>
+</html>
