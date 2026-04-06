@@ -618,12 +618,12 @@
       for (const [hood, data] of best5) {
         const slug = hood.toLowerCase().replace(/[^a-z0-9]+/g, '-');
         const avg = data.avg >= 0 ? '+' + data.avg.toFixed(1) : data.avg.toFixed(1);
-        bestContainer.innerHTML += `<a href="insights.html#hood-${slug}" class="hood-row" style="text-decoration:none;color:inherit;"><span class="hood-name">${hood}<span class="hood-meta">${data.count} representatives &bull; ${data.pro} Pro-Israel</span></span><span class="hood-score" style="color:#15803d">${avg}</span></a>`;
+        bestContainer.innerHTML += `<a href="rankings.html#hood-${slug}" class="hood-row" style="text-decoration:none;color:inherit;"><span class="hood-name">${hood}<span class="hood-meta">${data.count} representatives &bull; ${data.pro} Pro-Israel</span></span><span class="hood-score" style="color:#15803d">${avg}</span></a>`;
       }
       for (const [hood, data] of worst5) {
         const slug = hood.toLowerCase().replace(/[^a-z0-9]+/g, '-');
         const avg = data.avg.toFixed(1);
-        worstContainer.innerHTML += `<a href="insights.html#hood-${slug}" class="hood-row" style="text-decoration:none;color:inherit;"><span class="hood-name">${hood}<span class="hood-meta">${data.count} representatives &bull; ${data.anti} Anti-Israel</span></span><span class="hood-score" style="color:#c2410c">${avg}</span></a>`;
+        worstContainer.innerHTML += `<a href="rankings.html#hood-${slug}" class="hood-row" style="text-decoration:none;color:inherit;"><span class="hood-name">${hood}<span class="hood-meta">${data.count} representatives &bull; ${data.anti} Anti-Israel</span></span><span class="hood-score" style="color:#c2410c">${avg}</span></a>`;
       }
     }
 

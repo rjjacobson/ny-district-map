@@ -556,10 +556,55 @@
         const [hood, data] = sorted[i];
         const avg = data.avg >= 0 ? '+' + data.avg.toFixed(1) : data.avg.toFixed(1);
         const color = data.avg >= 0 ? '#15803d' : '#c2410c';
+        const slug = hood.toLowerCase().replace(/[^a-z0-9]+/g, '-');
         const tr = document.createElement('tr');
+        tr.id = 'hood-' + slug;
+        tr.style.cursor = 'pointer';
+        tr.onclick = () => openNeighborhoodPanel(hood, data);
         tr.innerHTML = `<td>${i+1}</td><td style="font-weight:600;">${hood}</td><td>${data.count}</td><td>${data.pro}</td><td>${data.anti}</td><td class="score-cell" style="color:${color}">${avg}</td>`;
         tbody.appendChild(tr);
       }
+    }
+
+    function openNeighborhoodPanel(hood, data) {
+      const overlay = document.getElementById('detail-overlay');
+      const content = document.getElementById('detail-panel-content');
+      if (!overlay || !content) return;
+      overlay.classList.add('open');
+      overlay.scrollTop = 0;
+
+      const avg = data.avg >= 0 ? '+' + data.avg.toFixed(1) : data.avg.toFixed(1);
+      const avgColor = data.avg >= 0 ? '#15803d' : '#c2410c';
+
+      let repsHtml = '';
+      const reps = data.reps || [];
+      const sortedReps = [...reps].sort((a, b) => (b.score || 0) - (a.score || 0));
+      for (const r of sortedReps) {
+        const sc = r.score > 0 ? '+' + r.score : r.score;
+        const color = r.score >= 0 ? '#15803d' : '#c2410c';
+        const ps = (r.party||'').includes('Democrat') ? 'D' : 'R';
+        repsHtml += `
+          <div style="display:flex;align-items:center;padding:10px 0;gap:10px;border-bottom:1px solid #f1f5f9;cursor:pointer;" onclick="openDetailPanel(${r.person_id})">
+            <span style="display:inline-flex;align-items:center;justify-content:center;width:28px;height:28px;border-radius:50%;font-size:12px;font-weight:700;color:white;background:${partyColor(r.party)}">${ps}</span>
+            <div style="flex:1;">
+              <div style="font-size:14px;font-weight:600;color:#0f172a;">${r.name}</div>
+              <div style="font-size:12px;color:#94a3b8;">${CHAMBER_LABELS[r.chamber] || r.chamber} District ${r.district}</div>
+            </div>
+            <span style="font-size:14px;font-weight:700;color:${color}">${sc}</span>
+          </div>`;
+      }
+
+      content.innerHTML = `
+        <div style="position:sticky;top:0;background:white;z-index:1;padding:20px 20px 12px;border-bottom:1px solid #e2e8f0;">
+          <button style="position:absolute;top:12px;right:12px;background:none;border:none;font-size:24px;cursor:pointer;color:#64748b;" onclick="closeDetailPanel()">&times;</button>
+          <h2 style="font-size:22px;font-weight:800;color:#0f172a;">${hood}</h2>
+          <div style="font-size:14px;color:#64748b;margin-top:4px;">${data.count} representatives &bull; ${data.pro} Pro-Israel &bull; ${data.anti} Anti-Israel</div>
+          <div style="margin-top:8px;"><span style="font-size:28px;font-weight:800;color:${avgColor}">${avg}</span><span style="font-size:13px;color:#64748b;margin-left:8px;">avg score per rep</span></div>
+        </div>
+        <div style="padding:12px 20px;">
+          <div style="font-size:12px;font-weight:700;color:#64748b;text-transform:uppercase;margin-bottom:8px;">Representatives</div>
+          ${repsHtml}
+        </div>`;
     }
 
     function sortHoodTable(key) {
@@ -651,6 +696,23 @@
       if (hash && hash.startsWith('#person-')) {
         const pid = parseInt(hash.replace('#person-', ''));
         if (pid) openDetailPanel(pid);
+      } else if (hash && hash.startsWith('#hood-')) {
+        // Auto-open neighborhood from home page link
+        showFullNeighborhoods();
+        setTimeout(() => {
+          const el = document.getElementById(hash.slice(1));
+          if (el) {
+            el.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            el.style.background = '#fffbeb';
+            setTimeout(() => { el.style.background = ''; }, 2000);
+            // Find the neighborhood data and open panel
+            const hood = el.querySelector('td:nth-child(2)')?.textContent;
+            if (hood) {
+              const entry = allNeighborhoods.find(([h]) => h === hood);
+              if (entry) openNeighborhoodPanel(entry[0], entry[1]);
+            }
+          }
+        }, 200);
       }
     });
   </script>
