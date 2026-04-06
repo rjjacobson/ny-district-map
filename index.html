@@ -154,8 +154,8 @@
     }
     .rank-num { width: 24px; font-size: 14px; font-weight: 600; color: #94a3b8; }
     .rank-dot { width: 8px; height: 8px; border-radius: 50%; margin-right: 10px; }
-    .rank-name { flex: 1; font-size: 14px; font-weight: 600; color: #0f172a; }
-    .rank-score { font-size: 14px; font-weight: 700; color: #0f172a; }
+    .rank-name { flex: 1; font-size: 14px; font-weight: 600; color: #0f172a; min-width: 0; overflow: hidden; text-overflow: ellipsis; }
+    .rank-score { font-size: 14px; font-weight: 700; color: #0f172a; min-width: 40px; text-align: right; flex-shrink: 0; }
 
     /* Neighborhood rows */
     .hood-row {
@@ -325,9 +325,9 @@
         <h3>Legislator Rankings</h3>
         <a href="rankings.html">Full rankings &rarr;</a>
       </div>
-      <div style="padding:14px 20px 6px;font-size:12px;font-weight:600;color:#64748b;">Most Pro-Israel Legislators</div>
+      <div style="padding:14px 20px 6px;display:flex;justify-content:space-between;align-items:baseline;"><span style="font-size:12px;font-weight:600;color:#64748b;">Most Pro-Israel Legislators</span><span style="font-size:11px;font-weight:700;color:#64748b;text-transform:uppercase;">Score</span></div>
       <div id="pro-preview"></div>
-      <div style="padding:14px 20px 6px;font-size:12px;font-weight:600;color:#64748b;border-top:1px solid #f1f5f9;">Most Anti-Israel Legislators</div>
+      <div style="padding:14px 20px 6px;display:flex;justify-content:space-between;align-items:baseline;border-top:1px solid #f1f5f9;"><span style="font-size:12px;font-weight:600;color:#64748b;">Most Anti-Israel Legislators</span><span style="font-size:11px;font-weight:700;color:#64748b;text-transform:uppercase;">Score</span></div>
       <div id="anti-preview"></div>
     </div>
 
