@@ -280,17 +280,20 @@
     /* Mobile */
     @media (max-width: 768px) { .nav-search { display: none !important; }
       #detail-overlay { width: 100% !important; }
-      .hero h1 { font-size: 26px; }
-      .hero p { font-size: 14px; }
+      .hero { min-height: calc(100vh - 44px); display: flex; flex-direction: column; justify-content: center; }
+      .hero h1 { font-size: 28px; }
+      .hero p { font-size: 15px; }
       .address-bar { flex-direction: column; }
       .address-bar button { width: 100%; }
-      .dashboard { grid-template-columns: 1fr; }
+      .dashboard { grid-template-columns: 1fr; padding: 16px; }
       .desktop-only { display: none !important; }
       .mobile-hide { display: none !important; }
+      .mobile-only { display: block !important; }
       .signup-form { flex-direction: column; }
       .signup-form button { width: 100%; }
       .signup-options { flex-direction: column; align-items: center; gap: 8px; }
     }
+    .mobile-only { display: none; }
   </style>
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
   <link rel="stylesheet" href="detail-panel.css">
@@ -341,6 +344,15 @@
       <div id="best-hoods"></div>
       <a href="insights.html#worst-hoods" style="display:block;padding:14px 20px 6px;font-size:12px;font-weight:600;color:#c2410c;border-top:1px solid #f1f5f9;text-decoration:none;">Most Anti-Israel Neighborhoods</a>
       <div id="worst-hoods"></div>
+    </div>
+
+    <!-- Mobile-only: Most Anti-Israel -->
+    <div class="dash-card mobile-only">
+      <div class="dash-card-header">
+        <h3>Most Anti-Israel</h3>
+        <a href="rankings.html">All rankings &rarr;</a>
+      </div>
+      <div id="anti-preview-mobile"></div>
     </div>
 
     <!-- Map preview -->
@@ -717,7 +729,18 @@
       }
       for (let i = 0; i < antiTop.length; i++) {
         const l = antiTop[i];
-        antiContainer.innerHTML += `<div class="rank-row" style="cursor:pointer;" onclick="openDetailPanel(${l.person_id})"><span class="rank-num">${i + 1}</span>${partyPill(l.party)}<span class="rank-name">${l.name}<span style="font-size:12px;color:#94a3b8;margin-left:6px;font-weight:400;">${CHAMBER_SHORT[l.chamber]} D${l.district}</span></span><span class="rank-score">${l.score}</span></div>`;
+        const row = `<div class="rank-row" style="cursor:pointer;" onclick="openDetailPanel(${l.person_id})"><span class="rank-num">${i + 1}</span>${partyPill(l.party)}<span class="rank-name">${l.name}<span style="font-size:12px;color:#94a3b8;margin-left:6px;font-weight:400;">${CHAMBER_SHORT[l.chamber]} D${l.district}</span></span><span class="rank-score">${l.score}</span></div>`;
+        antiContainer.innerHTML += row;
+      }
+
+      // Mobile-only anti-Israel preview
+      const mobileAnti = document.getElementById('anti-preview-mobile');
+      if (mobileAnti) {
+        const mobileTop = sorted.filter(l => l.score < 0).sort((a, b) => a.score - b.score).slice(0, 5);
+        for (let i = 0; i < mobileTop.length; i++) {
+          const l = mobileTop[i];
+          mobileAnti.innerHTML += `<div class="rank-row" style="cursor:pointer;" onclick="openDetailPanel(${l.person_id})"><span class="rank-num">${i + 1}</span>${partyPill(l.party)}<span class="rank-name">${l.name}<span style="font-size:12px;color:#94a3b8;margin-left:6px;font-weight:400;">${CHAMBER_SHORT[l.chamber]} D${l.district}</span></span><span class="rank-score">${l.score}</span></div>`;
+        }
       }
     }
 
